@@ -54,3 +54,51 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
+
+# ---------------------------------------------------------------
+# Visual Studio
+# ---------------------------------------------------------------
+.vs/
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.aps
+*.VC.db
+*.VC.opendb
+ipch/
+
+# ---------------------------------------------------------------
+# MSVC build artifacts
+# ---------------------------------------------------------------
+*.obj
+*.lib
+*.exp
+*.pdb
+*.ilk
+*.exe
+[Dd]ebug/
+[Rr]elease/
+[Xx]64/
+[Bb]in/
+[Oo]bj/
+
+# ---------------------------------------------------------------
+# CMake (out/ is the VS default output root)
+# ---------------------------------------------------------------
+out/
+CMakeSettings.json
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+
+# Machine-local presets (QTDIR etc.). See CMakeUserPresets.json.example
+CMakeUserPresets.json
+
+# ---------------------------------------------------------------
+# Misc
+# ---------------------------------------------------------------
+.vscode/
+.cache/
+vcpkg_installed/

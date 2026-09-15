@@ -1,0 +1,66 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "hidden": true,
+      "name": "Qt",
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "$env{QTDIR}"
+      },
+      "vendor": {
+        "qt-project.org/Qt": {
+          "checksum": "wVa86FgEkvdCTVp1/nxvrkaemJc="
+        }
+      }
+    },
+    {
+      "hidden": true,
+      "name": "windows-x64",
+      "inherits": "Qt",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "architecture": {
+        "strategy": "external",
+        "value": "x64"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "x64-debug",
+      "displayName": "Debug (x64)",
+      "description": "Requires the QTDIR environment variable to point at a Qt msvc2022_64 install.",
+      "inherits": "windows-x64",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "x64-release",
+      "displayName": "Release (x64)",
+      "description": "Requires the QTDIR environment variable to point at a Qt msvc2022_64 install.",
+      "inherits": "windows-x64",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "x64-debug",
+      "configurePreset": "x64-debug"
+    },
+    {
+      "name": "x64-release",
+      "configurePreset": "x64-release"
+    }
+  ],
+  "vendor": {
+    "qt-project.org/Presets": {
+      "checksum": "67SmY24ZeVbebyKD0fGfIzb/bGI="
+    }
+  }
+}
