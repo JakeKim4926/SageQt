@@ -3,16 +3,16 @@
   "configurePresets": [
     {
       "name": "my-debug",
-      "displayName": "Debug (x64, local Qt)",
-      "inherits": "x64-debug",
+      "displayName": "Windows x64 Debug (local Qt)",
+      "inherits": "windows-x64-debug",
       "environment": {
         "QTDIR": "D:/Qt/6.11.2/msvc2022_64"
       }
     },
     {
       "name": "my-release",
-      "displayName": "Release (x64, local Qt)",
-      "inherits": "x64-release",
+      "displayName": "Windows x64 Release (local Qt)",
+      "inherits": "windows-x64-release",
       "environment": {
         "QTDIR": "D:/Qt/6.11.2/msvc2022_64"
       }
