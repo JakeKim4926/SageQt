@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-23] chore/gitattributes
+- **목적**: 줄 끝 규칙을 PC 설정이 아니라 저장소가 정하도록 고정 (PR 0-1, 리스크 #9)
+- **변경 내용**: `.gitattributes`에 `* text=auto eol=lf` 추가. 저장소 안은 이미 LF라 내용 변경 없음, 적용 후 추적 파일 33개 모두 `i/lf w/lf`
+- **PR 링크**: https://github.com/JakeKim4926/SageQt/pull/4
+- **결과**: merged (develop, 2026-09-23)
+
 ## [2026-09-23] docs/step0-plan
 - **목적**: 이관 Step 0 착수 전 계획 상세화와 결정 반영 (PR 0-0)
 - **변경 내용**: `MIGRATION_PLAN.md`에 Step 0 작업 순서 · 완료 기준 · 범위 밖 기록, 결정 3건(계층 타깃은 소스가 생길 때 생성 / 경고 수준 상향 · CI에서만 에러 / `SageQt.slnx` 유지) 반영. 컴파일 경고 규칙과 `.slnx` 예외를 스킬과 리뷰 점검 항목에 추가
