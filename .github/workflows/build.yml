@@ -1,0 +1,75 @@
+name: build
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  QT_VERSION: 6.11.2
+
+jobs:
+  build:
+    name: ${{ matrix.preset }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-2025
+            qt-host: windows
+            qt-arch: win64_msvc2022_64
+            preset: windows-x64-debug
+          - os: windows-2025
+            qt-host: windows
+            qt-arch: win64_msvc2022_64
+            preset: windows-x64-release
+          - os: macos-15
+            qt-host: mac
+            qt-arch: clang_64
+            preset: macos-arm64-debug
+          - os: macos-15
+            qt-host: mac
+            qt-arch: clang_64
+            preset: macos-arm64-release
+          - os: ubuntu-24.04
+            qt-host: linux
+            qt-arch: linux_gcc_64
+            preset: linux-x64-debug
+          - os: ubuntu-24.04
+            qt-host: linux
+            qt-arch: linux_gcc_64
+            preset: linux-x64-release
+
+    steps:
+      - name: Checkout (actions/checkout v7.0.1)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Install Qt (jurplel/install-qt-action v4.4.1)
+        uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125
+        with:
+          version: ${{ env.QT_VERSION }}
+          host: ${{ matrix.qt-host }}
+          target: desktop
+          arch: ${{ matrix.qt-arch }}
+          cache: true
+
+      - name: Set up MSVC (ilammy/msvc-dev-cmd v1.13.0)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
+
+      - name: Configure
+        env:
+          QTDIR: ${{ env.QT_ROOT_DIR }}
+        run: cmake --preset ${{ matrix.preset }}
+
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }}
