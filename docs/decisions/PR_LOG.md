@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-23] refactor/cmake-layer-targets
+- **목적**: VS 템플릿 구조를 SageQt 계층 타깃 구조로 교체 (PR 0-2)
+- **변경 내용**: 템플릿 파일 4개 제거. CMake 3.22 · C++20 · Qt 6.11 정책 · 경고 수준 상향. `sage_define` · `sage_ui`(`SageMainWindow`) · 실행 파일, 타깃별 include 루트 격리, `main.cpp` 조립 지점. Windows Debug · Release 경고 0, 실행 확인, 격리 음성 테스트(링크 안 한 헤더 include 시 C1083) 확인
+- **PR 링크**: https://github.com/JakeKim4926/SageQt/pull/5
+- **결과**: merged (develop, 2026-09-23)
+
 ## [2026-09-23] chore/gitattributes
 - **목적**: 줄 끝 규칙을 PC 설정이 아니라 저장소가 정하도록 고정 (PR 0-1, 리스크 #9)
 - **변경 내용**: `.gitattributes`에 `* text=auto eol=lf` 추가. 저장소 안은 이미 LF라 내용 변경 없음, 적용 후 추적 파일 33개 모두 `i/lf w/lf`
