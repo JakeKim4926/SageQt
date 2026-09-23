@@ -70,10 +70,10 @@ PR 본문에는 아래 항목을 반드시 기재한다.
 예시:
 
 ```text
-fix: 데이터 관리 탭 목록 UI 수정 4건 (#89)
+fix: 결과 표 UI 수정 2건 (#12)
 
-* fix: 목록 컬럼 폭 자동 조정
-* style: CRUD 버튼 가운데 정렬
+* fix: 늘어나는 열을 QHeaderView::Stretch로 변경
+* style: 선택 막대 버튼 정렬 통일
 ```
 
 원칙:
@@ -97,7 +97,7 @@ Release: develop -> main (주요 변경 요약)
 예시:
 
 ```text
-Release: develop -> main (결과 표 그룹핑/구분선, 클립보드 단축키, 검색 기준 셀렉박스)
+Release: develop -> main (로그인 · 결과 표 · 실행 기록 화면 이관)
 ```
 
 - 요약에는 이번 릴리스에 포함된 주요 변경을 쉼표로 나열한다

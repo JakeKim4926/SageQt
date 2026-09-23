@@ -40,7 +40,7 @@ description: >
 - 작업 범위가 커지면 더 작은 단위로 나눠 순차적으로 진행한다
 
 잘못된 예:
-- `feature/new-workflow` 에 조회, 엑셀 생성, 정렬 수정, UI 변경을 모두 포함
+- `feature/new-workflow` 에 조회, 파일 내보내기, 정렬 수정, UI 변경을 모두 포함
 
 올바른 예:
 - `feature/result-filter-criteria-select` → `fix/result-table-sort-order` → ...
@@ -58,9 +58,9 @@ description: >
 - 기능 구현 + 버그 수정 + 설정 변경을 하나의 커밋에 묶음
 
 올바른 예:
-- `feat: 결과 검색 기준 셀렉박스 추가`
-- `fix: PCH 경로 불일치 수정`
-- `chore: UTF-8 컴파일러 옵션 추가`
+- `feat: 결과 표 검색 기준 선택 추가`
+- `fix: Linux에서 include 경로 대소문자 불일치 수정`
+- `chore: .gitattributes로 줄 끝 규칙 고정`
 
 ---
 
@@ -155,19 +155,19 @@ git checkout -b <타입>/<작업명>
 
 ### 예시
 ```text
-feat: 결과 검색 기준 셀렉박스 추가
-fix: 결과 표 정렬 기준을 같은 담당자 내 등록일 순으로 변경
+feat: 결과 표 검색 기준 선택 추가
+fix: macOS에서 로그인 창이 부모 창 중앙에 뜨지 않는 문제 수정
 style: 검색 기준 콤보를 입력 콤보 스타일로 통일
-refactor: 가격 패널을 View에서 분리
+refactor: 실행 기록 패널을 메인 창에서 분리
 docs: RELEASE_NOTES v1.1 추가
 ```
 
 ```text
-feat: 결과 표 미분류 항목 그룹핑 적용
+feat: 실행 기록 삭제 기능 추가
 
-- 미매칭 항목의 정렬용 원본 이름 보존
-- 정렬키에 sortName을 담당자보다 앞에 복원
-- 미등록 항목은 기타 섹션 맨 뒤로 배치
+- 선택한 기록을 지우는 버튼 추가
+- 삭제 전 확인 다이얼로그 표시
+- 삭제 후 목록과 요약 막대 갱신
 ```
 
 
