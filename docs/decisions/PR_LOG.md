@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-23] chore/cmake-presets-3os
+- **목적**: OS별 차이를 CMake 프리셋에 두기 위해 세 OS 프리셋을 갖춤 (PR 0-3)
+- **변경 내용**: `macos-arm64` · `linux-x64` 기본 프리셋 추가(호스트 OS 조건), 프리셋 이름을 `<OS>-<아키텍처>-<구성>`으로 통일, 예시 파일 갱신. Windows 두 프리셋 빌드 경고 0, 예시 파일 동작 확인
+- **PR 링크**: https://github.com/JakeKim4926/SageQt/pull/6
+- **결과**: merged (develop, 2026-09-23)
+
 ## [2026-09-23] refactor/cmake-layer-targets
 - **목적**: VS 템플릿 구조를 SageQt 계층 타깃 구조로 교체 (PR 0-2)
 - **변경 내용**: 템플릿 파일 4개 제거. CMake 3.22 · C++20 · Qt 6.11 정책 · 경고 수준 상향. `sage_define` · `sage_ui`(`SageMainWindow`) · 실행 파일, 타깃별 include 루트 격리, `main.cpp` 조립 지점. Windows Debug · Release 경고 0, 실행 확인, 격리 음성 테스트(링크 안 한 헤더 include 시 C1083) 확인
