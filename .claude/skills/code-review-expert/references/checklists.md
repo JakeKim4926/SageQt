@@ -79,7 +79,7 @@ ui  ──→  core  ←──  infra
 - **중계 slot**(창이 패널 대신 받아 넘기는 slot)이 생기지 않았는가
 - 화면 클래스에 `paintEvent` / `setPalette` / `setFont` / `move` / `resize` / `setGeometry`가 들어가지 않았는가
 - `setStyleSheet` 호출이나 `.qss` 파일이 추가되지 않았는가
-- 생성자가 `createWidgets()` → `createLayout()` → `connectSignals()` 형태인가
+- 위젯을 가진 화면 클래스의 생성자가 `createWidgets()` → `createLayout()` → `connectSignals()` 형태인가 (위젯이 없으면 빈 함수를 만들지 않는다)
 - Qt Designer `.ui` 파일이 추가되지 않았는가
 
 ### F. DB 변경 체크

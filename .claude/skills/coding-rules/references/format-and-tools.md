@@ -30,6 +30,7 @@ SageUserService::SageUserService(ISageUserRepository& repository, const SageDbCo
 | MSVC | `/W4` |
 | GCC · Clang | `-Wall -Wextra -Wpedantic` |
 
+- 경고 옵션은 소스 루트 `SageQt/CMakeLists.txt`에서 컴파일러 생성식(`$<CXX_COMPILER_ID:MSVC>`)으로 지정한다. 컴파일러에 따른 분기이며, 금지된 OS 분기(`if(WIN32)` 등)가 아니다
 - 로컬에서는 경고로 보이고, **CI에서는 에러로 처리한다** — 경고가 남은 코드는 머지되지 않는다
 - 경고를 끄는 `#pragma`나 `-Wno-*` · `/wd` 옵션을 코드와 CMake에 추가하지 않는다. 필요해 보이면 멈추고 승인을 받는다
 

@@ -103,6 +103,7 @@ SageWorkflowController                  실행 상태 전이 · 백그라운드 
 ### 화면 클래스 작성 형태
 
 모든 패널 · 다이얼로그 · 창의 생성자는 **`createWidgets()` → `createLayout()` → `connectSignals()`** 순서로 구성한다.
+위젯이 아직 없는 화면 클래스는 빈 함수를 만들지 않는다 (CLAUDE.md 2). 첫 위젯을 추가할 때 이 형태로 만든다.
 선언 순서는 `coding-rules/references/api-shape.md`의 *선언 순서*를 따른다.
 
 ```cpp

@@ -1,10 +1,11 @@
-#include "SageQt.h"
-#include <QtWidgets/QApplication>
+#include "ui/window/SageMainWindow.h"
 
-int main(int argc, char *argv[])
+#include <QApplication>
+
+int main(int argc, char* argv[])
 {
-    QApplication app(argc, argv);
-    SageQt window;
-    window.show();
-    return app.exec();
+    QApplication application(argc, argv);
+    SageMainWindow mainWindow;
+    mainWindow.show();
+    return application.exec();
 }
