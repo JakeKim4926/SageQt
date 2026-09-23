@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-23] chore/ci-3os-build
+- **목적**: "코드는 하나"를 CI가 커밋마다 세 OS에서 검증하게 함 (PR 0-4)
+- **변경 내용**: GitHub Actions 매트릭스 6개(windows-2025 · macos-15 · ubuntu-24.04 × Debug · Release), Qt 6.11.2 설치, 외부 action 커밋 해시 고정. Windows 설치 실패 원인(Qt 6.11 Windows 저장소 구조 변경, aqtinstall 3.3.0 미지원)을 찾아 aqtinstall main 커밋 `076e165`로 고정. 6개 모두 통과, 경고 0
+- **PR 링크**: https://github.com/JakeKim4926/SageQt/pull/7
+- **결과**: merged (develop, 2026-09-23)
+
 ## [2026-09-23] chore/cmake-presets-3os
 - **목적**: OS별 차이를 CMake 프리셋에 두기 위해 세 OS 프리셋을 갖춤 (PR 0-3)
 - **변경 내용**: `macos-arm64` · `linux-x64` 기본 프리셋 추가(호스트 OS 조건), 프리셋 이름을 `<OS>-<아키텍처>-<구성>`으로 통일, 예시 파일 갱신. Windows 두 프리셋 빌드 경고 0, 예시 파일 동작 확인
