@@ -23,6 +23,7 @@
 - `Q_ENUM`이 `Q_OBJECT` / `Q_GADGET` 클래스 안의 enum에만 쓰였는가
 - const가 아닌 Qt 컨테이너를 range-for로 돌 때 `std::as_const`를 썼는가
 - `explicit` / `override` / `const` 누락
+- 컴파일 경고를 끄는 `#pragma` · `-Wno-*` · `/wd`가 추가되지 않았는가
 - 포맷 — 제어문 중괄호, 포인터 기호 위치, 들여쓰기
 
 ### B. 소유권 체크 (CRITICAL)
@@ -61,6 +62,7 @@ ui  ──→  core  ←──  infra
 - `Qt::Sql`이 `sage_infra`에 PRIVATE로 남아 있고, QtSql 타입이 Repository 공개 헤더에 나타나지 않는가
 - 리소스가 실행 파일 타깃에 등록되었는가
 - `file(GLOB)`가 쓰이지 않았는가
+- IDE 프로젝트 파일(`.sln` · `.vcxproj` 등)이 추가되지 않았는가 — 예외는 `SageQt.slnx` 하나
 - **신규 파일이 올바른 계층 타깃의 `CMakeLists.txt`에 등록되었는가** (자주 누락된다)
 - 신규 파일이 `coding-design`의 폴더 구조에 맞는 위치에 있는가
 - 경계 인터페이스가 `core`에 정의되고 `infra`가 구현하며 `main.cpp`가 조립하는가

@@ -60,7 +60,7 @@
 ### 빌드 정의
 
 - 빌드 정의는 `CMakeLists.txt`와 `CMakePresets.json`이 유일한 원천이다
-- IDE 프로젝트 파일(`.sln`, `.vcxproj`, `.xcodeproj`, `.pro`)을 만들거나 커밋하지 않는다
+- IDE 프로젝트 파일(`.sln`, `.vcxproj`, `.xcodeproj`, `.pro`)을 만들거나 커밋하지 않는다. 예외는 저장소 루트의 `SageQt.slnx` 하나다 — Visual Studio 진입점으로 유지하며, 빌드 설정을 담지 않는다
 - OS별 차이(컴파일러, Qt 경로, 아키텍처)는 `CMakePresets.json`에 둔다
 - `CMakeLists.txt`의 `if(WIN32)` / `if(APPLE)` 분기는 패키징·배포 설정에만 허용한다
 - 리소스(폰트 · 아이콘)는 **`SageQt` 실행 파일 타깃에 등록한다.** 정적 라이브러리에 넣은 리소스는 링커가 등록 코드를 제거할 수 있다

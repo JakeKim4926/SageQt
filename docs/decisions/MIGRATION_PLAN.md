@@ -39,6 +39,9 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 | 2026-09-23 | DB는 QtSql `QSQLITE` | SageSDI의 사용 범위를 전부 대체하고, 코딩 규칙에서 C API 예외가 사라진다 |
 | 2026-09-23 | 백그라운드 작업은 `QtConcurrent::run` + `QFutureWatcher` | 한 번 돌고 끝나는 작업에 Qt 공식 문서가 권장하는 조합 |
 | 2026-09-23 | 스킬은 SKILL.md 300줄 이하 + `references/`, 상황별 요약(작성 · 수정 · 삭제) | 코드를 건드릴 때마다 읽히는 분량을 줄이고, 삭제 규칙의 빈틈을 메운다 |
+| 2026-09-23 | 계층 타깃은 소스가 생길 때 만든다 — Step 0은 `sage_define` · `sage_ui` · 실행 파일만 | CMake는 소스 없는 정적 라이브러리를 허용하지 않고, 빈 껍데기 클래스는 CLAUDE.md 2에 어긋난다 |
+| 2026-09-23 | 컴파일 경고 수준을 올리고(`/W4`, `-Wall -Wextra -Wpedantic`) CI에서만 경고를 에러로 처리 | 로컬 작업 흐름은 유지하면서 경고가 남은 코드의 머지를 막는다 |
+| 2026-09-23 | `SageQt.slnx`는 유지 — IDE 파일 금지 규칙의 예외 | 사용자 결정. Visual Studio 진입점이며 빌드 설정은 담지 않는다 |
 
 ---
 
@@ -47,9 +50,9 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 | Step | 내용 | 상태 |
 |---|---|---|
 | -1 | 규칙(스킬) · 목표 · 계획 문서 | 완료 ([#1](https://github.com/JakeKim4926/SageQt/pull/1)) |
-| 0 | 기반 — 템플릿 정리 · CMake 타깃 · 3-OS 프리셋 · CI · 정적 분석 | 대기 |
+| 0 | 기반 — 템플릿 정리 · CMake 타깃 · 3-OS 프리셋 · CI · 정적 분석 | 진행 중 |
 | 1 | 측정 — 한글 폰트 메트릭 3-OS 비교 | 대기 |
-| 2 | 로직 이관 — core · infra + 테스트 | 대기 |
+| 2 | 로직 이관 — `sage_core` · `sage_infra` · `sage_common` 타깃 생성, core · infra 이관 + 테스트 | 대기 |
 | 3 | UI 기반 — `sageqt-ui` 스킬 · `SageStyle` · 프레임리스 다이얼로그 | 대기 |
 | 4 | UI 이관 — 사이드바 → 헤더 → 결과 표 → 실행 기록 | 대기 |
 | 5 | 배포 — 서명 · 공증 · 패키징 | 대기 |
@@ -102,13 +105,36 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 
 ---
 
-## Step 0 — 기반 (착수 시 상세화)
+## Step 0 — 기반
 
-- SageQt 템플릿 정리 — `SageQt.ui` · `qt.cmake` 제거, C++20, 폴더 구조 적용
-- `.gitattributes`로 줄 끝 규칙 고정
-- CMake 타깃 5개(`sage_define` · `sage_common` · `sage_core` · `sage_infra` · `sage_ui`) + 실행 파일
-- `CMakePresets.json` — windows-x64 / macos-arm64 / linux-x64
-- GitHub Actions 3-OS 매트릭스 + clang-format · clang-tidy · clazy + 플랫폼 분기(`#ifdef Q_OS_`) 검사
+- **브랜치**: 작업 성격마다 PR 하나 (`git-workflow`: 브랜치 하나 = 작업 하나)
+- **규칙 출처**: `coding-design/references/cmake-targets.md`, `coding-rules/references/format-and-tools.md`
+
+착수 전 실측 (2026-09-23):
+- Qt 모듈 Core · Gui · Widgets · Sql · Concurrent · Test 모두 설치됨 (`D:/Qt/6.11.2/msvc2022_64/lib/cmake/`)
+- Qt 6.11이 요구하는 최소 CMake는 3.22 (`QT_SUPPORTED_MIN_CMAKE_VERSION_FOR_USING_QT`). 현재 `cmake_minimum_required`는 3.16
+- 로컬 도구: VS 번들 CMake 4.3.1 · Ninja 1.13.2 · clang-format / clang-tidy 22.1.3. clazy는 없음 → CI의 Linux job에서만 돌린다
+
+작업 순서:
+- [ ] 0-0 `docs/step0-plan` — Step 0 상세화, 결정 반영 (경고 규칙, `SageQt.slnx` 예외)
+- [ ] 0-1 `chore/gitattributes` — `.gitattributes`로 줄 끝 고정
+- [ ] 0-2 `refactor/cmake-layer-targets` — 템플릿 정리(`SageQt.ui` · `qt.cmake` · `SageQt.h/.cpp`), C++20, CMake 3.22, `sage_define` · `sage_ui` · 실행 파일, `SageMainWindow`, `main.cpp` 조립 지점
+- [ ] 0-3 `chore/cmake-presets-3os` — windows-x64 / macos-arm64 / linux-x64 × Debug · Release
+- [ ] 0-4 `chore/ci-3os-build` — GitHub Actions 3 OS × Debug · Release
+- [ ] 0-5 `chore/static-analysis` — clang-format · clang-tidy · clazy · 플랫폼 분기 검사 · CI에서 경고를 에러로
+
+완료 기준:
+- `develop`에서 CI 빌드 job 6개와 정적 분석 job이 모두 통과한다
+- 소스에 플랫폼 분기(`#ifdef Q_OS_*` 등)가 0건이다 — CI가 검사한다
+- clang-format · clang-tidy · clazy 위반이 0건이고, 일부러 넣은 위반은 CI가 실패시킨다
+- `git ls-files`에 `SageQt.ui` · `qt.cmake`가 없고, CMake 최소 버전 3.22 · C++20이다
+- Windows 로컬에서 앱이 실행된다
+
+범위 밖:
+- `sage_core` · `sage_infra` · `sage_common` 타깃 — 소스가 없는 정적 라이브러리는 CMake가 허용하지 않고, 빈 껍데기 클래스는 CLAUDE.md 2에 어긋난다. 첫 코드를 옮기는 Step 2에서 만들고 계층 강제도 그때 검증한다
+- `tests/`와 Qt Test 연결 — 테스트할 코드가 Step 2에 생긴다
+- macOS · Linux 실행 확인 — 실기가 없다 (리스크 #1). Step 0은 두 OS에서 빌드 성공까지만 확인한다
+- 배포 · 패키징 — Step 5
 
 ---
 
