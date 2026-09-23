@@ -15,6 +15,7 @@ concurrency:
 
 env:
   QT_VERSION: 6.11.2
+  AQT_SOURCE: git+https://github.com/miurahr/aqtinstall.git@076e1659807d0b362a3ed684d54c2e9c775eb9c7
 
 jobs:
   build:
@@ -53,13 +54,14 @@ jobs:
       - name: Checkout (actions/checkout v7.0.1)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
-      - name: Install Qt (jurplel/install-qt-action v4.4.1)
+      - name: Install Qt (jurplel/install-qt-action v4.4.1, aqtinstall main 076e165 for the Qt 6.11 Windows layout)
         uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125
         with:
           version: ${{ env.QT_VERSION }}
           host: ${{ matrix.qt-host }}
           target: desktop
           arch: ${{ matrix.qt-arch }}
+          aqtsource: ${{ env.AQT_SOURCE }}
           cache: true
 
       - name: Set up MSVC (ilammy/msvc-dev-cmd v1.13.0)
