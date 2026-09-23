@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.22)
 
-project("SageQt")
+project(SageQt LANGUAGES CXX)
 
-add_subdirectory("SageQt")
+add_subdirectory(SageQt)
