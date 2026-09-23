@@ -1,6 +1,6 @@
 # SageSDI → SageQt 이관 계획
 
-> 미검증 커밋: 없음 (Step -1은 문서 작업이며 아직 커밋 전)
+> 미검증 커밋: 없음 (Step -1은 문서만 변경)
 
 ## Context
 
@@ -46,7 +46,7 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 
 | Step | 내용 | 상태 |
 |---|---|---|
-| -1 | 규칙(스킬) · 목표 · 계획 문서 | 진행 중 (커밋 전) |
+| -1 | 규칙(스킬) · 목표 · 계획 문서 | 완료 ([#1](https://github.com/JakeKim4926/SageQt/pull/1)) |
 | 0 | 기반 — 템플릿 정리 · CMake 타깃 · 3-OS 프리셋 · CI · 정적 분석 | 대기 |
 | 1 | 측정 — 한글 폰트 메트릭 3-OS 비교 | 대기 |
 | 2 | 로직 이관 — core · infra + 테스트 | 대기 |
@@ -71,7 +71,18 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 
 ## 완료된 작업
 
-아직 없음.
+### Step -1 — 규칙 · 목표 · 계획 (2026-09-23, [#1](https://github.com/JakeKim4926/SageQt/pull/1))
+
+결과:
+- `CLAUDE.md`에 프로젝트 목표 3가지를 두었다. 매 세션 자동으로 읽히는 유일한 파일이다
+- 스킬 6종: `coding-rules` · `coding-design` · `code-review-expert`는 Qt 6 기준으로 재작성, `git-workflow` · `sageqt-plan` · `debt-log-guard`는 SageSDI에서 이식
+- SKILL.md는 모두 300줄 이하(최대 250줄)로 두고 세부 규칙은 `references/`로 분리했다. 상황별 요약(작성 · 수정 · 삭제)을 추가했고, 삭제 규칙은 SageSDI에 없던 것이다
+- `develop` 브랜치를 만들었다
+
+교훈:
+- **추측 대신 실측이 이전 판단 두 건을 뒤집었다.** "MSVC `/utf-8` 누락"은 틀렸고(Qt가 자동으로 붙인다), "`Q_OBJECT`는 필요할 때만"은 Qt 공식 권고와 반대였다. 로컬 설치본과 공식 문서로 확인하는 절차를 유지한다
+- **문서로만 있는 규칙은 지켜지지 않는다.** SageSDI는 계층 규칙이 README에 있었지만 core → infra include와 core 안의 Win32 호출이 있었다. Step 0의 CMake 타깃 격리가 이것을 빌드 단계에서 막는다
+- **규칙 재배치는 손으로 다시 쓰지 않는다.** 줄 범위 복사와 스냅샷 대조로 규칙 줄 1,308개의 누락 0을 확인했다
 
 ---
 
@@ -85,39 +96,16 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 | 4 | 프레임리스 다이얼로그의 macOS · Wayland 동작 미검증 | 로그인 창 모양 · 이동 | Step 3에서 `startSystemMove` 검증 |
 | 5 | 비밀번호 해싱 방식 미정 (현재 솔트 없는 SHA-256) | 보안 | Step 2에서 결정해 `coding-rules`에 반영 |
 | 6 | `sagesdi-ui`(915줄) 미분석 | 디자인 값 · `SageStyle` 설계 근거가 없다 | Step 3 착수 전 분석 |
-| 7 | `develop` 브랜치가 없다 | `git-workflow`를 따를 수 없다 | Step -1 커밋 전에 생성 (승인 필요) |
-| 8 | 정적 분석 도구 설정 전 | 규칙이 사람의 기억에 의존 | Step 0 |
-| 9 | 로컬 WSL은 Ubuntu 20.04 (GCC 9, C++20 부족) | 로컬 Linux 검증 불가 | Ubuntu 24.04 추가 설치 (승인 필요) |
-
----
-
-## Step -1 — 규칙 · 목표 · 계획
-
-- **브랜치**: `docs/sageqt-skills` (`develop` 생성 후 분기)
-- **규칙 출처**: SageSDI `.claude/skills/` 원본 7종, Qt 공식 문서 · 커뮤니티 재검증 결과
-
-작업 순서:
-- [x] SageSDI 스킬 분석 및 Qt판 작성 — `coding-rules` · `coding-design` · `code-review-expert` 재작성, `git-workflow` · `sageqt-plan` · `debt-log-guard` 이식
-- [x] Qt 공식 문서 · 커뮤니티 기준 재검증 및 반영 — `Q_OBJECT` 전면 적용, QStyle, QtSql, Model/View 등 9건
-- [x] SKILL.md 300줄 이하로 분리, 상황별 요약 추가
-- [x] `CLAUDE.md`에 프로젝트 목표 추가, 이 계획 문서 작성
-- [ ] `develop` 브랜치 생성 (승인 필요)
-- [ ] 커밋 → `develop`으로 PR
-
-완료 기준:
-- 모든 SKILL.md가 300줄 이하 — `wc -l .claude/skills/*/SKILL.md`
-- 재구성 전 규칙 줄이 모두 새 파일에 남아 있다 (제목 수준 · 참조 경로 · 중복 정리처럼 의도한 변경만 예외)
-- 스킬 안의 파일 참조가 모두 실제 파일을 가리킨다
-
-범위 밖:
-- `sageqt-ui` 스킬 — Step 1 측정 결과를 반영해야 하므로 Step 3 직전에 작성한다
-- `.clang-format` · `.clang-tidy` · clazy 설정 파일 — CMake · CI와 함께 있어야 검증할 수 있으므로 Step 0에서 한다
+| 7 | 정적 분석 도구 설정 전 | 규칙이 사람의 기억에 의존 | Step 0 |
+| 8 | 로컬 WSL은 Ubuntu 20.04 (GCC 9, C++20 부족) | 로컬 Linux 검증 불가 | Ubuntu 24.04 추가 설치 (승인 필요) |
+| 9 | 줄 끝 규칙이 PC의 `core.autocrlf`에 의존 (`.gitattributes` 없음) | OS마다 다른 줄 끝이 커밋될 수 있다 | Step 0에서 `.gitattributes`로 고정 |
 
 ---
 
 ## Step 0 — 기반 (착수 시 상세화)
 
 - SageQt 템플릿 정리 — `SageQt.ui` · `qt.cmake` 제거, C++20, 폴더 구조 적용
+- `.gitattributes`로 줄 끝 규칙 고정
 - CMake 타깃 5개(`sage_define` · `sage_common` · `sage_core` · `sage_infra` · `sage_ui`) + 실행 파일
 - `CMakePresets.json` — windows-x64 / macos-arm64 / linux-x64
 - GitHub Actions 3-OS 매트릭스 + clang-format · clang-tidy · clazy + 플랫폼 분기(`#ifdef Q_OS_`) 검사
@@ -126,5 +114,5 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 
 ## 검증 방법
 
-- Step -1: SKILL.md 줄 수 측정, 재구성 전 스냅샷과의 규칙 줄 대조
+- 스킬을 고치면: SKILL.md 300줄 이하, 스킬 안의 파일 참조가 실제 파일을 가리키는지 확인하고, 이 계획을 재점검한다 (`sageqt-plan`)
 - Step 0 이후: 3-OS CI가 모두 통과하는 것이 모든 Step의 기본 조건이다
