@@ -126,7 +126,7 @@ description: >
 | `references/ownership-and-threads.md` | 객체를 만들거나 연결하거나 백그라운드로 보낼 때 | 소유권 규약 1~4 · 소유권 체크리스트 · 스레드 금지 사항 |
 | `references/api-shape.md` | 함수 · 클래스를 선언할 때 | 타입 · 클래스 작성 · 선언 순서 · signal/slot · 반환 규약 · null 계약 · 매개변수 · include |
 | `references/values-and-platform.md` | 값을 쓰거나 OS 기능이 필요할 때 | 하드코딩 금지 · 상수 위치 · 크로스 플랫폼 · Qt 대체 표 |
-| `references/format-and-tools.md` | 포맷이 애매할 때, 도구 설정을 만질 때 | 포맷 · 정적 분석 |
+| `references/format-and-tools.md` | 포맷이 애매할 때, 도구 설정을 만질 때 | 포맷 · 컴파일 경고 · 정적 분석 |
 
 ---
 

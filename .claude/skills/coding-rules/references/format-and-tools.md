@@ -23,12 +23,25 @@ SageUserService::SageUserService(ISageUserRepository& repository, const SageDbCo
 
 ---
 
+## 컴파일 경고
+
+| 컴파일러 | 경고 수준 |
+|---|---|
+| MSVC | `/W4` |
+| GCC · Clang | `-Wall -Wextra -Wpedantic` |
+
+- 로컬에서는 경고로 보이고, **CI에서는 에러로 처리한다** — 경고가 남은 코드는 머지되지 않는다
+- 경고를 끄는 `#pragma`나 `-Wno-*` · `/wd` 옵션을 코드와 CMake에 추가하지 않는다. 필요해 보이면 멈추고 승인을 받는다
+
+---
+
 ## 정적 분석
 
 이 문서의 규칙은 사람의 기억이 아니라 도구가 검사한다.
 
 | 도구 | 검사 대상 |
 |---|---|
+| 컴파일러 | *컴파일 경고* (CI에서는 에러) |
 | `clang-format` | *포맷* 전부 |
 | `clang-tidy` | 네이밍 형식, `auto` · `NULL` · C 캐스트 금지, `explicit` · `override` · `const` |
 | `clazy` | Qt 전용 — detach, `Q_OBJECT` 누락, connect 오용 등 |
