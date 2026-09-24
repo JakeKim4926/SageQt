@@ -44,7 +44,19 @@ SageUserService::SageUserService(ISageUserRepository& repository, const SageDbCo
 |---|---|
 | 컴파일러 | *컴파일 경고* (CI에서는 에러) |
 | `clang-format` | *포맷* 전부 |
-| `clang-tidy` | 네이밍 형식, `auto` · `NULL` · C 캐스트 금지, `explicit` · `override` · `const` |
-| `clazy` | Qt 전용 — detach, `Q_OBJECT` 누락, connect 오용 등 |
+| `clang-tidy` | 네이밍 형식(대소문자 · 접두사), `NULL` · C 캐스트 금지, `explicit` · `override` · 멤버 함수 `const` |
+| `clazy` | Qt 전용 — detach, `Q_OBJECT` 누락, connect 오용 등 (level1 + `missing-qobject-macro` · `old-style-connect`) |
+| CI grep | `auto` 키워드, 플랫폼 분기(`Q_OS_` · `_WIN32` · `__APPLE__` · `__linux__` · `<windows.h>`) — clang-tidy에는 `auto`를 금지하는 검사가 없다 |
 
 clazy의 `non-pod-global-static`은 끈다. `SageDefine.h`의 `inline const QString` 상수가 대상인데, 실행 파일 하나에 들어가는 상수라 시작 비용이 무시할 수준이다.
+
+### 도구로 검사하지 않는 규칙
+
+아래 네이밍 규칙은 clang-tidy로 표현할 수 없다. 리뷰(`code-review-expert`)가 검사한다.
+
+- `bool` 멤버 · 접근자의 `is` / `has` / `can`
+- 출력 매개변수의 `out` 접두사
+- `get` 접두사 금지
+- signal 이름(과거형 · 상태 변화)과 slot 이름(`on` + 발신원 + 사건)
+- 클래스 역할 접미사 · 위젯 멤버 접미사
+- 약어 PascalCase (`Sql`이지 `SQL`이 아니다)
