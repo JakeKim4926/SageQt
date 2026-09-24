@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-24] docs/plan-restructure
+- **목적**: 개발 계획을 구현 가능한 주제 단위로 나누고, 진행 중인 주제의 지시서만 읽도록 계획 관리 구조를 바꿈
+- **변경 내용**: `sageqt-plan`을 절차 + 진행 중인 주제 목록(T01~T19)으로 재작성, 주제별 구현 지시서 `references/Txx-*.md` 19개 작성(SageSDI 원본 사실을 값 · 경로 · 줄 번호까지 기록), 끝난 주제는 `docs/plans/done/`으로 옮기는 절차. `MIGRATION_PLAN.md`를 배경 · 결정 기록 문서로 재구성하고 `.rc`(UTF-16LE) 사실 정정. CLAUDE.md와 스킬 3곳이 새 구조를 가리키도록 갱신
+- **PR 링크**: https://github.com/JakeKim4926/SageQt/pull/8
+- **결과**: merged (develop, 2026-09-24)
+
 ## [2026-09-23] chore/ci-3os-build
 - **목적**: "코드는 하나"를 CI가 커밋마다 세 OS에서 검증하게 함 (PR 0-4)
 - **변경 내용**: GitHub Actions 매트릭스 6개(windows-2025 · macos-15 · ubuntu-24.04 × Debug · Release), Qt 6.11.2 설치, 외부 action 커밋 해시 고정. Windows 설치 실패 원인(Qt 6.11 Windows 저장소 구조 변경, aqtinstall 3.3.0 미지원)을 찾아 aqtinstall main 커밋 `076e165`로 고정. 6개 모두 통과, 경고 0
