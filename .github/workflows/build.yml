@@ -100,7 +100,7 @@ jobs:
           wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
           sudo add-apt-repository -y "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-22 main"
           sudo apt-get update
-          sudo apt-get install -y clang-22 clang-tidy-22 llvm-22-dev libclang-22-dev
+          sudo apt-get install -y clang-22 clang-tidy-22 llvm-22-dev libclang-22-dev libclang-cpp22-dev
           clang-format --version
           clang-tidy-22 --version
 
@@ -108,7 +108,7 @@ jobs:
         run: |
           git clone --quiet https://github.com/KDE/clazy.git "$RUNNER_TEMP/clazy"
           git -C "$RUNNER_TEMP/clazy" checkout --quiet 55a7af428ea793c5b88962eafb8a59f9f5a78d9a
-          cmake -S "$RUNNER_TEMP/clazy" -B "$RUNNER_TEMP/clazy-build" -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++-22 -DLLVM_ROOT=/usr/lib/llvm-22
+          cmake -S "$RUNNER_TEMP/clazy" -B "$RUNNER_TEMP/clazy-build" -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++-22 -DLLVM_ROOT=/usr/lib/llvm-22 -DCLAZY_LINK_CLANG_DYLIB=ON
           cmake --build "$RUNNER_TEMP/clazy-build"
           echo "$RUNNER_TEMP/clazy-build/bin" >> "$GITHUB_PATH"
           "$RUNNER_TEMP/clazy-build/bin/clazy-standalone" --version
