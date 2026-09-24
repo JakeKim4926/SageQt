@@ -1,21 +1,29 @@
-# SageSDI → SageQt 이관 계획
+# SageSDI → SageQt 이관 — 배경 · 결정 기록
 
-> 미검증 커밋: 없음 (Step -1은 문서만 변경)
+> **지금 할 일은 이 문서가 아니라 `sageqt-plan` 스킬에 있다** (`.claude/skills/sageqt-plan/SKILL.md`의 *진행 중인 주제*).
+> 이 문서는 왜 이렇게 하는지 — 배경 · 조사로 확정한 사실 · 결정 · 전역 리스크 · 완료 이력 — 를 기록한다.
 
 ## Context
 
 SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고, Windows · Linux까지 **같은 코드**로 지원한다.
 프로젝트 목표 세 가지는 `CLAUDE.md`의 *프로젝트 목표*에 있다 — 세 OS에서 코드 동일, 디자인 자유도, 품질 = 일관성.
-이 문서의 모든 Step은 그 목표로 되돌아가 검증한다.
+모든 주제는 그 목표로 되돌아가 검증한다.
 
-### 조사로 확정한 사실 (2026-09-22 ~ 23)
+---
+
+## 조사로 확정한 사실
+
+주제별 세부 사실(원본 경로 · 상수 값 · 동작 순서)은 각 주제 파일(`sageqt-plan/references/Txx-*.md`)에 있다. 여기에는 전체 판단에 쓰이는 사실만 둔다.
+
+### SageSDI 구조 (2026-09-22 ~ 23)
 
 | 항목 | 사실 | 확인 위치 |
 |---|---|---|
-| SageSDI 규모 | 직접 작성 코드 12,348줄 (SQLite 소스 제외). 비UI 계층(core · infra · common) 2,687줄, ui 8,805줄, 루트 856줄 | `D:/Projects/SageSDI/SageSDI/app/` |
+| 규모 | 직접 작성 코드 12,348줄 (SQLite 소스 제외). 비UI 계층(core · infra · common) 2,687줄, ui 8,805줄, 루트 856줄 | `D:/Projects/SageSDI/SageSDI/app/` |
 | 실제 업무 | 핸들러 0개 — 배선 확인용 샘플 1개뿐 | `core/workflow/handlers/`, `docs/RELEASE_NOTES.md` v1.0 (2026-09-01) |
-| Windows 전용 API | 비UI 계층에서는 5개 파일 620줄에 집중 | `SageDialogHelper` · `SageFileUtils` · `SageAppSettingsService` · `SageUserService` · `SqlInitializer` |
-| 다이얼로그 템플릿 | `.rc`에 DIALOGEX 0개 — UI는 전부 코드로 생성 | `SageSDI.rc` |
+| 배포 | 배포본 없음 → 옛 DB · 설정과 호환할 필요 없음 | SageSDI `docs/DEBT_LOG.md` |
+| Windows 전용 API | 비UI 계층에서는 5개 파일 620줄에 집중. 이 중 `SageAppSettingsService` 전체와 `SageFileUtils` · `SageDialogHelper`의 대부분은 호출 0곳 (아래) | `SageDialogHelper` · `SageFileUtils` · `SageAppSettingsService` · `SageUserService` · `SqlInitializer` |
+| 리소스 (`.rc`) | **UTF-16LE 파일이다.** 업무 화면은 전부 코드로 만든다. 리소스에는 VS 마법사가 만든 정보 창 `IDD_ABOUTBOX` 1개(열 방법 없음), 숨겨진 메뉴, **숨겨졌지만 동작하는 단축키 테이블**, 쓰이지 않는 툴바 비트맵, 버전 정보 `2.0.0.1`(회사 · 제품명 `TODO`), 문자열 테이블 5개, TTF 폰트 6개가 있다 | `SageSDI.rc` (iconv로 변환해 확인, 2026-09-24) |
 | MFC Feature Pack | 미사용 (`CMFC*` 2건은 VS가 생성한 검색 핸들러 코드) | `ui/frame/SageSDIDoc.cpp:97` |
 | 프레임리스 | 메인 창은 네이티브 타이틀바. 프레임리스는 다이얼로그 3개뿐 — 고정 크기, 상단 40px 드래그, 닫기 버튼 | `ui/dialogs/SageFramelessDialog.cpp`, `SageDefine.h:112` |
 | 계층 위반 | README는 `ui → core ← infra`라고 하지만 core가 infra를 include한다. core에 Win32 `::MulDiv`와 픽셀 폭 계산이 있다 | `core/auth/SageUserService.h:5`, `core/workflow/SageWorkflowResultTable.cpp:49` |
@@ -23,10 +31,37 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 | 결과 표 | 패널이 행 · 보이는 행 · 검색어 · 필터 · 체크 상태를 직접 보관 | `ui/panels/SageResultTablePanel.h` |
 | SQLite 사용 | prepare · bind · step · finalize · `busy_timeout` · `last_insert_rowid` 등 기본 API뿐 | `infra/db/` |
 | 비밀번호 | 솔트 없는 단일 SHA-256 | `core/auth/SageUserService.cpp` `HashPassword` |
-| 로컬 Qt | `D:/Qt/6.11.2/msvc2022_64`. MSVC `-utf-8`은 Qt가 자동으로 붙인다. `qsqlite.dll` 설치됨 | `lib/cmake/Qt6/Qt6Targets.cmake:64`, `plugins/sqldrivers/` |
-| SageQt 현재 코드 | VS 템플릿 그대로 — C++17, `.ui` 파일, Qt5 호환 `qt.cmake`. 새 규칙과 어긋난다 | `SageQt/` |
 
-### 확정한 결정
+### MFC가 암묵적으로 하던 일 (2026-09-24)
+
+이관 계획에 반영했다. 각 행의 처리는 해당 주제 파일에 있다.
+
+| 항목 | 사실 | 주제 |
+|---|---|---|
+| 앱 시작 순서 | DB 준비 → 실패 시 종료 → 첫 실행이면 초기 관리자 비밀번호 1회 안내 → 창 표시 | T06 · T09 |
+| DB · 설정 위치 | 실행 파일 옆 폴더 (`GetModuleFileName` 기준, `data/estimate.db`) → macOS `.app` 안 · Windows `Program Files`에서 쓸 수 없다 | T04 |
+| 숨은 단축키 | 메뉴는 `SetMenu(NULL)`로 숨겼지만 `CFrameWnd`가 `IDR_MAINFRAME` 단축키를 로드한다. Ctrl+O · Ctrl+S가 MFC 문서 열기 · 저장 창을 띄운다 (의도하지 않은 동작) | T06 (옮기지 않음) |
+| 키보드 처리 | 다이얼로그 Enter · Tab, `SageEdit`의 Ctrl+A, 툴팁 중계, 검색창 Enter를 직접 구현 — Qt가 기본으로 한다 | T10 · T15 |
+| 파일 드롭 | View · 프레임 · 입력 패널 · 결과 표 패널이 드롭을 받고, View가 모아 입력 경로로 넘긴다 | T13 |
+| 진행률 | 실제 진행이 아니라 300ms마다 +3%, 최대 95%, 완료 시 100%인 시간 기반 표시 | T14 |
+| 폰트 이름 | `"Pretendard SemiBold"` · `"Gmarket Sans TTF Bold"` 같은 GDI식 패밀리 이름 → 다른 OS · 폰트 엔진에서 다르게 잡힐 수 있다. 크기는 0.1pt 단위 | T02 |
+| JSON 처리 | 문자열 검색식이라 중첩(`payload` · `error`)을 무시한다 → `QJsonDocument`로 옮길 때 값이 빌 수 있다 | T03 |
+| `PRAGMA foreign_keys` | 연결 단위 설정 → 작업마다 연결을 여는 구조에서는 매번 실행해야 한다 | T04 |
+| 실행 기록 | 메모리에만 보관 (앱을 끄면 사라짐) | T16 |
+| 죽은 코드 | `SageAppSettingsService`(pdftotext 설정) 호출 0곳. 호출 0곳 함수 8개: `RunProcessAndWait` · `QuoteArgument` · `BuildTempJsonPath` · `CombinePath` · `FolderExists` · `GetAppMainWindow` · `FormatAmountNumber` · `JsonSplitStringArray`. `ShowIFileOpenDialog` 외부 호출 0곳. 레지스트리 · MRU(`SetRegistryKey` · `LoadStdProfileSettings`) 사용 0곳. `SAGE_WORKFLOW_DELIVERY = 2`는 핸들러 없음 | 해당 주제에서 옮기지 않음 |
+
+### 로컬 · CI 환경
+
+| 항목 | 사실 | 확인 위치 |
+|---|---|---|
+| 로컬 Qt | `D:/Qt/6.11.2/msvc2022_64`. MSVC `-utf-8`은 Qt가 자동으로 붙인다. `qsqlite.dll` 설치됨 | `lib/cmake/Qt6/Qt6Targets.cmake:64`, `plugins/sqldrivers/` |
+| Qt 최소 CMake | 3.22 | `QT_SUPPORTED_MIN_CMAKE_VERSION_FOR_USING_QT` |
+| 로컬 도구 | VS 번들 CMake 4.3.1 · Ninja 1.13.2 · clang-format / clang-tidy 22.1.3. clazy 없음 | 2026-09-23 |
+| CI의 Qt 설치 | Qt 6.11부터 Windows 저장소가 컴파일러별 하위 폴더로 바뀌었고, aqtinstall 3.3.0(최신 릴리스)은 이를 모른다. main 커밋 `076e165`(PR #1000 포함)로 고정해 해결 | PR #7 |
+
+---
+
+## 결정 기록
 
 | 날짜 | 결정 | 근거 |
 |---|---|---|
@@ -39,106 +74,44 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 | 2026-09-23 | DB는 QtSql `QSQLITE` | SageSDI의 사용 범위를 전부 대체하고, 코딩 규칙에서 C API 예외가 사라진다 |
 | 2026-09-23 | 백그라운드 작업은 `QtConcurrent::run` + `QFutureWatcher` | 한 번 돌고 끝나는 작업에 Qt 공식 문서가 권장하는 조합 |
 | 2026-09-23 | 스킬은 SKILL.md 300줄 이하 + `references/`, 상황별 요약(작성 · 수정 · 삭제) | 코드를 건드릴 때마다 읽히는 분량을 줄이고, 삭제 규칙의 빈틈을 메운다 |
-| 2026-09-23 | 계층 타깃은 소스가 생길 때 만든다 — Step 0은 `sage_define` · `sage_ui` · 실행 파일만 | CMake는 소스 없는 정적 라이브러리를 허용하지 않고, 빈 껍데기 클래스는 CLAUDE.md 2에 어긋난다 |
+| 2026-09-23 | 계층 타깃은 소스가 생길 때 만든다 — 기반 단계는 `sage_define` · `sage_ui` · 실행 파일만 | CMake는 소스 없는 정적 라이브러리를 허용하지 않고, 빈 껍데기 클래스는 CLAUDE.md 2에 어긋난다 |
 | 2026-09-23 | 컴파일 경고 수준을 올리고(`/W4`, `-Wall -Wextra -Wpedantic`) CI에서만 경고를 에러로 처리 | 로컬 작업 흐름은 유지하면서 경고가 남은 코드의 머지를 막는다 |
 | 2026-09-23 | `SageQt.slnx`는 유지 — IDE 파일 금지 규칙의 예외 | 사용자 결정. Visual Studio 진입점이며 빌드 설정은 담지 않는다 |
+| 2026-09-24 | 계획을 주제 단위 구현 지시서로 관리한다 — `sageqt-plan` SKILL.md는 진행 중인 주제 목록, 주제마다 `references/Txx-*.md`, 끝난 주제는 `docs/plans/done/`으로 | 필요한 주제 파일 하나만 읽게 하고, SageSDI에서 옮길 사실이 세션이 바뀌어도 손상되지 않게 한다 |
+| 2026-09-24 | 이관은 SageSDI의 동작을 그대로 옮긴다. 동작을 바꾸는 개선(실제 진행률 · 비밀번호 정책 강화 등)은 별도 결정으로 | 이관과 개선을 섞으면 동작이 바뀐 원인을 가려낼 수 없다 (각 주제의 결정 대기 항목으로 확정) |
 
 ---
 
-## 진행 상황
+## 전역 리스크
 
-| Step | 내용 | 상태 |
-|---|---|---|
-| -1 | 규칙(스킬) · 목표 · 계획 문서 | 완료 ([#1](https://github.com/JakeKim4926/SageQt/pull/1)) |
-| 0 | 기반 — 템플릿 정리 · CMake 타깃 · 3-OS 프리셋 · CI · 정적 분석 | 진행 중 |
-| 1 | 측정 — 한글 폰트 메트릭 3-OS 비교 | 대기 |
-| 2 | 로직 이관 — `sage_core` · `sage_infra` · `sage_common` 타깃 생성, core · infra 이관 + 테스트 | 대기 |
-| 3 | UI 기반 — `sageqt-ui` 스킬 · `SageStyle` · 프레임리스 다이얼로그 | 대기 |
-| 4 | UI 이관 — 사이드바 → 헤더 → 결과 표 → 실행 기록 | 대기 |
-| 5 | 배포 — 서명 · 공증 · 패키징 | 대기 |
-
-### Step 간 의존
-
-```
--1 → 0     규칙이 먼저 정해져야 첫 코드(CMake · 템플릿 정리)가 규칙을 따른다
- 0 → 전부  3-OS CI가 있어야 "코드 동일"이 커밋마다 검증된다
- 1 → 3     폰트 메트릭 차이의 크기가 레이아웃과 디자인 값 설계를 좌우한다
- 2 → 4     UI는 core의 핸들러 · DTO를 소비한다
- 3 → 4     SageStyle과 디자인 값이 있어야 화면을 옮길 수 있다
- 4 → 5     배포할 앱이 있어야 한다
-```
-
-외부 준비물: Mac mini — Step 4 전까지 / Apple Developer Program — Step 5 전까지 / Windows 코드서명 인증서 — Step 5 전까지
-
----
-
-## 완료된 작업
-
-### Step -1 — 규칙 · 목표 · 계획 (2026-09-23, [#1](https://github.com/JakeKim4926/SageQt/pull/1))
-
-결과:
-- `CLAUDE.md`에 프로젝트 목표 3가지를 두었다. 매 세션 자동으로 읽히는 유일한 파일이다
-- 스킬 6종: `coding-rules` · `coding-design` · `code-review-expert`는 Qt 6 기준으로 재작성, `git-workflow` · `sageqt-plan` · `debt-log-guard`는 SageSDI에서 이식
-- SKILL.md는 모두 300줄 이하(최대 250줄)로 두고 세부 규칙은 `references/`로 분리했다. 상황별 요약(작성 · 수정 · 삭제)을 추가했고, 삭제 규칙은 SageSDI에 없던 것이다
-- `develop` 브랜치를 만들었다
-
-교훈:
-- **추측 대신 실측이 이전 판단 두 건을 뒤집었다.** "MSVC `/utf-8` 누락"은 틀렸고(Qt가 자동으로 붙인다), "`Q_OBJECT`는 필요할 때만"은 Qt 공식 권고와 반대였다. 로컬 설치본과 공식 문서로 확인하는 절차를 유지한다
-- **문서로만 있는 규칙은 지켜지지 않는다.** SageSDI는 계층 규칙이 README에 있었지만 core → infra include와 core 안의 Win32 호출이 있었다. Step 0의 CMake 타깃 격리가 이것을 빌드 단계에서 막는다
-- **규칙 재배치는 손으로 다시 쓰지 않는다.** 줄 범위 복사와 스냅샷 대조로 규칙 줄 1,308개의 누락 0을 확인했다
-
----
-
-## 미해결 리스크
+주제 하나에만 해당하는 위험은 그 주제 파일의 *함정*에 있다.
 
 | # | 내용 | 영향 | 대응 |
 |---|---|---|---|
-| 1 | macOS 실기가 없다 | Step 3~4의 화면 판정 불가 | Step 0~2는 CI macOS 러너, Step 4 전에 Mac mini |
-| 2 | 한글 폰트 메트릭의 OS 간 차이를 모른다 | SageSDI 고정 픽셀 규격을 얼마나 다시 해석할지 불명 | Step 1에서 측정 |
-| 3 | QStyle 작성 난도가 QSS보다 높다 | Step 3 기간 증가 | `sageqt-ui`에서 `SageStyle`이 재정의할 범위를 먼저 확정 |
-| 4 | 프레임리스 다이얼로그의 macOS · Wayland 동작 미검증 | 로그인 창 모양 · 이동 | Step 3에서 `startSystemMove` 검증 |
-| 5 | 비밀번호 해싱 방식 미정 (현재 솔트 없는 SHA-256) | 보안 | Step 2에서 결정해 `coding-rules`에 반영 |
-| 6 | `sagesdi-ui`(915줄) 미분석 | 디자인 값 · `SageStyle` 설계 근거가 없다 | Step 3 착수 전 분석 |
-| 7 | 정적 분석 도구 설정 전 | 규칙이 사람의 기억에 의존 | Step 0 |
-| 8 | 로컬 WSL은 Ubuntu 20.04 (GCC 9, C++20 부족) | 로컬 Linux 검증 불가 | Ubuntu 24.04 추가 설치 (승인 필요) |
-| 9 | 줄 끝 규칙이 PC의 `core.autocrlf`에 의존 (`.gitattributes` 없음) | OS마다 다른 줄 끝이 커밋될 수 있다 | Step 0에서 `.gitattributes`로 고정 |
+| 1 | macOS 실기가 없다 | T08 이후 macOS 화면 판정 불가 | T08 전에 Mac mini. 그 전에는 CI macOS 러너로 빌드 · 테스트 |
+| 2 | 한글 폰트 메트릭의 OS 간 차이를 모른다 | SageSDI 고정 픽셀 규격을 얼마나 다시 해석할지 불명 | T02에서 측정 |
+| 3 | QStyle 작성 난도가 QSS보다 높다 | UI 기반 단계 기간 증가 | T07에서 `SageStyle` 재정의 범위를 먼저 확정 |
+| 4 | 프레임리스 다이얼로그의 macOS · Wayland 동작 미검증 | 로그인 창 모양 · 이동 | T09에서 `startSystemMove` 검증 |
+| 5 | CI가 정식 릴리스가 아닌 aqtinstall 커밋을 쓴다 | 설치 도구의 검증 범위가 좁다 | T01에서 기술부채로 기록 (승인 대기). aqtinstall 3.4.0 이상이 나오면 되돌린다 |
+| 6 | 로컬 WSL은 Ubuntu 20.04 (GCC 9, C++20 부족) | 로컬 Linux 검증 불가 (CI에서는 됨) | Ubuntu 24.04 추가 설치 (승인 필요) |
 
 ---
 
-## Step 0 — 기반
+## 완료 이력
 
-- **브랜치**: 작업 성격마다 PR 하나 (`git-workflow`: 브랜치 하나 = 작업 하나)
-- **규칙 출처**: `coding-design/references/cmake-targets.md`, `coding-rules/references/format-and-tools.md`
+### 규칙 · 목표 · 계획 (2026-09-23, [#1](https://github.com/JakeKim4926/SageQt/pull/1) · [#2](https://github.com/JakeKim4926/SageQt/pull/2))
 
-착수 전 실측 (2026-09-23):
-- Qt 모듈 Core · Gui · Widgets · Sql · Concurrent · Test 모두 설치됨 (`D:/Qt/6.11.2/msvc2022_64/lib/cmake/`)
-- Qt 6.11이 요구하는 최소 CMake는 3.22 (`QT_SUPPORTED_MIN_CMAKE_VERSION_FOR_USING_QT`). 현재 `cmake_minimum_required`는 3.16
-- 로컬 도구: VS 번들 CMake 4.3.1 · Ninja 1.13.2 · clang-format / clang-tidy 22.1.3. clazy는 없음 → CI의 Linux job에서만 돌린다
+- `CLAUDE.md`에 프로젝트 목표 3가지. 스킬 6종 (Qt 6 기준 재작성 3종 · SageSDI에서 이식 3종), SKILL.md 300줄 이하 + `references/`, `develop` 브랜치
+- 교훈
+  - **추측 대신 실측이 이전 판단 두 건을 뒤집었다.** "MSVC `/utf-8` 누락"은 틀렸고, "`Q_OBJECT`는 필요할 때만"은 Qt 공식 권고와 반대였다
+  - **문서로만 있는 규칙은 지켜지지 않는다.** SageSDI의 계층 규칙 위반 두 건이 그 증거다 — CMake 타깃 격리가 빌드 단계에서 막는다
+  - **규칙 재배치는 손으로 다시 쓰지 않는다.** 줄 범위 복사와 스냅샷 대조로 규칙 줄 1,308개의 누락 0을 확인했다
 
-작업 순서:
-- [ ] 0-0 `docs/step0-plan` — Step 0 상세화, 결정 반영 (경고 규칙, `SageQt.slnx` 예외)
-- [ ] 0-1 `chore/gitattributes` — `.gitattributes`로 줄 끝 고정
-- [ ] 0-2 `refactor/cmake-layer-targets` — 템플릿 정리(`SageQt.ui` · `qt.cmake` · `SageQt.h/.cpp`), C++20, CMake 3.22, `sage_define` · `sage_ui` · 실행 파일, `SageMainWindow`, `main.cpp` 조립 지점
-- [ ] 0-3 `chore/cmake-presets-3os` — windows-x64 / macos-arm64 / linux-x64 × Debug · Release
-- [ ] 0-4 `chore/ci-3os-build` — GitHub Actions 3 OS × Debug · Release
-- [ ] 0-5 `chore/static-analysis` — clang-format · clang-tidy · clazy · 플랫폼 분기 검사 · CI에서 경고를 에러로
+### 기반 — 정적 분석 전까지 (2026-09-23, [#3](https://github.com/JakeKim4926/SageQt/pull/3) ~ [#7](https://github.com/JakeKim4926/SageQt/pull/7))
 
-완료 기준:
-- `develop`에서 CI 빌드 job 6개와 정적 분석 job이 모두 통과한다
-- 소스에 플랫폼 분기(`#ifdef Q_OS_*` 등)가 0건이다 — CI가 검사한다
-- clang-format · clang-tidy · clazy 위반이 0건이고, 일부러 넣은 위반은 CI가 실패시킨다
-- `git ls-files`에 `SageQt.ui` · `qt.cmake`가 없고, CMake 최소 버전 3.22 · C++20이다
-- Windows 로컬에서 앱이 실행된다
-
-범위 밖:
-- `sage_core` · `sage_infra` · `sage_common` 타깃 — 소스가 없는 정적 라이브러리는 CMake가 허용하지 않고, 빈 껍데기 클래스는 CLAUDE.md 2에 어긋난다. 첫 코드를 옮기는 Step 2에서 만들고 계층 강제도 그때 검증한다
-- `tests/`와 Qt Test 연결 — 테스트할 코드가 Step 2에 생긴다
-- macOS · Linux 실행 확인 — 실기가 없다 (리스크 #1). Step 0은 두 OS에서 빌드 성공까지만 확인한다
-- 배포 · 패키징 — Step 5
-
----
-
-## 검증 방법
-
-- 스킬을 고치면: SKILL.md 300줄 이하, 스킬 안의 파일 참조가 실제 파일을 가리키는지 확인하고, 이 계획을 재점검한다 (`sageqt-plan`)
-- Step 0 이후: 3-OS CI가 모두 통과하는 것이 모든 Step의 기본 조건이다
+- `.gitattributes`(추적 파일 33개 모두 LF), VS 템플릿 제거 · 계층 타깃 구조(`sage_define` · `sage_ui` · 실행 파일, C++20 · CMake 3.22), 세 OS 프리셋 6개, GitHub Actions 3 OS × Debug · Release — 6개 job 모두 Qt 6.11.2 · 경고 0
+- 남은 기반 작업(정적 분석 · 경고 에러화)은 T01
+- 교훈
+  - **격리는 음성 테스트로만 증명된다.** 링크하지 않은 계층의 헤더를 include하면 `C1083`으로 실패하는 것을 확인했다. 빌드 성공만으로는 증거가 되지 않는다
+  - **검증 도구 자체를 검증한다.** 배치 파일의 경로가 깨져 첫 음성 테스트가 무효였고, CI 조회가 이전 실행을 보고 있었다. 둘 다 다시 확인했다 (`sageqt-plan`의 *공통 함정*에 반영)
+  - **".rc에 다이얼로그 0개"라는 기록은 UTF-16 파일을 grep한 결과였다** — 2026-09-24 정정. 파일 인코딩을 먼저 확인한다
