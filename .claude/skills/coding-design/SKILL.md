@@ -132,7 +132,7 @@ main.cpp — 모든 계층을 조립한다
 6. 모양을 바꾸거나 커스텀 위젯을 그리면 → `references/style.md`
 7. 백그라운드 작업 · DB 접근 · 앱 공통 객체가 필요하면 → `references/threads-and-db.md`
 8. core · infra 클래스면 `tests/`의 같은 계층 경로에 테스트를 추가한다
-9. 업무(워크플로)를 추가하면 `core/workflow/handlers/`에 파일 1쌍 + 등록부 1곳이다. 그 밖에 고칠 곳이 생기면 확장점이 없다는 신호다 → `references/ui-composition.md`
+9. 업무(워크플로)를 추가하면 핸들러 파일 1쌍 · core 소스 목록 · 업무 식별자 · 등록부 1곳만 고친다. 그 밖에 고칠 곳이 생기면 확장점이 없다는 신호다 → `references/ui-composition.md` 완료 기준 D
 
 ### 구조를 수정할 때
 1. `target_link_libraries`를 바꿔야 할 것 같으면 **멈추고 승인을 받는다** — 배치가 잘못됐다는 신호다

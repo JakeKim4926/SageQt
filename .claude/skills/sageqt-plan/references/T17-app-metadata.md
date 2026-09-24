@@ -11,8 +11,7 @@
    - 읽을 reference: `coding-design/references/cmake-targets.md`
 3. 결정 대기 — 사용자에게 확정받는다
    - **제품 버전**: SageSDI는 `2.0.0.1` (`VERSIONINFO`). SageQt를 이어서 매길지, 새로 시작할지
-   - 회사명 · 제품명 · 저작권 문구: SageSDI는 `"TODO: <회사 이름>"` · `"TODO: <제품 이름>"`으로 비어 있다
-   - macOS 번들 식별자 (예: `com.<조직>.<앱>`) — T06의 조직 · 앱 이름과 맞춘다
+   - 회사명 · 제품명 · 저작권 문구 · macOS 번들 식별자는 T04에서 정한 앱 식별 정보를 따른다 (`MIGRATION_PLAN.md` 결정 기록)
 4. 재확인할 사실
    - Gmarket Sans의 배포 라이선스 조건과 고지 문구 (SageSDI에 라이선스 파일이 없다)
    - T02 · T08에서 실제로 저장소에 넣은 폰트 목록

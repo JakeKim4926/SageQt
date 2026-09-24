@@ -9,8 +9,7 @@ SageSDI `CSageSDIApp::InitInstance` · `ExitInstance`가 하던 앱 시작 · �
 1. 선행 주제: T05
 2. 스킬 로드: `git-workflow`, `coding-design`, `coding-rules`
    - 읽을 reference: `coding-design/references/threads-and-db.md` (전역 상태 · 종료 대기 · 스키마 준비 시점) · `cmake-targets.md`
-3. 결정 — 착수 시 사용자와 확정
-   - 조직 이름 · 앱 이름 (`QCoreApplication::setOrganizationName` · `setApplicationName`) — `QStandardPaths` 경로와 macOS 번들 식별에 쓰인다. 한 번 정하면 바꿀 때 사용자 데이터 위치가 바뀐다
+3. 결정 — 없음. 조직 이름 · 앱 이름은 T04에서 정한 앱 식별 정보를 따른다 (`MIGRATION_PLAN.md` 결정 기록)
 4. 재확인할 사실
    - T04에서 정한 DB 파일 이름과 경로
 

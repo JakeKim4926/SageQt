@@ -27,23 +27,23 @@ description: >
 
 ## 진행 중인 주제
 
-순서대로 진행한다. **선행 주제가 끝나지 않았으면 착수하지 않는다.** 결정 대기 항목은 착수 전에 사용자에게 확정받는다.
+표의 행 순서대로 진행한다 (ID 순서가 아니다). **선행 주제가 끝나지 않았으면 착수하지 않는다.** 결정 대기 항목은 착수 전에 사용자에게 확정받는다.
 
 | ID | 단계 | 주제 | 선행 | 결정 대기 | 상태 |
 |---|---|---|---|---|---|
 | [T01](references/T01-static-analysis.md) | 기반 | 정적 분석 · CI 경고 에러화 | — | 기술부채 기록 승인 | 대기 |
 | [T02](references/T02-font-metrics.md) | 측정 | 폰트 · 텍스트 메트릭 3-OS 측정 | T01 | — | 대기 |
 | [T03](references/T03-workflow-core.md) | 로직 | 워크플로 core 이관 · 테스트 기반 | T01 | 요청 ID 이름 | 대기 |
-| [T04](references/T04-db-infra.md) | 로직 | DB 기반 (QtSql) | T03 | DB 파일 이름 · 레거시 마이그레이션 생략 | 대기 |
+| [T04](references/T04-db-infra.md) | 로직 | DB 기반 (QtSql) | T03 | 앱 식별 정보 · 레거시 마이그레이션 생략 | 대기 |
 | [T05](references/T05-auth.md) | 로직 | 인증 · 사용자 | T04 | 비밀번호 해시 방식 · 비밀번호 정책 | 대기 |
 | [T06](references/T06-app-bootstrap.md) | 로직 | 앱 조립 (`main.cpp`) | T05 | — | 대기 |
 | [T07](references/T07-ui-skill.md) | UI 기반 | `sageqt-ui` 스킬 작성 | T02 | — | 대기 |
 | [T08](references/T08-style-foundation.md) | UI 기반 | `SageStyle` · 디자인 값 · 폰트 등록 | T06, T07 | — | 대기 |
 | [T09](references/T09-frameless-dialogs.md) | UI 기반 | 프레임리스 다이얼로그 · 메시지 상자 | T08 | — | 대기 |
-| [T10](references/T10-login-dialogs.md) | UI 기반 | 로그인 · 비밀번호 변경 | T09 | — | 대기 |
-| [T11](references/T11-sidebar.md) | UI 이관 | 사이드바 | T08 | — | 대기 |
-| [T12](references/T12-header.md) | UI 이관 | 헤더 | T10, T11 | — | 대기 |
-| [T13](references/T13-workspace-input.md) | UI 이관 | 작업 영역 탭 · 입력 패널 | T12 | — | 대기 |
+| [T11](references/T11-sidebar.md) | UI 이관 | 사이드바 | T09 | — | 대기 |
+| [T12](references/T12-header.md) | UI 이관 | 헤더 | T11 | — | 대기 |
+| [T10](references/T10-login-dialogs.md) | UI 이관 | 로그인 · 비밀번호 변경 · 헤더 · 사이드바 연결 | T12 | — | 대기 |
+| [T13](references/T13-workspace-input.md) | UI 이관 | 작업 영역 탭 · 입력 패널 | T10 | — | 대기 |
 | [T14](references/T14-workflow-run.md) | UI 이관 | 실행 흐름 · 진행 표시 | T13 | 진행률 방식 | 대기 |
 | [T15](references/T15-result-table.md) | UI 이관 | 결과 표 | T14 | — | 대기 |
 | [T16](references/T16-history-statusbar.md) | UI 이관 | 실행 기록 · 상태 표시줄 | T15 | — | 대기 |
@@ -89,6 +89,15 @@ description: >
 - [ ] 주제 파일에 적힌 이름 · 경로 · 시그니처가 새 규칙과 맞는가
 - [ ] 주제 파일이 가리키는 스킬 · reference 경로가 여전히 있는가
 - [ ] `DEBT_LOG` 항목이 가리키는 주제 ID가 여전히 맞는가
+
+---
+
+## 스킬 구조 원칙
+
+스킬을 새로 만들거나 고칠 때 따른다 (결정 기록 2026-09-23, `MIGRATION_PLAN.md`).
+- SKILL.md는 300줄 이하. 세부는 `references/`로 나누고, SKILL.md에서 언제 읽을지를 가리킨다
+- SKILL.md에 상황별 요약(작성 · 수정 · 삭제)을 둔다
+- 규칙은 한 스킬에만 둔다. 다른 스킬은 그 스킬을 가리킨다
 
 ---
 

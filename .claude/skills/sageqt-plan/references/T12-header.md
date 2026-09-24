@@ -6,7 +6,7 @@
 SageSDI의 헤더(업무 제목 · 분류 · 로그인 상태 · 로그인/로그아웃 버튼)를 옮긴다.
 
 ## 시작 전에
-1. 선행 주제: T10 (로그인 창), T11 (창 배치 시작)
+1. 선행 주제: T11 (창 배치 시작)
 2. 스킬 로드: `sageqt-ui`, `coding-design`, `coding-rules`, `git-workflow`
    - 읽을 reference: `coding-design/references/ui-composition.md` · `style.md` (배지 등 변형은 `Q_PROPERTY`), `coding-rules/references/api-shape.md`
 3. 결정 — 없음
@@ -26,7 +26,7 @@ SageSDI의 헤더(업무 제목 · 분류 · 로그인 상태 · 로그인/로�
 - 역할 배지: 관리자면 `SAGE_UI_ROLE_ADMIN`, 아니면 `SAGE_UI_ROLE_USER`. 색은 목록 헤더 배경 · 목록 헤더 테두리 · 주 색 (`SAGE_COLOR_LIST_HEADER` · `SAGE_COLOR_LIST_HEADER_BORDER` · `SAGE_COLOR_PRIMARY`) — 최종은 `sageqt-ui`
 
 **버튼 동작** (`:152-161`)
-- 로그인 → 로그인 창(T10) → 수락이면 인증 표시 갱신
+- 로그인 → 로그인 요청 signal. 로그인 창을 열고 수락 시 인증 표시를 갱신하는 연결은 T10
 - 로그아웃 → 세션 로그아웃 → 인증 표시 갱신
 
 **규격** — 높이 56 · 간격 12 · 제목 간격 10 · 분류 폭 80 · 헤더 폰트 113(11.3pt) · 로그인 버튼 폭 68 · 사용자 라벨 폭 150 (`SageDefine.h:153, 164-166, 173, 419-420`) — 최종은 `sageqt-ui`
@@ -47,14 +47,15 @@ PR 1개: `feature/header`
 - [ ] 헤더 패널 · 인증 표시 · 로그인/로그아웃
 - [ ] 세션 변경 signal과 구독 (사이드바 포함)
 - [ ] `SageMainWindow`에 배치
-- [ ] 세 OS 스크린샷 (로그인 전 · 후, 관리자 · 일반 사용자)
+- [ ] 세 OS 스크린샷 (로그인 전). 로그인 후 · 역할별 화면은 T10
 
 ## 완료 기준
 - 3-OS CI 통과
-- 로그인 전 · 후 표시가 위 규칙과 같다 (수동 확인)
+- 로그인 전 표시가 위 규칙과 같다 (수동 확인). 로그인 후 표시는 T10에서 확인한다
 - 헤더가 다른 패널의 메서드를 직접 부르는 곳이 0개다
 
 ## 범위 밖
+- 로그인 창 열기 · 로그인 후 표시 확인 — T10 (로그인 창이 T10에서 생긴다)
 - 사용자 관리 화면 — SageSDI에 있을 때만, 별도 주제로 (재확인 결과를 사용자에게 보고)
 
 ## 확인한 사실

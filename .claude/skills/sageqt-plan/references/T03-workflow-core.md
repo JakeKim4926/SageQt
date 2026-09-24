@@ -31,7 +31,7 @@ SageSDI의 워크플로 모델(핸들러 인터페이스 · 등록부 · 응답 
 | `RequiresLogin()` | 로그인 필요 여부 |
 | `GetRequestId(nTaskType)` · `RunTask(nTaskType, strPayloadJson)` · `BuildResultRows(nTaskType, strResponseJson, outRows)` | 실행과 결과 변환 |
 
-**추가할 것** — 사이드바를 등록부에서 만들기 위한 표시 정보(라벨 · 분류). SageSDI는 사이드바 항목을 `app/ui/panels/SageSidebarPanel.cpp`의 `BuildTree()`에 하드코딩했다. `coding-design` 규칙("업무 추가 = 핸들러 1쌍 + 등록부 1곳")을 지키려면 핸들러가 답해야 한다. `BuildTree()`의 현재 항목을 확인해서 필요한 필드를 정한다
+**추가할 것** — 사이드바를 등록부에서 만들기 위한 표시 정보(라벨 · 분류). SageSDI는 사이드바 항목을 `app/ui/panels/SageSidebarPanel.cpp`의 `BuildTree()`에 하드코딩했다. `coding-design` 규칙(업무 추가 시 고칠 곳 4곳 — `coding-design/references/ui-composition.md` 완료 기준 D)을 지키려면 핸들러가 답해야 한다. `BuildTree()`의 현재 항목을 확인해서 필요한 필드를 정한다
 
 **탭** — `app/core/workflow/SageWorkflowTab.h`: `{ nSemanticIndex, pszLabel }`. 의미 인덱스 상수 `SAGE_TAB_INDEX_INPUT = 0` · `SAGE_TAB_INDEX_DOCUMENT_RESULT = 1` · `SAGE_TAB_INDEX_DOCUMENT_HISTORY = 2` (`SageDefine.h:241-243`)
 
@@ -102,7 +102,7 @@ PR 1개: `feature/workflow-core` (테스트 기반이 크면 `chore/test-foundat
 - 결과 변환 테스트가 위 순서 · 값을 그대로 검증한다 (성공 · 실패 · 요약 각각)
 - `sage_core`의 링크 대상이 `Qt::Core`와 `sage_define`뿐이다
 - `core`에서 `<QWidget>` include 시 컴파일 에러 (음성 테스트 기록)
-- 업무 1종 추가에 필요한 변경이 핸들러 파일 1쌍 + 등록부 1곳이다 (사이드바 포함)
+- 샘플 업무가 `ui-composition.md` 완료 기준 D의 4곳에만 있다 — `git grep -il sample -- SageQt/`의 결과가 핸들러 파일 1쌍 · `SageQt/core/CMakeLists.txt` · `SageDefine.h` · 등록부뿐이다 (사이드바는 T11에서 확인)
 
 ## 범위 밖
 - 실행 흐름(백그라운드 · 진행률) — T14

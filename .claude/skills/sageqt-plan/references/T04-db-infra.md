@@ -10,7 +10,15 @@ SageSDI의 SQLite 연결 · 스키마 준비를 QtSql로 옮긴다. 이 주제�
 2. 스킬 로드: `git-workflow`, `coding-design`, `coding-rules`
    - 읽을 reference: `coding-design/references/cmake-targets.md` · `threads-and-db.md`, `coding-rules/references/ownership-and-threads.md` (RAII 예외) · `values-and-platform.md`
 3. 결정 대기 — 사용자에게 확정받는다
-   - **DB 파일 이름**: SageSDI는 `data/estimate.db` (`estimate`는 SageTaechang 견적 업무에서 온 이름). 권장 — 앱 이름에 맞춘 새 이름. 배포본이 없어 옛 이름과 호환할 필요가 없다
+   - **앱 식별 정보 (한 번에 정한다)**: 이름끼리 어긋나지 않도록 아래를 함께 정하고 `MIGRATION_PLAN.md` 결정 기록에 적는다. T06 · T11 · T17은 이 기록을 따른다. 조직 · 앱 이름은 `QStandardPaths` 경로를 정하므로, 나중에 바꾸면 사용자 데이터 위치가 바뀐다
+     | 항목 | 쓰는 곳 | SageSDI 값 |
+     |---|---|---|
+     | 조직 이름 · 앱 이름 | `QCoreApplication::setOrganizationName` · `setApplicationName` (T06) | 없음 |
+     | 표시 이름 | 사이드바 맨 위 앱 제목 (T11) | `SAGE_UI_APP_TITLE = L"SageSDI"` |
+     | DB 파일 이름 | 연결 설정 (이 주제) | `data/estimate.db` (`estimate`는 SageTaechang 견적 업무에서 온 이름) |
+     | macOS 번들 식별자 (예: `com.<조직>.<앱>`) | `Info.plist` (T17) | 없음 |
+     | 회사명 · 제품명 · 저작권 문구 | 버전 리소스 · `Info.plist` (T17) | `"TODO: <회사 이름>"` · `"TODO: <제품 이름>"` |
+     권장 — DB 파일 이름은 앱 이름에 맞춘 새 이름. 배포본이 없어 옛 이름과 호환할 필요가 없다
    - **레거시 마이그레이션 생략**: SageSDI의 `must_change_pw` 컬럼 추가(`ALTER TABLE`)는 그 컬럼이 없던 SageSDI DB를 위한 것이다. SageSDI 배포본이 없으므로(SageSDI `docs/DEBT_LOG.md`) 권장 — 처음부터 컬럼을 포함한 스키마로 만들고 마이그레이션 코드는 옮기지 않는다
 4. 재확인할 사실
    - QtSql SQLite 드라이버 접속 옵션 `QSQLITE_BUSY_TIMEOUT` (Qt 문서 SQL Database Drivers)

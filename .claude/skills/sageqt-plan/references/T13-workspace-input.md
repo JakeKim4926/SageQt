@@ -6,7 +6,7 @@
 SageSDI의 작업 영역(업무별 탭 · 업무 전환 시 상태 보존)과 입력 패널(입력 파일 · 저장 폴더 · 파일 드롭)을 옮긴다.
 
 ## 시작 전에
-1. 선행 주제: T12
+1. 선행 주제: T10 (인증 UI까지 연결된 창)
 2. 스킬 로드: `sageqt-ui`, `coding-design`, `coding-rules`, `git-workflow`
    - 읽을 reference: `coding-design/references/ui-composition.md` (탭은 패널 단위 · 한 위젯이 두 탭 역할 금지) · `style.md`, `coding-rules/references/values-and-platform.md` (`QFileDialog` · 경로 규칙) · `api-shape.md`
 3. 결정 — 착수 시 사용자와 확정
