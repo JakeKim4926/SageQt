@@ -16,7 +16,7 @@ description: >
   - 네이밍 / 타입 / 반환 규약 / 소유권 / 하드코딩 / 크로스 플랫폼: coding-rules
   - 폴더 배치 / 계층 의존 / CMake 타깃 / 클래스 분할 / 화면 구성: coding-design
   - 브랜치 / 커밋 / PR: git-workflow
-  - 현재 Step 범위 적합성: sageqt-plan
+  - 현재 주제 범위 적합성: sageqt-plan
   - 이번 범위 밖으로 남긴 위험: debt-log-guard
 ---
 
@@ -75,7 +75,7 @@ MFC, Win32 메시지, QML, 번역, 플러그인을 전제로 한 지적은 하�
 - `coding-rules` — 네이밍, 타입, 반환 규약, 소유권 규약, 하드코딩 금지, 크로스 플랫폼, 주석 금지, 포맷
 - `coding-design` — 폴더 배치, 계층 의존 방향, CMake 타깃, 클래스 분할, 창 비대화, 화면 구성, 스레드 구조
 - `git-workflow` — 브랜치 / 커밋 / PR 단위
-- `sageqt-plan` — 변경이 현재 Step 범위에 맞는가, 범위 밖 항목을 건드리지 않았는가
+- `sageqt-plan` — 변경이 진행 중인 주제의 범위에 맞는가, 주제 파일의 *범위 밖* 항목을 건드리지 않았는가
 - `debt-log-guard` — 남긴 위험 기록 여부
 
 리뷰 결과에는 "무엇이 문제인지"만이 아니라 "어떤 기준과 충돌하는지"까지 드러나야 한다.
