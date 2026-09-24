@@ -94,7 +94,7 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 | 2 | 한글 폰트 메트릭의 OS 간 차이를 모른다 | SageSDI 고정 픽셀 규격을 얼마나 다시 해석할지 불명 | T02에서 측정 |
 | 3 | QStyle 작성 난도가 QSS보다 높다 | UI 기반 단계 기간 증가 | T07에서 `SageStyle` 재정의 범위를 먼저 확정 |
 | 4 | 프레임리스 다이얼로그의 macOS · Wayland 동작 미검증 | 로그인 창 모양 · 이동 | T09에서 `startSystemMove` 검증 |
-| 5 | CI가 정식 릴리스가 아닌 aqtinstall 커밋을 쓴다 | 설치 도구의 검증 범위가 좁다 | T01에서 기술부채로 기록 (승인 대기). aqtinstall 3.4.0 이상이 나오면 되돌린다 |
+| 5 | CI가 정식 릴리스가 아닌 aqtinstall 커밋을 쓴다 | 설치 도구의 검증 범위가 좁다 | `docs/DEBT_LOG.md`에 기록 (T01). aqtinstall 3.4.0 이상이 나오면 되돌린다 |
 | 6 | 로컬 WSL은 Ubuntu 20.04 (GCC 9, C++20 부족) | 로컬 Linux 검증 불가 (CI에서는 됨) | Ubuntu 24.04 추가 설치 (승인 필요) |
 
 ---
