@@ -137,6 +137,9 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 | 2026-09-27 | **앱 식별 정보** — 조직 이름 `Sage`, 앱 이름 `SageQt`, 표시 이름 `SageQt`, DB 파일 이름 `sageqt.db`, macOS 번들 ID `com.sage.sageqt`, 회사명 `Sage` · 제품명 `SageQt` · 저작권 `Copyright © 2026 Sage` | T04에서 한 번에 정했다 (사용자 확정). 조직 · 앱 이름이 `QStandardPaths` 데이터 폴더를 정하므로 바꾸면 사용자 데이터 위치가 바뀐다. T06 · T11 · T17은 이 값을 쓴다 |
 | 2026-09-27 | SageSDI의 레거시 컬럼 마이그레이션(`must_change_pw` `ALTER TABLE`)을 옮기지 않는다 — 처음부터 그 컬럼을 포함한 스키마 | SageSDI 배포본이 없다 (사용자 확정) |
 | 2026-09-27 | 작업 브랜치는 PR 없이 `develop`에 반영한다 — 브랜치 push CI가 모두 통과하면 로컬에서 squash merge. PR은 요청할 때만. UI 스크린샷은 `docs/screenshots/<주제 ID>/` | 사용자 결정. 브랜치 push에도 CI가 돌게 해서(`chore/ci-guards`) PR 없이도 머지 전에 세 OS · 정적 분석을 확인한다 |
+| 2026-09-27 | 비밀번호 해시는 PBKDF2-HMAC-SHA256(`QPasswordDigestor`), 반복 600,000회, 사용자별 솔트 16바이트, 저장 형식 `pbkdf2-sha256$반복$솔트$해시`. `sage_infra`가 `Qt::Network`를 PRIVATE로 링크 | OWASP 권고치(2026-09-27 확인). Qt 제공 · 외부 의존 없음. 반복 횟수를 저장해 나중에 올릴 수 있다 (사용자 확정) |
+| 2026-09-27 | 비밀번호 정책은 SageSDI 그대로 — 4~15자, 영문 · 숫자만 | 이관은 동작을 그대로 옮긴다 (사용자 확정) |
+| 2026-09-27 | 인증은 앱이 실제로 쓰는 것만 옮긴다 — 로그인 · 비밀번호 변경 · 초기 관리자 생성 · 세션. `AddUser` · `LoadAll` · `RemoveUser` · `UpdateRole` · 아이디 검증은 옮기지 않는다 | SageSDI에서 호출 0곳 — 사용자 관리 화면이 없다 (사용자 확정) |
 
 ---
 

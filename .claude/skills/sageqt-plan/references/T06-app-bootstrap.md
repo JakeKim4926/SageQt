@@ -6,7 +6,7 @@
 SageSDI `CSageSDIApp::InitInstance` · `ExitInstance`가 하던 앱 시작 · 종료 흐름을 `main.cpp`(조립 지점)로 옮긴다. 이 주제가 끝나면 앱이 식별 정보를 갖고, 시작할 때 DB를 준비하고, 서비스를 조립해 창에 넘기고, 종료할 때 백그라운드 작업을 기다린다.
 
 ## 시작 전에
-1. 선행 주제: T05
+1. 선행 주제: 없음 (T05 완료 — 조립할 객체: `SageDbConfig::buildDefaultConfig` → `SageSchemaInitializer::prepare` → `SageUserRepository(config)` · `SagePbkdf2PasswordHasher()` → `SageUserService(repository, hasher)` → `ensureDefaultAdmin`(초기 비밀번호를 `std::optional`로 돌려준다) · `SageAuthSession`)
 2. 스킬 로드: `git-workflow`, `coding-design`, `coding-rules`
    - 읽을 reference: `coding-design/references/threads-and-db.md` (전역 상태 · 종료 대기 · 스키마 준비 시점) · `cmake-targets.md`
 3. 결정 — 없음. 조직 이름 · 앱 이름은 T04에서 정한 앱 식별 정보를 따른다 (`MIGRATION_PLAN.md` 결정 기록)

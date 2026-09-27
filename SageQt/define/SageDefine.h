@@ -20,6 +20,12 @@ enum class SageWorkflowTabKind
     DocumentHistory = 2
 };
 
+enum class SageUserRole
+{
+    User = 0,
+    Admin = 1
+};
+
 inline const QString SAGE_UI_MAIN_WINDOW_TITLE = QStringLiteral("SageQt");
 
 inline const QString SAGE_UI_COMPLETED = QStringLiteral("완료");
@@ -74,3 +80,17 @@ inline const QString SAGE_REQUEST_SAMPLE_RUN = QStringLiteral("sample-run");
 inline constexpr int SAGE_SAMPLE_TOTAL_FILES = 1;
 inline constexpr int SAGE_SAMPLE_PASSED_FILES = 1;
 inline constexpr int SAGE_SAMPLE_FAILED_FILES = 0;
+
+inline constexpr int SAGE_USER_PW_MIN_LEN = 4;
+inline constexpr int SAGE_USER_PW_MAX_LEN = 15;
+inline const QString SAGE_USER_PW_ALLOWED_CHARACTERS =
+    QStringLiteral("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+inline const QString SAGE_UI_PW_EMPTY = QStringLiteral("비밀번호를 입력하세요.");
+inline const QString SAGE_UI_CHANGE_PW_TOO_SHORT = QStringLiteral("비밀번호는 4자 이상이어야 합니다.");
+inline const QString SAGE_UI_CHANGE_PW_TOO_LONG = QStringLiteral("비밀번호는 15자 이하이어야 합니다.");
+inline const QString SAGE_UI_CHANGE_PW_INVALID_CHAR = QStringLiteral("비밀번호는 영문과 숫자만 사용할 수 있습니다.");
+
+inline const QString SAGE_DEFAULT_ADMIN_ID = QStringLiteral("admin");
+inline constexpr int SAGE_INITIAL_PW_LENGTH = 14;
+inline const QString SAGE_INITIAL_PW_ALPHABET =
+    QStringLiteral("ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789");

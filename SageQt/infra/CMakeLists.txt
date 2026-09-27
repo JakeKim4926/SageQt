@@ -1,4 +1,7 @@
 qt_add_library(sage_infra STATIC
+    infra/auth/SagePasswordHashDefine.h
+    infra/auth/SagePbkdf2PasswordHasher.cpp
+    infra/auth/SagePbkdf2PasswordHasher.h
     infra/db/SageDbConfig.cpp
     infra/db/SageDbConfig.h
     infra/db/SageDbConnection.cpp
@@ -6,6 +9,8 @@ qt_add_library(sage_infra STATIC
     infra/db/SageDbDefine.h
     infra/db/SageSchemaInitializer.cpp
     infra/db/SageSchemaInitializer.h
+    infra/db/SageUserRepository.cpp
+    infra/db/SageUserRepository.h
 )
 
 target_include_directories(sage_infra
@@ -19,5 +24,6 @@ target_link_libraries(sage_infra
         sage_core
         sage_define
     PRIVATE
+        Qt::Network
         Qt::Sql
 )

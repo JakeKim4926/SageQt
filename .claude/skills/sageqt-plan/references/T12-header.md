@@ -11,7 +11,7 @@ SageSDI의 헤더(업무 제목 · 분류 · 로그인 상태 · 로그인/로�
    - 읽을 reference: `coding-design/references/ui-composition.md` · `style.md` (배지 등 변형은 `Q_PROPERTY`), `coding-rules/references/api-shape.md`
 3. 결정 — 없음
 4. 재확인할 사실
-   - SageSDI에 사용자 관리 화면(사용자 추가 · 삭제 · 역할 변경)이 있는지 — `SageUserService`에 `AddUser` · `LoadAll` · `RemoveUser`가 있고 저장소에 역할 변경 SQL이 있다. 화면이 없으면 이관 범위에 넣지 않는다 (사용자에게 보고)
+   - 사용자 관리 화면은 **없다** — `AddUser` · `LoadAll` · `RemoveUser` · `UpdateRole`의 호출이 0곳이다 (T05에서 확인, 결정 기록). 이 기능은 옮기지 않았다
    - `SetCategory`의 값은 사이드바에서 선택한 업무 항목의 부모 그룹 라벨이다 (`SageSidebarPanel.cpp:75-84` `GetSelectedCategory`, T03에서 확인) → 핸들러의 `category()`를 쓴다
 
 ## SageSDI에서 옮길 것
@@ -56,7 +56,7 @@ PR 1개: `feature/header`
 
 ## 범위 밖
 - 로그인 창 열기 · 로그인 후 표시 확인 — T10 (로그인 창이 T10에서 생긴다)
-- 사용자 관리 화면 — SageSDI에 있을 때만, 별도 주제로 (재확인 결과를 사용자에게 보고)
+- 사용자 관리 화면 — SageSDI에 없다 (T05). 필요하면 별도 주제로
 
 ## 확인한 사실
 (진행 중 기록)

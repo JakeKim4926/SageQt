@@ -1,4 +1,11 @@
 qt_add_library(sage_core STATIC
+    core/auth/ISagePasswordHasher.h
+    core/auth/ISageUserRepository.h
+    core/auth/SageAuthSession.cpp
+    core/auth/SageAuthSession.h
+    core/auth/SageUserDto.h
+    core/auth/SageUserService.cpp
+    core/auth/SageUserService.h
     core/workflow/ISageWorkflowHandler.h
     core/workflow/SageResultRow.h
     core/workflow/SageWorkflowRegistry.cpp

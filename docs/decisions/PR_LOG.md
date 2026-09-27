@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-27] feature/auth
+- **목적**: SageSDI의 로그인 · 비밀번호 변경 · 초기 관리자 생성 · 세션을 옮긴다 (sageqt-plan T05)
+- **변경 내용**: core `auth/` — `SageUserDto` · `SageUserRole` · `ISageUserRepository` · `ISagePasswordHasher` · `SageUserService` · `SageAuthSession`. infra — `SagePbkdf2PasswordHasher`(PBKDF2-HMAC-SHA256 600,000회, `Qt::Network` PRIVATE) · `SageUserRepository`(SageSDI 원문 SQL 4개). 테스트 5개. 결정 3건(해시 · 정책 · 범위), T10 · T12 반영, T05 완료 처리
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-09-27)
+
 ## [2026-09-27] docs/workflow-direct-merge
 - **목적**: PR 없이 CI 통과 후 `develop`에 반영하는 실제 방식을 `git-workflow` 규칙으로 만든다
 - **변경 내용**: `git-workflow` SKILL.md · `pr-and-release.md`에 develop 반영 절차 · 체크리스트 · 보호 원칙. UI 스크린샷 위치 `docs/screenshots/<주제 ID>/`(coding-design · T08 · T10). 리뷰 스킬 문구. 결정 기록 1건. DEBT 1건(Windows CI Qt 새 설치 간헐 실패)

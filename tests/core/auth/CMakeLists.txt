@@ -1,0 +1,7 @@
+qt_add_executable(SageAuthSessionTest SageAuthSessionTest.cpp)
+target_link_libraries(SageAuthSessionTest PRIVATE sage_core Qt::Test)
+add_test(NAME SageAuthSessionTest COMMAND SageAuthSessionTest)
+
+qt_add_executable(SageUserServiceTest SageUserServiceTest.cpp)
+target_link_libraries(SageUserServiceTest PRIVATE sage_core Qt::Test)
+add_test(NAME SageUserServiceTest COMMAND SageUserServiceTest)

@@ -1,0 +1,7 @@
+qt_add_executable(SagePbkdf2PasswordHasherTest SagePbkdf2PasswordHasherTest.cpp)
+target_link_libraries(SagePbkdf2PasswordHasherTest PRIVATE sage_infra Qt::Test)
+add_test(NAME SagePbkdf2PasswordHasherTest COMMAND SagePbkdf2PasswordHasherTest)
+
+qt_add_executable(SageAuthIntegrationTest SageAuthIntegrationTest.cpp)
+target_link_libraries(SageAuthIntegrationTest PRIVATE sage_infra Qt::Sql Qt::Test)
+add_test(NAME SageAuthIntegrationTest COMMAND SageAuthIntegrationTest)

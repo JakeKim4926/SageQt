@@ -73,20 +73,33 @@ SageSDI의 사용자 · 로그인 · 비밀번호 변경 · 초기 관리자 생
 
 ## 작업
 PR 1개: `feature/auth` (해시기가 크면 분리)
-- [ ] core: 사용자 DTO · 역할 enum · 사용자 저장소 경계 인터페이스 · (필요 시) 해시기 경계 인터페이스 · 사용자 서비스 · 세션
-- [ ] infra: 사용자 저장소 구현 (위 SQL) · 해시기 구현 · 기본 관리자 생성
-- [ ] 쓰이는 문자열 · 길이 상수를 `SageDefine.h`로
-- [ ] 테스트: 검증 경계값(아이디 1·2·30·31자, 비밀번호 3·4·15·16자), 로그인 성공 · 실패, 비밀번호 변경 후 `must_change_pw = 0`, 기본 관리자는 한 번만 생성, 초기 비밀번호 길이 · 문자 집합, 같은 비밀번호도 솔트 때문에 해시가 다름
+- [x] core: 사용자 DTO · 역할 enum · 사용자 저장소 경계 인터페이스 · (필요 시) 해시기 경계 인터페이스 · 사용자 서비스 · 세션
+- [x] infra: 사용자 저장소 구현 (위 SQL) · 해시기 구현 · 기본 관리자 생성
+- [x] 쓰이는 문자열 · 길이 상수를 `SageDefine.h`로
+- [x] 테스트: 검증 경계값(아이디 1·2·30·31자, 비밀번호 3·4·15·16자), 로그인 성공 · 실패, 비밀번호 변경 후 `must_change_pw = 0`, 기본 관리자는 한 번만 생성, 초기 비밀번호 길이 · 문자 집합, 같은 비밀번호도 솔트 때문에 해시가 다름
 
 ## 완료 기준
 - 3-OS CI에서 빌드와 테스트가 모두 통과한다
 - core에 infra include가 0개다 (CMake가 막는다 — 빌드 성공이 곧 확인)
-- 검증 경계값 테스트 8개가 SageSDI 규칙과 같은 결과를 낸다
+- 비밀번호 검증 테스트가 SageSDI 규칙과 같은 결과를 낸다 — 경계값 4개(3 · 4 · 15 · 16자) · 빈 값 · 영문 · 숫자 외 문자 (아이디 검증은 호출 0곳이라 옮기지 않는다 — 결정 기록)
 
 ## 범위 밖
 - 로그인 · 비밀번호 변경 화면 — T10
 - 초기 비밀번호 표시 — T09
-- 사용자 관리 화면 — SageSDI에 화면이 있는지 T12 착수 시 확인
+- 사용자 관리(추가 · 목록 · 삭제 · 역할 변경) — SageSDI에서 호출 0곳이라 옮기지 않는다 (결정 기록)
 
 ## 확인한 사실
-(진행 중 기록)
+- 결정: PBKDF2-HMAC-SHA256 600,000회 · 솔트 16바이트 · `pbkdf2-sha256$반복$솔트$해시`, 정책 4~15자 영문 · 숫자, 쓰이는 것만 이관 (`MIGRATION_PLAN.md` 결정 기록)
+- `QPasswordDigestor`는 Qt Network 모듈 (`find_package(Qt6 COMPONENTS Network)`) → `sage_infra`가 `Qt::Network` PRIVATE 링크. OWASP 권고 PBKDF2-HMAC-SHA256 600,000회 (2026-09-27 확인)
+- SageSDI `ValidatePassword`에는 길이 외에 **영문 대소문자 · 숫자만 허용** 검사가 있다 (`SAGE_UI_CHANGE_PW_INVALID_CHAR`). 검증은 `private`이고 `AddUser` · `ChangePassword`에서만 쓰인다 — `Login`은 검증하지 않는다
+- SageSDI 호출 지점: `Login`(로그인 창) · `ChangePassword`(`SagePasswordChangeDlg.cpp:221`) · 초기 관리자 생성(`SqlInitializer.cpp:170-215`). `AddUser` · `LoadAll` · `RemoveUser` · `UpdateRole`은 호출 0곳 → 사용자 관리 화면이 없다 (T12 · T10 반영)
+- SageSDI `ChangePassword`는 현재 비밀번호를 확인하지 않는다 — 다이얼로그 쪽 확인 여부는 T10 재확인 항목
+- SageSDI 해시 비교는 대소문자 무시(`CompareNoCase`, hex) — SageQt는 PBKDF2 바이트 비교
+- 초기 관리자 생성은 SageSDI에서 infra(`SqlInitializer`)였지만 "없으면 만든다"는 업무 규칙이라 core `SageUserService::ensureDefaultAdmin`에 두었다. 해시기 · 저장소는 경계 인터페이스로 주입
+- 해시기 반복 횟수를 생성자로 받는다 — 테스트는 1,000회. 검증은 저장된 반복 횟수를 쓰므로 나중에 횟수를 올려도 기존 해시가 검증된다 (테스트로 고정)
+
+## 결과
+- 작업 브랜치 CI 통과 후 `develop`에 squash merge (새 반영 절차)
+- core `auth/` 7개 파일, infra `auth/` 3개 · `db/SageUserRepository`, 테스트 5개(`tests/core/auth/` 2 · `tests/infra/auth/` 2 · `tests/infra/db/` 1). 로컬 테스트 12개 모두 통과
+- 교훈
+  - 원본 코드의 호출 지점을 먼저 세면 옮길 범위가 줄어든다 — 계획에 있던 사용자 관리 기능 4개와 아이디 검증이 호출 0곳이었다

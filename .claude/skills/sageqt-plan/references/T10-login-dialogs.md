@@ -11,7 +11,8 @@ SageSDI의 로그인 다이얼로그와 비밀번호 변경 다이얼로그, 그
    - 읽을 reference: `coding-design/references/ui-composition.md` · `threads-and-db.md` (UI 스레드에서 DB 작업 금지), `coding-rules/references/ownership-and-threads.md` · `api-shape.md`
 3. 결정 — 없음
 4. 재확인할 사실
-   - `SagePasswordChangeDlg.cpp`의 검증 순서와 메시지 (현재 비밀번호 확인 여부, 새 비밀번호 · 확인 불일치 처리)
+   - `SagePasswordChangeDlg.cpp`의 검증 순서와 메시지 (현재 비밀번호 확인 여부, 새 비밀번호 · 확인 불일치 처리). T05 서비스의 `changePassword`는 현재 비밀번호를 확인하지 않는다 (SageSDI와 같음) — 확인이 필요하면 `login(아이디, 현재 비밀번호)`로 할지 착수 시 원문을 보고 정한다
+   - 로그인 · 비밀번호 변경은 PBKDF2 600,000회 해시를 계산한다 — 시간이 걸리므로 반드시 UI 스레드 밖에서 부른다 (소요 시간은 T05에서 재지 않았다)
    - 인라인 오류(`SageInlineError`)와 입력칸 오류 상태(`SAGE_EDIT_*`)의 표시 규격 — `sageqt-ui`
 
 ## SageSDI에서 옮길 것
@@ -68,7 +69,7 @@ PR 1~2개: `feature/login-dialog`, `feature/password-change-dialog`
 - 헤더의 로그인 버튼으로 연 창에서 위 9단계를 모두 수동 확인했다 (확인 표를 주제 파일 *결과* 절에 적는다)
 - 초기 관리자로 처음 로그인하면 변경이 강제되고, 취소하면 로그인 상태가 아니다
 - 로그인 중 UI가 멈추지 않는다 (서비스 호출이 UI 스레드 밖)
-- 로그인 후 · 로그아웃 후 헤더 표시가 T12의 인증 표시 규칙과 같다 (관리자 · 일반 사용자 — 일반 사용자 계정을 만드는 방법은 T12의 사용자 관리 화면 재확인 결과를 따른다)
+- 로그인 후 · 로그아웃 후 헤더 표시가 T12의 인증 표시 규칙과 같다 (관리자 · 일반 사용자 — 사용자 관리 화면이 없으므로(T05) 일반 사용자는 개발용 DB에 직접 넣은 계정으로 확인한다)
 - 로그인한 상태에서 사이드바의 비밀번호 변경을 누르면 비밀번호 변경 창이 뜨고, 이전 업무 선택으로 되돌아간다 (T11 선택 처리 3단계)
 
 ## 범위 밖
