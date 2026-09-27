@@ -116,7 +116,7 @@ jobs:
       - name: Configure
         env:
           QTDIR: ${{ env.QT_ROOT_DIR }}
-        run: cmake --preset linux-x64-debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        run: cmake --preset linux-x64-debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DSAGE_BUILD_TOOLS=ON
 
       - name: Build
         run: cmake --build --preset linux-x64-debug
