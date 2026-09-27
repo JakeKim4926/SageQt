@@ -35,7 +35,7 @@ bool SageFontProbe::registerFonts(const QString& fontDirectory, QJsonArray& outR
 {
     const QDir directory(fontDirectory);
     for (const QString& fileName : SAGE_FONT_PROBE_FONT_FILES) {
-        const int fontId = QFontDatabase::addApplicationFont(directory.filePath(fileName));
+        const int fontId = QFontDatabase::addApplicationFont(directory.absoluteFilePath(fileName));
         if (fontId == SAGE_FONT_PROBE_INVALID_FONT_ID) {
             outError = SAGE_FONT_PROBE_ERROR_REGISTER.arg(fileName);
             return false;
