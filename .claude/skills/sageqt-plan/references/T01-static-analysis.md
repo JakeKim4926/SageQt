@@ -50,13 +50,13 @@ PR 1개: `chore/static-analysis`
 - [ ] `build.yml`에 정적 분석 job 추가 (ubuntu-24.04): Qt 설치(기존 고정 action · aqtinstall 그대로) → configure(`linux-x64-debug` + compile commands) → clang-format 검사 → clang-tidy → clazy → 플랫폼 분기 검사
 - [ ] 플랫폼 분기 검사: 소스에 `Q_OS_` · `_WIN32` · `__APPLE__` · `__linux__` · `<windows.h>`가 있으면 실패
 - [ ] 빌드 job 6개의 configure에 경고 에러화 추가
-- [ ] **음성 테스트**: 같은 PR에서 위반을 일부러 넣은 커밋 4개(포맷 · 네이밍 · 플랫폼 분기 · 컴파일 경고)로 해당 job이 실패하는지 확인하고, 각각 되돌린다. 실행 링크를 PR 본문에 남긴다
+- [ ] **위반 검출 테스트**: 같은 PR에서 위반을 일부러 넣은 커밋 4개(포맷 · 네이밍 · 플랫폼 분기 · 컴파일 경고)로 해당 job이 실패하는지 확인하고, 각각 되돌린다. 실행 링크를 PR 본문에 남긴다
 - [ ] (승인 시) `docs/DEBT_LOG.md` 신설 + aqtinstall 항목 — 별도 `docs:` 커밋
 - [ ] 도구로 검사할 수 없는 규칙이 있으면 `format-and-tools.md`에 명시 — 별도 `docs:` 커밋, `sageqt-plan` 재점검
 
 ## 완료 기준
 - `develop`에서 빌드 job 6개와 정적 분석 job이 모두 통과한다
-- 음성 테스트 4개가 각각 해당 job을 실패시켰다 (실행 링크 4개)
+- 위반 검출 테스트 4개가 각각 해당 job을 실패시켰다 (실행 링크 4개)
 - 현재 소스에 clang-format을 돌린 결과 변경 0줄
 - 로컬과 CI의 clang-format 주 버전이 같다
 

@@ -95,13 +95,13 @@ PR 1개: `feature/workflow-core` (테스트 기반이 크면 `chore/test-foundat
 - [ ] 사이드바 표시 정보를 인터페이스에 추가 (`BuildTree()` 확인 후)
 - [ ] 쓰이는 문자열 상수를 `SageDefine.h`로 옮김 (쓰이지 않는 것은 옮기지 않는다)
 - [ ] 테스트: 결과 변환(성공 · 실패 · 요약 행 순서와 값), 샘플 핸들러 응답, 등록부 조회, JSON 중첩 읽기
-- [ ] 음성 테스트: `core`에서 `<QWidget>`을 include하면 컴파일 에러가 나는지 확인하고 되돌린다
+- [ ] 위반 검출 테스트: `core`에서 `<QWidget>`을 include하면 컴파일 에러가 나는지 확인하고 되돌린다
 
 ## 완료 기준
 - 3-OS CI에서 빌드와 테스트가 모두 통과한다
 - 결과 변환 테스트가 위 순서 · 값을 그대로 검증한다 (성공 · 실패 · 요약 각각)
 - `sage_core`의 링크 대상이 `Qt::Core`와 `sage_define`뿐이다
-- `core`에서 `<QWidget>` include 시 컴파일 에러 (음성 테스트 기록)
+- `core`에서 `<QWidget>` include 시 컴파일 에러 (위반 검출 테스트 기록)
 - 샘플 업무가 `ui-composition.md` 완료 기준 D의 4곳에만 있다 — `git grep -il sample -- SageQt/`의 결과가 핸들러 파일 1쌍 · `SageQt/core/CMakeLists.txt` · `SageDefine.h` · 등록부뿐이다 (사이드바는 T11에서 확인)
 
 ## 범위 밖
