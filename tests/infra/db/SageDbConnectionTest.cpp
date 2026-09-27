@@ -11,7 +11,7 @@
 #include <QString>
 #include <QTemporaryDir>
 #include <QTest>
-#include <QtConcurrent>
+#include <QtConcurrentRun>
 
 #include <utility>
 
