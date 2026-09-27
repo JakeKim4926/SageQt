@@ -31,9 +31,8 @@ description: >
 
 | ID | 단계 | 주제 | 선행 | 결정 대기 | 상태 |
 |---|---|---|---|---|---|
-| [T06](references/T06-app-bootstrap.md) | 로직 | 앱 조립 (`main.cpp`) | — | — | 대기 |
 | [T07](references/T07-ui-skill.md) | UI 기반 | `sageqt-ui` 스킬 작성 | — | — | 대기 |
-| [T08](references/T08-style-foundation.md) | UI 기반 | `SageStyle` · 디자인 값 · 폰트 등록 | T06, T07 | — | 대기 |
+| [T08](references/T08-style-foundation.md) | UI 기반 | `SageStyle` · 디자인 값 · 폰트 등록 | T07 | — | 대기 |
 | [T09](references/T09-frameless-dialogs.md) | UI 기반 | 프레임리스 다이얼로그 · 메시지 상자 | T08 | — | 대기 |
 | [T11](references/T11-sidebar.md) | UI 이관 | 사이드바 | T09 | — | 대기 |
 | [T12](references/T12-header.md) | UI 이관 | 헤더 | T11 | — | 대기 |

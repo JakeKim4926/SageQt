@@ -44,11 +44,11 @@ SageSDI `CSageSDIApp::InitInstance` · `ExitInstance`가 하던 앱 시작 · �
 
 ## 작업
 PR 1개: `feature/app-bootstrap`
-- [ ] 식별 정보 설정
-- [ ] 연결 설정(경로) → 저장소 → 서비스 → 세션 조립, `SageMainWindow`에 주입할 수 있는 형태로
-- [ ] 시작 시 스키마 준비 + 기본 관리자 생성, 실패 시 종료 코드
-- [ ] 종료 시 백그라운드 작업 대기
-- [ ] Windows 로컬: 실행 → DB 파일이 `QStandardPaths` 경로에 생기는지 확인
+- [x] 식별 정보 설정
+- [x] 연결 설정(경로) → 저장소 → 서비스 → 세션 조립, `SageMainWindow`에 주입할 수 있는 형태로
+- [x] 시작 시 스키마 준비 + 기본 관리자 생성, 실패 시 종료 코드
+- [x] 종료 시 백그라운드 작업 대기
+- [x] Windows 로컬: 실행 → DB 파일이 `QStandardPaths` 경로에 생기는지 확인
 
 ## 완료 기준
 - 3-OS CI에서 빌드와 테스트가 모두 통과한다
@@ -61,4 +61,17 @@ PR 1개: `feature/app-bootstrap`
 - 폰트 · 스타일 적용 — T08
 
 ## 확인한 사실
-(진행 중 기록)
+- SageSDI `SageSDI.cpp`의 줄 번호가 이 파일과 같다 (`:65 · 74-75 · 77-85 · 93-95 · 98-106 · 110-115 · 119-125`)
+- 결정: 로그 규칙(계층별 `QLoggingCategory` + `qC*`, 로그 파일 없음, 비밀번호 금지 — `coding-rules/references/api-shape.md`). 창 생성자는 이번에 바꾸지 않는다 — 서비스를 처음 쓰는 주제(T10 · T11)에서 인자를 추가한다. 실패 확인은 코드 옵션 없이 수동으로 흉내 낸다
+- Windows 로컬 실행: DB가 `C:\Users\USER\AppData\Roaming\Sage\SageQt\sageqt.db`(16,384바이트)에 생긴다. 창을 닫으면 종료 코드 0
+- **첫 실행은 초기 관리자 해시(PBKDF2 600,000회)를 창 표시 전에 메인 스레드에서 계산한다** — 창이 뜨기까지 Debug 7.05초 / Release 1.52초, 두 번째 실행부터 Debug 0.41초 / Release 0.31초 (로컬 Windows 10). 첫 실행 1회뿐이고 SageSDI도 DB 준비를 창 전에 했으므로 그대로 둔다. 로그인 한 번도 같은 해시를 계산하므로 T10은 반드시 UI 스레드 밖에서 부른다
+- 실패 흉내: `%APPDATA%\Sage\SageQt` 자리에 같은 이름의 파일을 두고 실행 → 스스로 종료, 종료 코드 1. 되돌린 뒤 DB 정상
+- `WIN32_EXECUTABLE` 앱이라 `qCCritical` 출력은 콘솔에 보이지 않는다 (Qt 기본 처리기 → 디버거 출력). 사용자에게 보이는 오류 표시는 T09
+- 전역 · 싱글턴 객체 0개 (`grep`). `Q_STATIC_LOGGING_CATEGORY`는 로그 규칙이 허용하는 파일 범위 함수다
+
+## 결과
+- 작업 브랜치 CI 통과 후 `develop`에 squash merge
+- `main.cpp`: 식별 정보 → DB 설정 · 스키마 준비 → 저장소 · 해시기 · 서비스 → 초기 관리자 확인 → 세션 → 창 → 이벤트 루프 → `QThreadPool` 대기. `SageDefine.h`에 식별 정보 · 로그 카테고리 이름. 로그 규칙 추가
+- 교훈
+  - 보안 설정(해시 600,000회)은 시작 시간 같은 다른 동작에도 비용을 준다 — 실행해서 재야 보인다
+  - 여러 단계를 한 번에 돌릴 때 앞 단계가 실패하면 멈추게 묶는다 — 마무리 스크립트가 실패했는데 파일 이동 커밋만 push됐다

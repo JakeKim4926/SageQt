@@ -32,7 +32,7 @@ SageSDI의 프레임리스 다이얼로그 기반과 메시지 상자를 옮기�
 - 규격: 폭 360, 본문 최대 높이 200, 아이콘 22 · 반지름 10 · 아이콘-본문 간격 12 (`SageDefine.h:119-130`의 `SAGE_MSGBOX_*` 전체)
 - 앱 전체 호출: 오류(`MB_ICONERROR`) 2곳, 경고(`MB_ICONWARNING`) 5곳, 정보(`MB_ICONINFORMATION`) 1곳 (2026-09-23)
 
-**시작 시 안내** (T06에서 연결 대기)
+**시작 시 안내** (T06에서 연결 대기) — `main.cpp`는 실패 시 `sage.app` 로그를 남기고 `EXIT_FAILURE`, 초기 관리자 비밀번호는 `std::optional<QString> initialAdminPassword`에 받아 둔다. 메시지 상자는 이 두 지점에 연결한다
 - DB 준비 실패 시 오류 메시지 → 종료 (`SageSDI.cpp:93-95`)
 - 초기 관리자 비밀번호를 `SAGE_UI_INITIAL_ADMIN_PW_FORMAT`으로 한 번 안내 (`SageSDI.cpp:98-106`, `SageDefine.h:465`)
 

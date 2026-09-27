@@ -29,6 +29,9 @@ set_target_properties(SageQt
 
 target_link_libraries(SageQt
     PRIVATE
+        sage_core
+        sage_define
+        sage_infra
         sage_ui
         Qt::Widgets
 )

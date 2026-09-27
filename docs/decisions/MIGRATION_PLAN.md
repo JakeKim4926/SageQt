@@ -140,6 +140,7 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 | 2026-09-27 | 비밀번호 해시는 PBKDF2-HMAC-SHA256(`QPasswordDigestor`), 반복 600,000회, 사용자별 솔트 16바이트, 저장 형식 `pbkdf2-sha256$반복$솔트$해시`. `sage_infra`가 `Qt::Network`를 PRIVATE로 링크 | OWASP 권고치(2026-09-27 확인). Qt 제공 · 외부 의존 없음. 반복 횟수를 저장해 나중에 올릴 수 있다 (사용자 확정) |
 | 2026-09-27 | 비밀번호 정책은 SageSDI 그대로 — 4~15자, 영문 · 숫자만 | 이관은 동작을 그대로 옮긴다 (사용자 확정) |
 | 2026-09-27 | 인증은 앱이 실제로 쓰는 것만 옮긴다 — 로그인 · 비밀번호 변경 · 초기 관리자 생성 · 세션. `AddUser` · `LoadAll` · `RemoveUser` · `UpdateRole` · 아이디 검증은 옮기지 않는다 | SageSDI에서 호출 0곳 — 사용자 관리 화면이 없다 (사용자 확정) |
+| 2026-09-27 | 로그는 계층별 `QLoggingCategory`(`sage.app` · `sage.core` · `sage.infra` · `sage.ui`) + `qC*` 매크로, Qt 기본 출력, 로그 파일 없음. 비밀번호 · 개인정보 금지 | 계층별로 켜고 끌 수 있다(`QT_LOGGING_RULES`). 사용자 오류는 화면으로 알린다 (사용자 확정, T06) |
 
 ---
 

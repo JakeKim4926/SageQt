@@ -26,6 +26,10 @@ enum class SageUserRole
     Admin = 1
 };
 
+inline const QString SAGE_ORGANIZATION_NAME = QStringLiteral("Sage");
+inline const QString SAGE_APPLICATION_NAME = QStringLiteral("SageQt");
+inline constexpr char SAGE_LOG_CATEGORY_APP[] = "sage.app";
+
 inline const QString SAGE_UI_MAIN_WINDOW_TITLE = QStringLiteral("SageQt");
 
 inline const QString SAGE_UI_COMPLETED = QStringLiteral("완료");

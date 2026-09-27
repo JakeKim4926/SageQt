@@ -1,11 +1,50 @@
+#include "SageDefine.h"
+#include "core/auth/SageAuthSession.h"
+#include "core/auth/SageUserService.h"
+#include "infra/auth/SagePbkdf2PasswordHasher.h"
+#include "infra/db/SageDbConfig.h"
+#include "infra/db/SageSchemaInitializer.h"
+#include "infra/db/SageUserRepository.h"
 #include "ui/window/SageMainWindow.h"
 
 #include <QApplication>
+#include <QCoreApplication>
+#include <QLoggingCategory>
+#include <QString>
+#include <QThreadPool>
+
+#include <cstdlib>
+#include <optional>
+
+Q_STATIC_LOGGING_CATEGORY(sageAppLog, SAGE_LOG_CATEGORY_APP)
 
 int main(int argc, char* argv[])
 {
     QApplication application(argc, argv);
+    QCoreApplication::setOrganizationName(SAGE_ORGANIZATION_NAME);
+    QCoreApplication::setApplicationName(SAGE_APPLICATION_NAME);
+
+    SageDbConfig dbConfig;
+    QString error;
+    if (!SageDbConfig::buildDefaultConfig(dbConfig, error) || !SageSchemaInitializer(dbConfig).prepare(error)) {
+        qCCritical(sageAppLog).noquote() << error;
+        return EXIT_FAILURE;
+    }
+
+    const SageUserRepository userRepository(dbConfig);
+    const SagePbkdf2PasswordHasher passwordHasher;
+    const SageUserService userService(userRepository, passwordHasher);
+    std::optional<QString> initialAdminPassword;
+    if (!userService.ensureDefaultAdmin(initialAdminPassword, error)) {
+        qCCritical(sageAppLog).noquote() << error;
+        return EXIT_FAILURE;
+    }
+    SageAuthSession authSession;
+
     SageMainWindow mainWindow;
     mainWindow.show();
-    return application.exec();
+    const int exitCode = QApplication::exec();
+
+    QThreadPool::globalInstance()->waitForDone();
+    return exitCode;
 }

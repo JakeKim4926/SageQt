@@ -6,7 +6,7 @@
 앱 전체의 모양을 한 곳에서 그리는 기반을 만든다. 이 주제가 끝나면 `SageDesignDefine.h`에 디자인 값이 있고, Fusion 기반 `SageStyle`과 `QPalette`, 번들 폰트가 `main.cpp`에서 한 번 적용된다.
 
 ## 시작 전에
-1. 선행 주제: T06 (조립 지점), T07 (`sageqt-ui` 스킬)
+1. 선행 주제: T07 (`sageqt-ui` 스킬). T06 완료 — 스타일 적용은 `main.cpp`의 `QApplication` 생성 직후, 스키마 준비보다 먼저 넣는다
 2. 스킬 로드: `sageqt-ui`, `coding-design`, `coding-rules`, `git-workflow`
    - 읽을 reference: `coding-design/references/style.md` · `cmake-targets.md` (리소스는 실행 파일 타깃), `coding-rules/references/values-and-platform.md`, `sageqt-ui`의 디자인 값 · `SageStyle` 범위 reference
 3. 결정 — `sageqt-ui`가 정한 것을 따른다. 스킬에 없는 판단이 필요하면 스킬을 먼저 고친다

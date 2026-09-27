@@ -108,6 +108,14 @@ void setRunning(bool isRunning);
 복구 가능한 일반 실패는 `bool + outError`를 쓴다.
 **예외가 slot · 이벤트 핸들러 · 백그라운드 작업 밖으로 나가게 두지 않는다.** Qt 이벤트 루프는 예외를 전파하지 않는다.
 
+### 로그
+- 앱 코드(`SageQt/`)는 `QLoggingCategory`로 계층별 카테고리를 쓴다: `sage.app`(`main.cpp`) · `sage.core` · `sage.infra` · `sage.ui`. 카테고리는 그 계층에서 처음 필요할 때 만든다
+- 카테고리는 쓰는 파일 안에서 `Q_STATIC_LOGGING_CATEGORY`로 정의한다. 여러 파일이 같은 카테고리를 쓰게 되면 그 계층에 선언 헤더를 둔다. 이름 문자열은 `SageDefine.h`의 `SAGE_LOG_CATEGORY_*`
+- 출력은 `qCDebug` · `qCInfo` · `qCWarning` · `qCCritical`만 쓴다. 카테고리 없는 `qDebug()` 등과 `std::cout` · `printf`는 쓰지 않는다
+- 출력 위치는 Qt 기본 메시지 처리기다. 로그 파일은 만들지 않는다
+- 비밀번호 · 초기 비밀번호 · 개인정보를 로그에 쓰지 않는다
+- 사용자가 알아야 하는 오류는 화면(메시지 상자)으로 알린다. 로그는 개발자를 위한 것이다
+
 ### null 계약 (CRITICAL)
 
 **null 가능성은 반환 타입이 결정하고, 이름이 그것을 드러낸다.**

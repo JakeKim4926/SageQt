@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-27] feature/app-bootstrap
+- **목적**: SageSDI `InitInstance` · `ExitInstance`의 시작 · 종료 흐름을 `main.cpp`로 옮긴다 (sageqt-plan T06)
+- **변경 내용**: `main.cpp` 조립(식별 정보 · 스키마 준비 · 서비스 · 초기 관리자 · 세션 · 종료 대기), 실패 시 `sage.app` 로그 + `EXIT_FAILURE`. 로그 규칙(`coding-rules`) · 결정 기록. 로컬 실행 확인 — DB 위치, 첫 실행 1.52초(Release), 실패 흉내 종료 코드 1. T06 완료 처리
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-09-27)
+
 ## [2026-09-27] feature/auth
 - **목적**: SageSDI의 로그인 · 비밀번호 변경 · 초기 관리자 생성 · 세션을 옮긴다 (sageqt-plan T05)
 - **변경 내용**: core `auth/` — `SageUserDto` · `SageUserRole` · `ISageUserRepository` · `ISagePasswordHasher` · `SageUserService` · `SageAuthSession`. infra — `SagePbkdf2PasswordHasher`(PBKDF2-HMAC-SHA256 600,000회, `Qt::Network` PRIVATE) · `SageUserRepository`(SageSDI 원문 SQL 4개). 테스트 5개. 결정 3건(해시 · 정책 · 범위), T10 · T12 반영, T05 완료 처리

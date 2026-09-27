@@ -60,7 +60,7 @@ description: >
 1. 파일·클래스를 새로 만드는 작업이면 **`coding-design`으로 배치부터 확정**한다
 2. 이름을 짓는다 → `references/naming.md`
 3. 객체를 만들거나(`new`) 연결하거나(`connect`) 백그라운드로 보낸다 → `references/ownership-and-threads.md`
-4. 함수 시그니처 · 반환 · signal/slot · 클래스 선언 · include를 쓴다 → `references/api-shape.md`
+4. 함수 시그니처 · 반환 · signal/slot · 클래스 선언 · include · 로그를 쓴다 → `references/api-shape.md`
 5. 숫자 · 문자열 · 색 · 경로를 쓰거나, 파일 · 프로세스 · OS 기능이 필요하다 → `references/values-and-platform.md`
 6. 끝나면 *금지 사항*과 *최종 판단 기준*으로 점검한다. 포맷은 `references/format-and-tools.md`
 
@@ -115,6 +115,7 @@ description: >
 | 네이밍 | 클래스 `Sage` 접두사, 함수 camelCase, 멤버 `m_`. 헝가리안 · `get` 접두사 금지 | `references/naming.md` |
 | 반환 | 실패 = `bool + outError`, 없을 수 있음 = `find*` + 포인터 / `std::optional`, 항상 존재 = 참조 | `references/api-shape.md` |
 | Qt 관례 | 모든 `QObject` 파생에 `Q_OBJECT`. `connect`는 함수 포인터 문법만. QSS 금지 | `references/api-shape.md` · `coding-design/references/style.md` |
+| 로그 | 계층별 `QLoggingCategory` + `qC*` 매크로. 비밀번호 · 개인정보 금지. 사용자에게 알릴 오류는 화면으로 | `references/api-shape.md` |
 
 ---
 
