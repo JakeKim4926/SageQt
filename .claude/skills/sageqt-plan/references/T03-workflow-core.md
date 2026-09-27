@@ -6,7 +6,7 @@
 SageSDI의 워크플로 모델(핸들러 인터페이스 · 등록부 · 응답 · 결과 행 변환 · 샘플 핸들러)을 `sage_core`로 옮기고, 이 동작을 Qt Test로 세 OS에서 검증한다. 첫 core 코드이므로 `sage_core` 타깃과 `tests/` 기반을 이 주제에서 만든다.
 
 ## 시작 전에
-1. 선행 주제: T01
+1. 선행 주제: 없음 (T01 완료)
 2. 스킬 로드: `git-workflow`, `coding-design`, `coding-rules`
    - 읽을 reference: `coding-design/references/cmake-targets.md`, `coding-rules/references/naming.md` · `api-shape.md` · `values-and-platform.md` · `ownership-and-threads.md`
 3. 결정 대기 — 사용자에게 확정받는다

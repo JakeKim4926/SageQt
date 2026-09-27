@@ -6,7 +6,7 @@
 SageSDI의 번들 폰트가 세 OS의 Qt에서 **어떤 이름으로 잡히는지**, 같은 한글 문자열이 **몇 픽셀로 그려지는지**를 실측한다. 이 수치가 T07(`sageqt-ui`)의 레이아웃 정책 — 고정 픽셀을 쓸지, 폰트에서 치수를 끌어낼지 — 의 근거가 된다.
 
 ## 시작 전에
-1. 선행 주제: T01 (정적 분석이 걸린 CI 위에서 작업)
+1. 선행 주제: 없음 (T01 완료 — 정적 분석이 걸린 CI 위에서 작업한다)
 2. 스킬 로드: `git-workflow`, `coding-rules`, `coding-design`
    - 읽을 reference: `coding-design/references/cmake-targets.md`, `coding-rules/references/values-and-platform.md`, `coding-rules/references/naming.md`
 3. 결정 — 착수 시 사용자와 확정

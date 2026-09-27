@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-27] chore/static-analysis
+- **목적**: 코딩 규칙을 CI가 검사하게 한다 (sageqt-plan T01)
+- **변경 내용**: `.clang-format`(포맷 규칙 6개) · `.clang-tidy`(네이밍 · `NULL` · C 캐스트 · `explicit` · `override` · 멤버 함수 `const`) 추가. CI `static-analysis` job — clang-format 22.1.3, clang-tidy 22, clazy 1.17.1(LLVM 22 소스 빌드), 플랫폼 분기 · `auto` grep. 빌드 job 6개 경고 에러화. 위반 검출 테스트 5개로 각 검사가 실패하는 것을 확인. `format-and-tools.md` 도구 표 수정, `DEBT_LOG.md` 신설(2건), T01 완료 처리
+- **PR 링크**: https://github.com/JakeKim4926/SageQt/pull/9
+- **결과**: merged (develop, 2026-09-27)
+
 ## [2026-09-24] docs/plan-restructure
 - **목적**: 개발 계획을 구현 가능한 주제 단위로 나누고, 진행 중인 주제의 지시서만 읽도록 계획 관리 구조를 바꿈
 - **변경 내용**: `sageqt-plan`을 절차 + 진행 중인 주제 목록(T01~T19)으로 재작성, 주제별 구현 지시서 `references/Txx-*.md` 19개 작성(SageSDI 원본 사실을 값 · 경로 · 줄 번호까지 기록), 끝난 주제는 `docs/plans/done/`으로 옮기는 절차. `MIGRATION_PLAN.md`를 배경 · 결정 기록 문서로 재구성하고 `.rc`(UTF-16LE) 사실 정정. CLAUDE.md와 스킬 3곳이 새 구조를 가리키도록 갱신

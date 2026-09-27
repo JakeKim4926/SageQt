@@ -31,9 +31,8 @@ description: >
 
 | ID | 단계 | 주제 | 선행 | 결정 대기 | 상태 |
 |---|---|---|---|---|---|
-| [T01](references/T01-static-analysis.md) | 기반 | 정적 분석 · CI 경고 에러화 | — | 기술부채 기록 승인 | 대기 |
-| [T02](references/T02-font-metrics.md) | 측정 | 폰트 · 텍스트 메트릭 3-OS 측정 | T01 | — | 대기 |
-| [T03](references/T03-workflow-core.md) | 로직 | 워크플로 core 이관 · 테스트 기반 | T01 | 요청 ID 이름 | 대기 |
+| [T02](references/T02-font-metrics.md) | 측정 | 폰트 · 텍스트 메트릭 3-OS 측정 | — | — | 대기 |
+| [T03](references/T03-workflow-core.md) | 로직 | 워크플로 core 이관 · 테스트 기반 | — | 요청 ID 이름 | 대기 |
 | [T04](references/T04-db-infra.md) | 로직 | DB 기반 (QtSql) | T03 | 앱 식별 정보 · 레거시 마이그레이션 생략 | 대기 |
 | [T05](references/T05-auth.md) | 로직 | 인증 · 사용자 | T04 | 비밀번호 해시 방식 · 비밀번호 정책 | 대기 |
 | [T06](references/T06-app-bootstrap.md) | 로직 | 앱 조립 (`main.cpp`) | T05 | — | 대기 |
