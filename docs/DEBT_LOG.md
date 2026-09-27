@@ -5,6 +5,12 @@
 
 ## 열린 항목
 
+### [2026-09-27] 검증누락 — Linux 실제 화면(X11 · Wayland)에서 폰트 메트릭을 재지 않았다
+- 위치: .github/workflows/font-metrics.yml (Linux는 offscreen만)
+- 설명: Windows · macOS는 실제 플랫폼을 쟀지만 Linux 러너에는 디스플레이가 없어 offscreen만 쟀다. Windows에서는 offscreen의 영문 · 숫자 폭이 실제보다 최대 12.5% 넓었다.
+- 위험도: 낮음 — Linux offscreen 값이 macOS 실제(픽셀 지정)와 99개 모두 같아 큰 차이는 없을 것으로 보이지만 확인하지 않았다
+- 후속: T08 화면 확인 때 Linux(WSLg 등) 실제 플랫폼에서 측정 도구를 한 번 돌린다
+
 ### [2026-09-27] 임시구현 — CI가 매 실행마다 clazy를 소스에서 빌드한다
 - 위치: .github/workflows/build.yml (Build clazy 단계)
 - 설명: Ubuntu apt의 clazy 1.11은 GCC 14 헤더를 파싱하지 못해 v1.17.1을 LLVM 22로 매번 빌드한다. 정적 분석 job이 약 2분 30초 길어진다.
