@@ -30,3 +30,8 @@ target_link_libraries(SageQt
         sage_ui
         Qt::Widgets
 )
+
+option(SAGE_BUILD_TOOLS "Build the developer tools under tools/" OFF)
+if(SAGE_BUILD_TOOLS)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/tools/font-probe ${PROJECT_BINARY_DIR}/tools/font-probe)
+endif()
