@@ -2,8 +2,8 @@
 
 #include "SageDefine.h"
 
-SageMainWindow::SageMainWindow(QWidget* parent)
-    : QMainWindow(parent)
+SageMainWindow::SageMainWindow(QWidget* Parent)
+    : QMainWindow(Parent)
 {
     setWindowTitle(SAGE_UI_MAIN_WINDOW_TITLE);
 }
