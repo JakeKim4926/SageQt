@@ -38,17 +38,14 @@ jobs:
             qt-host: windows
             qt-arch: win64_msvc2022_64
             preset: windows-x64-release
-            qpa-platform: offscreen
           - os: macos-15
             qt-host: mac
             qt-arch: clang_64
             preset: macos-arm64-release
-            qpa-platform: cocoa
           - os: ubuntu-24.04
             qt-host: linux
             qt-arch: linux_gcc_64
             preset: linux-x64-release
-            qpa-platform: offscreen
 
     steps:
       - name: Checkout (actions/checkout v7.0.1)
@@ -79,7 +76,7 @@ jobs:
       - name: Measure
         shell: bash
         env:
-          QT_QPA_PLATFORM: ${{ matrix.qpa-platform }}
+          QT_QPA_PLATFORM: offscreen
         run: |
           probe=$(find out/build/${{ matrix.preset }} -type f \( -name SageFontProbe -o -name SageFontProbe.exe \))
           "$probe" SageQt/resources font-metrics-${{ matrix.preset }}.json
