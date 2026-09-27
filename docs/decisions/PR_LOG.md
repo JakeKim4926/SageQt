@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-27] chore/ci-guards
+- **목적**: PR 없이 머지할 때도 머지 전에 CI로 검증하고, 주석 금지 규칙을 도구로 검사한다
+- **변경 내용**: `build.yml` · `font-metrics.yml`의 push 트리거를 모든 브랜치(`'**'`)로. 정적 분석 job에 주석 grep(`//` · `/*`, `://` 제외) 단계. `format-and-tools.md` 도구 표 갱신. 위반 검출 테스트: 주석 커밋이 "Check comments" 단계만 실패시킴 (실행 36318817652), 되돌린 뒤 36319310012 통과
+- **PR 링크**: 없음 — `develop`에 직접 squash merge
+- **결과**: merged (develop, 2026-09-27)
+
 ## [2026-09-27] feature/db-infra
 - **목적**: SageSDI의 SQLite 연결 · 스키마 준비를 QtSql로 옮긴다 (sageqt-plan T04)
 - **변경 내용**: `sage_infra` — `SageDbConfig`(기본 경로 = 앱 데이터 폴더 `sageqt.db`, busy timeout 5000ms) · `SageDbConnection`(고유 연결 이름 · 폴더 생성 · `PRAGMA foreign_keys` · RAII 정리) · `SageSchemaInitializer`(`SageUser`). 테스트 3개. 앱 식별 정보 · 레거시 마이그레이션 생략 결정 기록. `.clang-format` `FixNamespaceComments: false`와 T03 테스트의 namespace 주석 제거. T04 완료 처리

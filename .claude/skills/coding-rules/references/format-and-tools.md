@@ -46,7 +46,7 @@ SageUserService::SageUserService(ISageUserRepository& repository, const SageDbCo
 | `clang-format` | *포맷* 전부 |
 | `clang-tidy` | 네이밍 형식(대소문자 · 접두사), `NULL` · C 캐스트 금지, `explicit` · `override` · 멤버 함수 `const` |
 | `clazy` | Qt 전용 — detach, `Q_OBJECT` 누락, connect 오용 등 (level1 + `missing-qobject-macro` · `old-style-connect`) |
-| CI grep | `auto` 키워드, 플랫폼 분기(`Q_OS_` · `_WIN32` · `__APPLE__` · `__linux__` · `<windows.h>`) — clang-tidy에는 `auto`를 금지하는 검사가 없다 |
+| CI grep | `auto` 키워드, 플랫폼 분기(`Q_OS_` · `_WIN32` · `__APPLE__` · `__linux__` · `<windows.h>`), 주석(`//` · `/*`, 단 `://`는 제외) — clang-tidy에는 `auto` · 주석을 금지하는 검사가 없다 |
 
 clazy의 `non-pod-global-static`은 끈다. `SageDefine.h`의 `inline const QString` 상수가 대상인데, 실행 파일 하나에 들어가는 상수라 시작 비용이 무시할 수준이다.
 

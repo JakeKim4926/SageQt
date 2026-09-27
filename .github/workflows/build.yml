@@ -2,7 +2,7 @@ name: build
 
 on:
   push:
-    branches: [develop, main]
+    branches: ['**']
   pull_request:
     branches: [develop, main]
 
@@ -147,5 +147,11 @@ jobs:
       - name: Check auto keyword
         run: |
           if git grep -nwE 'auto' -- '*.cpp' '*.h'; then
+            exit 1
+          fi
+
+      - name: Check comments
+        run: |
+          if git grep -nE '(^|[^:])//|/\*' -- '*.cpp' '*.h'; then
             exit 1
           fi

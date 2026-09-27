@@ -2,7 +2,7 @@ name: font-metrics
 
 on:
   push:
-    branches: [develop, main]
+    branches: ['**']
     paths:
       - tools/font-probe/**
       - SageQt/resources/**
