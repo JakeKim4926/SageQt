@@ -13,6 +13,7 @@
 4. 재확인할 사실
    - 폰트 패밀리 이름 — T02 측정에서 모든 OS가 `Pretendard` · `Gmarket Sans TTF`로 잡았다. 패밀리 + 굵기로 찾는다 (`MIGRATION_PLAN.md` *폰트 · 텍스트 메트릭*)
    - Mac mini 준비 여부 — 이 주제부터 macOS 화면 판정이 필요하다
+   - `docs/DEBT_LOG.md`의 "Linux 실제 화면 폰트 메트릭 미측정" — Linux(WSLg 등) 실제 플랫폼에서 `tools/font-probe`를 돌려 offscreen 값과 비교하고, 해소되면 항목을 *해결됨*으로 옮긴다
 
 ## SageSDI에서 옮길 것
 - 디자인 값 · 폰트 역할 · 크기: `sageqt-ui` 스킬이 정리한 목록 (원본은 T07 파일 참조)
