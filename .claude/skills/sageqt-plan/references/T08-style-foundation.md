@@ -11,8 +11,9 @@
    - 읽을 reference: `coding-design/references/style.md` · `cmake-targets.md` (리소스는 실행 파일 타깃), `coding-rules/references/values-and-platform.md`, `sageqt-ui`의 디자인 값 · `SageStyle` 범위 reference
 3. 결정 — `sageqt-ui`가 정한 것을 따른다. 스킬에 없는 판단이 필요하면 스킬을 먼저 고친다
 4. 재확인할 사실
-   - T02의 OS별 폰트 패밀리 · 스타일 이름 (폰트를 이름으로 찾을 때 쓴다)
+   - 폰트 패밀리 이름 — T02 측정에서 모든 OS가 `Pretendard` · `Gmarket Sans TTF`로 잡았다. 패밀리 + 굵기로 찾는다 (`MIGRATION_PLAN.md` *폰트 · 텍스트 메트릭*)
    - Mac mini 준비 여부 — 이 주제부터 macOS 화면 판정이 필요하다
+   - `docs/DEBT_LOG.md`의 "Linux 실제 화면 폰트 메트릭 미측정" — Linux(WSLg 등) 실제 플랫폼에서 `tools/font-probe`를 돌려 offscreen 값과 비교하고, 해소되면 항목을 *해결됨*으로 옮긴다
 
 ## SageSDI에서 옮길 것
 - 디자인 값 · 폰트 역할 · 크기: `sageqt-ui` 스킬이 정리한 목록 (원본은 T07 파일 참조)
@@ -30,7 +31,7 @@
 - `QApplication::setStyle`은 스타일 객체의 소유권을 가져간다. 위젯을 만들기 **전에** 적용한다
 - Fusion은 `QStyleFactory::create("Fusion")`로 만든다. `SageStyle`(`QProxyStyle`)의 기반으로 넘긴다
 - 폰트는 리소스(qrc)로 **실행 파일 타깃**에 등록한다 (정적 라이브러리에 넣으면 링커가 등록 코드를 지울 수 있다). 등록은 `QFontDatabase::addApplicationFont`, 돌려받은 패밀리 이름으로 찾는다 — SageSDI의 GDI식 이름을 하드코딩하지 않는다 (T02)
-- 0.1pt 단위 크기를 포인트로 변환해 쓴다 (`setPointSizeF`)
+- 0.1pt 단위 크기를 그대로 쓰지 않는다. 포인트 · 픽셀 중 무엇으로 지정할지는 `sageqt-ui`(T07)가 정한다 — macOS는 논리 DPI 72라 포인트 크기로는 약 25% 작게 그려진다 (T02)
 - QSS · `setStyleSheet` 금지. 위젯 · 화면에서 `setPalette` · `setFont` 개별 지정 금지 (`style.md`)
 - 시작 시 안내(DB 오류 · 초기 비밀번호)가 T09부터 이 스타일로 그려지도록, 스타일 적용은 스키마 준비보다 **먼저** 한다
 

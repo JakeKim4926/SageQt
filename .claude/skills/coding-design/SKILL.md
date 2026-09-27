@@ -60,6 +60,8 @@ SageQt/                                 ← 저장소 루트
 ├── tests/                              ← Qt Test. 소스 계층 구조를 따라간다
 │   ├── core/
 │   └── infra/
+├── tools/                              ← 앱이 아닌 개발 도구 (측정 등). SAGE_BUILD_TOOLS=ON일 때만 빌드
+│   └── font-probe/                     ← 도구 1개 = 폴더 1개
 │
 └── SageQt/                             ← 소스 루트
     ├── CMakeLists.txt                  ← 실행 파일 타깃 + 하위 타깃 추가

@@ -31,12 +31,11 @@ description: >
 
 | ID | 단계 | 주제 | 선행 | 결정 대기 | 상태 |
 |---|---|---|---|---|---|
-| [T02](references/T02-font-metrics.md) | 측정 | 폰트 · 텍스트 메트릭 3-OS 측정 | — | — | 대기 |
 | [T03](references/T03-workflow-core.md) | 로직 | 워크플로 core 이관 · 테스트 기반 | — | 요청 ID 이름 | 대기 |
 | [T04](references/T04-db-infra.md) | 로직 | DB 기반 (QtSql) | T03 | 앱 식별 정보 · 레거시 마이그레이션 생략 | 대기 |
 | [T05](references/T05-auth.md) | 로직 | 인증 · 사용자 | T04 | 비밀번호 해시 방식 · 비밀번호 정책 | 대기 |
 | [T06](references/T06-app-bootstrap.md) | 로직 | 앱 조립 (`main.cpp`) | T05 | — | 대기 |
-| [T07](references/T07-ui-skill.md) | UI 기반 | `sageqt-ui` 스킬 작성 | T02 | — | 대기 |
+| [T07](references/T07-ui-skill.md) | UI 기반 | `sageqt-ui` 스킬 작성 | — | — | 대기 |
 | [T08](references/T08-style-foundation.md) | UI 기반 | `SageStyle` · 디자인 값 · 폰트 등록 | T06, T07 | — | 대기 |
 | [T09](references/T09-frameless-dialogs.md) | UI 기반 | 프레임리스 다이얼로그 · 메시지 상자 | T08 | — | 대기 |
 | [T11](references/T11-sidebar.md) | UI 이관 | 사이드바 | T09 | — | 대기 |

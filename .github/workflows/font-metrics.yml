@@ -1,0 +1,102 @@
+name: font-metrics
+
+on:
+  push:
+    branches: [develop, main]
+    paths:
+      - tools/font-probe/**
+      - SageQt/resources/**
+      - .github/workflows/font-metrics.yml
+  pull_request:
+    branches: [develop, main]
+    paths:
+      - tools/font-probe/**
+      - SageQt/resources/**
+      - .github/workflows/font-metrics.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  QT_VERSION: 6.11.2
+  AQT_SOURCE: git+https://github.com/miurahr/aqtinstall.git@076e1659807d0b362a3ed684d54c2e9c775eb9c7
+
+jobs:
+  measure:
+    name: font-metrics-${{ matrix.preset }}-${{ matrix.qpa-platform }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-2025
+            qt-host: windows
+            qt-arch: win64_msvc2022_64
+            preset: windows-x64-release
+            qpa-platform: offscreen
+          - os: windows-2025
+            qt-host: windows
+            qt-arch: win64_msvc2022_64
+            preset: windows-x64-release
+            qpa-platform: windows
+          - os: macos-15
+            qt-host: mac
+            qt-arch: clang_64
+            preset: macos-arm64-release
+            qpa-platform: offscreen
+          - os: macos-15
+            qt-host: mac
+            qt-arch: clang_64
+            preset: macos-arm64-release
+            qpa-platform: cocoa
+          - os: ubuntu-24.04
+            qt-host: linux
+            qt-arch: linux_gcc_64
+            preset: linux-x64-release
+            qpa-platform: offscreen
+
+    steps:
+      - name: Checkout (actions/checkout v7.0.1)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Install Qt (jurplel/install-qt-action v4.4.1, aqtinstall main 076e165 for the Qt 6.11 Windows layout)
+        uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125
+        with:
+          version: ${{ env.QT_VERSION }}
+          host: ${{ matrix.qt-host }}
+          target: desktop
+          arch: ${{ matrix.qt-arch }}
+          aqtsource: ${{ env.AQT_SOURCE }}
+          cache: true
+
+      - name: Set up MSVC (ilammy/msvc-dev-cmd v1.13.0)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
+
+      - name: Configure
+        env:
+          QTDIR: ${{ env.QT_ROOT_DIR }}
+        run: cmake --preset ${{ matrix.preset }} -DCMAKE_COMPILE_WARNING_AS_ERROR=ON -DSAGE_BUILD_TOOLS=ON
+
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }} --target SageFontProbe
+
+      - name: Measure
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: ${{ matrix.qpa-platform }}
+        run: |
+          probe=$(find out/build/${{ matrix.preset }} -type f \( -name SageFontProbe -o -name SageFontProbe.exe \))
+          "$probe" SageQt/resources font-metrics-${{ matrix.preset }}-${{ matrix.qpa-platform }}.json
+
+      - name: Upload (actions/upload-artifact v7.0.1)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: font-metrics-${{ matrix.preset }}-${{ matrix.qpa-platform }}
+          path: font-metrics-${{ matrix.preset }}-${{ matrix.qpa-platform }}.json
+          if-no-files-found: error

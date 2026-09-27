@@ -50,6 +50,58 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 | 실행 기록 | 메모리에만 보관 (앱을 끄면 사라짐) | T16 |
 | 죽은 코드 | `SageAppSettingsService`(pdftotext 설정) 호출 0곳. 호출 0곳 함수 8개: `RunProcessAndWait` · `QuoteArgument` · `BuildTempJsonPath` · `CombinePath` · `FolderExists` · `GetAppMainWindow` · `FormatAmountNumber` · `JsonSplitStringArray`. `ShowIFileOpenDialog` 외부 호출 0곳. 레지스트리 · MRU(`SetRegistryKey` · `LoadStdProfileSettings`) 사용 0곳. `SAGE_WORKFLOW_DELIVERY = 2`는 핸들러 없음 | 해당 주제에서 옮기지 않음 |
 
+### 폰트 · 텍스트 메트릭 (2026-09-27, T02)
+
+`tools/font-probe`로 SageSDI 번들 폰트 6개를 등록하고 역할 11종 × 문자열 9개를 쟀다. CI 실행 [36300491819](https://github.com/JakeKim4926/SageQt/actions/runs/36300491819) (산출물 5개), 로컬 Windows 10 실제 플랫폼 · offscreen.
+
+| 환경 | 플랫폼 | 논리 DPI |
+|---|---|---|
+| Windows Server 2025 (CI) · Windows 10 (로컬) | `windows` · `offscreen` | 96 |
+| macOS Sequoia 15.7.9 (CI) | `cocoa` | **72** |
+| macOS Sequoia 15.7.9 (CI) | `offscreen` | 96 |
+| Ubuntu 24.04.5 (CI) | `offscreen` | 96 |
+
+**등록된 패밀리 이름** — 모든 환경에서 `Pretendard`(Regular · SemiBold · Bold)와 `Gmarket Sans TTF`(Bold · Light · Medium)로 잡힌다. 일부 환경은 이름을 더 등록한다
+| 환경 | 추가로 잡히는 이름 |
+|---|---|
+| Windows 실제 플랫폼 | `Pretendard SemiBold`, `Gmarket Sans TTF Bold` · `Light` · `Medium`, 한글 이름 `G마켓 산스 TTF`(로컬 Windows 10만) |
+| Linux offscreen | `Pretendard SemiBold` |
+| Windows offscreen · macOS | 없음 |
+
+**SageSDI 폰트 이름(`SageDefine.h:245-247`) 해석**
+| 이름 | Windows 실제 | Windows offscreen | macOS (둘 다) | Linux |
+|---|---|---|---|---|
+| `"Pretendard"` | Pretendard Regular | Pretendard Regular | Pretendard Regular | Pretendard Regular |
+| `"Pretendard SemiBold"` | Pretendard SemiBold | **Gmarket Sans TTF Light** | **.AppleSystemUIFont** | Pretendard SemiBold |
+| `"Gmarket Sans TTF Bold"` | Gmarket Sans TTF Bold | **Gmarket Sans TTF Light** | **.AppleSystemUIFont** | **Gmarket Sans TTF Light** |
+
+→ GDI식 이름은 환경에 따라 다른 폰트로 잡힌다. **패밀리(`Pretendard` · `Gmarket Sans TTF`) + 굵기**로 지정하면 역할 11종이 모든 환경에서 같은 폰트 · 스타일 · 굵기로 잡힌다.
+
+**문자열 폭 차이 (기준: Windows 실제 플랫폼, 역할 11종 × 문자열 9개 = 99개)**
+| 비교 대상 | 크기 지정 | 한글 | 영문 · 숫자 | 줄 높이 |
+|---|---|---|---|---|
+| Windows 10 로컬 실제 | 포인트 | 0% | 0% | 0% |
+| Windows offscreen | 포인트 | -0.5 ~ 0% | -1.2 ~ +12.5% | 0% |
+| **macOS 실제 (`cocoa`)** | **포인트** | **-27.5 ~ -20.4%** | **-28.1 ~ -20.5%** | **-36.4 ~ -18.1%** |
+| **macOS 실제 (`cocoa`)** | **픽셀** (포인트 × 96 / 72) | **-2.1 ~ +3.6%** | **-3.4 ~ +2.8%** | -13.7 ~ +4.4% |
+| Linux offscreen | 포인트 · 픽셀 (같다) | -2.1 ~ +3.6% | -3.4 ~ +2.8% | -1.5 ~ +4.3% |
+
+- macOS는 논리 DPI가 72라 포인트 크기로 지정하면 글자가 약 25%(72/96) 작게 그려진다. 픽셀 크기로 지정하면 차이가 ±4% 안으로 들어온다
+- 픽셀 지정에서 줄 높이 -13.7%는 macOS의 `logo`(Gmarket Sans TTF Bold 19px) 하나다 — Windows 22 / macOS 18.98 / Linux 21.83. 나머지 10개 역할은 -1.5 ~ +4.4%
+- Windows에서는 폭 · 높이가 정수 픽셀로 반올림되고, macOS · Linux는 소수 픽셀이다
+- offscreen은 실제 화면을 대표하지 않는다 — Windows offscreen은 영문 · 숫자가 최대 12.5% 넓고, macOS offscreen은 DPI가 실제(72)와 다르다(96)
+
+**본문(`content`, 14px) 문자열별 폭 (px)**
+| 문자열 | Windows | macOS | Linux |
+|---|---|---|---|
+| 샘플 업무 | 52.00 | 51.88 (-0.2%) | 51.88 (-0.2%) |
+| 검색어 입력 | 64.00 | 63.97 (0.0%) | 63.97 (0.0%) |
+| 초기화 | 36.00 | 36.28 (+0.8%) | 36.28 (+0.8%) |
+| 샘플 업무가 완료되었습니다. | 156.00 | 155.67 (-0.2%) | 155.67 (-0.2%) |
+| Result | 40.00 | 38.64 (-3.4%) | 38.64 (-3.4%) |
+| 1,234,567 | 64.00 | 62.34 (-2.6%) | 62.34 (-2.6%) |
+| The Quick Brown Fox Jumps Over The Lazy Dog | 306.00 | 300.31 (-1.9%) | 300.31 (-1.9%) |
+
 ### 로컬 · CI 환경
 
 | 항목 | 사실 | 확인 위치 |
