@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-27] chore/font-metrics-probe
+- **목적**: SageSDI 번들 폰트가 세 OS의 Qt에서 어떤 이름 · 크기로 그려지는지 실측해 T07 레이아웃 정책의 근거를 만든다 (sageqt-plan T02)
+- **변경 내용**: `coding-design`에 `tools/` · `SAGE_BUILD_TOOLS` 규칙. `SageQt/resources/`에 폰트 6개 + OFL 라이선스 2개. 측정 도구 `tools/font-probe`(역할 11종 × 문자열 9개, 포인트 · 픽셀 크기). `font-metrics.yml`로 Windows · macOS 실제 플랫폼 + 3 OS offscreen 측정. 결과 — GDI식 폰트 이름은 환경마다 다른 폰트로 잡힘, macOS는 72 DPI라 포인트 크기로 약 25% 작고 픽셀 크기로는 ±4% 안. T02 완료 처리
+- **PR 링크**: https://github.com/JakeKim4926/SageQt/pull/10
+- **결과**: merged (develop, 2026-09-27)
+
 ## [2026-09-27] chore/static-analysis
 - **목적**: 코딩 규칙을 CI가 검사하게 한다 (sageqt-plan T01)
 - **변경 내용**: `.clang-format`(포맷 규칙 6개) · `.clang-tidy`(네이밍 · `NULL` · C 캐스트 · `explicit` · `override` · 멤버 함수 `const`) 추가. CI `static-analysis` job — clang-format 22.1.3, clang-tidy 22, clazy 1.17.1(LLVM 22 소스 빌드), 플랫폼 분기 · `auto` grep. 빌드 job 6개 경고 에러화. 위반 검출 테스트 5개로 각 검사가 실패하는 것을 확인. `format-and-tools.md` 도구 표 수정, `DEBT_LOG.md` 신설(2건), T01 완료 처리

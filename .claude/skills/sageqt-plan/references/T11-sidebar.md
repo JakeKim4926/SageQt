@@ -48,7 +48,7 @@ SageSDI의 사이드바(앱 제목 · 업무 트리 · 기타 동작)를 옮긴�
 ## 함정
 - "이전 선택으로 되돌림"을 선택 변경 signal 안에서 하면 **signal이 다시 발생해 재진입**할 수 있다. 되돌리는 동안 신호를 막거나 선택 모델로 처리한다
 - 창(`SageMainWindow`)에 중계 slot을 만들지 않는다. 사이드바 signal ↔ 작업 영역 · 다이얼로그 연결은 창의 "앱 수준 연결"로 한다 (`ui-composition.md`)
-- 로고 폰트 이름은 T02에서 확인한 OS별 이름으로 찾는다
+- 로고 폰트는 패밀리 `Gmarket Sans TTF` + Bold로 찾는다. GDI식 이름 `"Gmarket Sans TTF Bold"`는 macOS · Linux에서 다른 폰트로 잡힌다 (T02)
 - 사이드바는 핸들러 목록을 읽기만 한다 — 업무별 분기를 넣지 않는다
 
 ## 작업

@@ -65,12 +65,12 @@ SageSDI의 번들 폰트가 세 OS의 Qt에서 **어떤 이름으로 잡히는�
 
 ## 작업
 PR 1개: `chore/font-metrics-probe` (규칙 추가가 필요하면 `docs:` 커밋 분리)
-- [ ] `coding-design` 폴더 구조에 측정 도구 위치 추가 (결정에 따라)
-- [ ] 측정 도구: 폰트를 등록하고, 등록된 패밀리 · 스타일 이름과 위 문자열의 폭 · 높이 · 기준선 · DPI를 JSON으로 출력
-- [ ] CI 측정 job: 3 OS에서 실행 → JSON을 산출물로 업로드
-- [ ] Windows 로컬: 실제 플랫폼과 offscreen 결과 비교
-- [ ] 결과표 작성 → 이 파일의 *확인한 사실*과 `MIGRATION_PLAN.md`의 확정 사실에 기록
-- [ ] T07이 쓸 레이아웃 정책 근거 정리 (예: 같은 문자열의 OS 간 폭 차이가 몇 %인지)
+- [x] `coding-design` 폴더 구조에 측정 도구 위치 추가 (결정에 따라)
+- [x] 측정 도구: 폰트를 등록하고, 등록된 패밀리 · 스타일 이름과 위 문자열의 폭 · 높이 · 기준선 · DPI를 JSON으로 출력
+- [x] CI 측정 job: 3 OS에서 실행 → JSON을 산출물로 업로드
+- [x] Windows 로컬: 실제 플랫폼과 offscreen 결과 비교
+- [x] 결과표 작성 → 이 파일의 *확인한 사실*과 `MIGRATION_PLAN.md`의 확정 사실에 기록
+- [x] T07이 쓸 레이아웃 정책 근거 정리 (예: 같은 문자열의 OS 간 폭 차이가 몇 %인지)
 
 ## 완료 기준
 - 3 OS의 측정 JSON이 CI 산출물로 남아 있다
@@ -82,4 +82,24 @@ PR 1개: `chore/font-metrics-probe` (규칙 추가가 필요하면 `docs:` 커�
 - 레이아웃 정책 결정 자체 — T07에서 이 결과를 근거로 정한다
 
 ## 확인한 사실
-(진행 중 기록)
+- 결과표는 `MIGRATION_PLAN.md` *폰트 · 텍스트 메트릭*에 있다. CI 실행 36300491819 (산출물 5개)
+- Qt 6.11 Windows 폰트 엔진: Qt 문서는 `fontengine=gdi`를 "legacy GDI-based font database를 쓴다 (Since Qt 6.8)"라고 설명한다 → 기본값은 DirectWrite로 **추론**. 공개 API로 엔진을 알 수 없어 측정 도구는 기록하지 않는다
+- SageSDI가 쓰는 폰트: Pretendard Regular · SemiBold · Bold(`SageUiResources.cpp:52`의 `FW_BOLD` → `SAGE_FONT_LIST_BOLD` 2곳), Gmarket Sans Bold(`SAGE_FONT_LOGO` 1곳). Gmarket Light · Medium은 쓰는 곳 0곳 — 사용자 결정으로 6개 모두 저장소에 넣었다
+- Gmarket Sans는 SIL OFL이다 ([공식 페이지](https://corp.gmarket.com/fonts/)). 폰트 name ID 13에 저작권 문구와 OFL 전문이 들어 있어 `GmarketSansLicense.txt`로 꺼냈다
+- 폰트 name 테이블: Pretendard SemiBold는 레거시 패밀리 `Pretendard SemiBold`(스타일 Regular) / 타이포그래픽 `Pretendard`(SemiBold). Gmarket은 `Gmarket Sans TTF`(Bold)
+- **macOS에서 상대 경로로 `addApplicationFont`를 부르면 실패한다** (offscreen · cocoa 모두). `QDir::absoluteFilePath`로 해결 — T08 폰트 등록은 qrc라 해당하지 않지만, 파일 경로로 폰트를 읽는 코드는 절대 경로를 쓴다
+- GitHub macOS 러너에서 `cocoa` 플랫폼이 실행된다 (논리 DPI 72, 물리 DPI 44). Windows 러너에서 `windows` 플랫폼이 실행된다
+- Windows 10(로컬)과 Windows Server 2025(CI)의 측정값은 99개 모두 같다
+- Windows 실제 플랫폼과 offscreen: 한글 폭은 최대 0.5% 차이, 영문 · 숫자는 최대 12.5% 차이 (offscreen이 넓다)
+- macOS 실제 플랫폼은 논리 DPI 72 → 포인트 크기로는 약 25% 작다. 픽셀 크기(포인트 × 96 / 72)로는 Windows와 한글 -2.1 ~ +3.6%, 영문 · 숫자 -3.4 ~ +2.8%
+- `QFontMetricsF`가 Windows에서는 정수, macOS · Linux에서는 소수를 돌려준다
+
+## 결과
+- PR [#10](https://github.com/JakeKim4926/SageQt/pull/10) `chore/font-metrics-probe`
+- `tools/` 규칙과 `SAGE_BUILD_TOOLS` 옵션, 번들 폰트 6개 + OFL 라이선스 2개, 측정 도구 `SageFontProbe`, 5개 환경 측정 워크플로(`font-metrics.yml`)
+- 계획보다 넓힌 것: offscreen만으로는 실제 화면을 대표하지 못해 Windows · macOS 실제 플랫폼을 추가했고(사용자 승인 없이 측정 범위 판단 — 보고함), 포인트/픽셀 판단 근거를 위해 픽셀 크기 버전 측정을 추가했다 (사용자 승인)
+- T07에 넘기는 근거: (1) 폰트는 패밀리 + 굵기로 지정한다 — GDI식 이름은 환경마다 다른 폰트로 잡힌다 (2) 포인트 크기는 macOS에서 25% 작다 — 픽셀 크기로 지정하면 세 OS 폭 차이가 ±4% 안이다 (3) 영문 · 숫자는 한글보다 OS 간 차이가 크다 (4) Gmarket 로고의 줄 높이는 macOS에서 14% 낮다
+- 교훈
+  - 요약 스크립트가 일부 항목만 보면 결론이 틀린다 — 로컬 비교를 문자열 2개로만 보고 "거의 같다"고 보고했다가 정정했다. 비교는 전체 항목으로 한다
+  - 실패 원인을 플랫폼으로 단정했다가 틀렸다 (실제로는 상대 경로). 가설을 바꾸기 전에 오류 조건을 하나씩 줄인다
+  - 대체 환경(offscreen)의 값은 실제 환경과 한 번 비교한 뒤에 쓴다

@@ -6,7 +6,7 @@
 SageSDI의 디자인 규칙(`sagesdi-ui`)과 T02 측정 결과를 바탕으로 SageQt의 UI 스킬을 만든다. 이 스킬이 디자인 값 목록(`SageDesignDefine.h`), `SageStyle`이 재정의할 범위, 위젯 변형, 레이아웃 정책을 정한다. T08 이후의 모든 화면 주제가 이 스킬을 따른다.
 
 ## 시작 전에
-1. 선행 주제: T02 (레이아웃 정책의 근거)
+1. 선행 주제: 없음 (T02 완료 — 레이아웃 정책의 근거는 `MIGRATION_PLAN.md` *폰트 · 텍스트 메트릭*과 `docs/plans/done/T02-font-metrics.md`)
 2. 스킬 로드: `sageqt-plan`(스킬 구조 원칙), `coding-design` · `coding-rules`
    - 읽을 reference: `coding-design/references/style.md` · `model-view.md` · `ui-composition.md`, `coding-rules/references/values-and-platform.md` (디자인 값 위치)
 3. 결정 — 분석 결과를 보고 사용자와 확정
@@ -17,7 +17,7 @@ SageSDI의 디자인 규칙(`sagesdi-ui`)과 T02 측정 결과를 바탕으로 S
 ## SageSDI에서 옮길 것
 - **디자인 규칙 원본**: `D:/Projects/SageSDI/.claude/skills/sagesdi-ui/SKILL.md` (915줄) — 레이아웃 · 색상 팔레트 · 커스텀 컨트롤 규격
 - **상수 원본**: `D:/Projects/SageSDI/SageSDI/SageDefine.h` — 상수 477개, 509줄 (2026-09-23 기준). 이 중 색 상수 42개 (`SAGE_COLOR_*`)
-- **폰트 역할과 크기**: T02 파일의 표 (0.1pt 단위 주의)
+- **폰트 역할과 크기**: `docs/plans/done/T02-font-metrics.md`의 표 (0.1pt 단위 주의). 3 OS 측정 결과는 `MIGRATION_PLAN.md` *폰트 · 텍스트 메트릭*
 - **프레임리스 다이얼로그 규격**: 캡션 높이 40 · 좌우 여백 16 · 버튼 28 · 버튼 여백 8 (`SageDefine.h:112-115`), 로그인 창 폭 320 · 비밀번호 창 폭 360 · 메시지 상자 폭 360 (`:119, 421-422`)
 - **결과 표 열 폭**: 항목 140 · 값 최소 220(늘어남) · 상태 110 · 사유 320 (`:221-224`)
 - **커스텀 컨트롤 25종**: `D:/Projects/SageSDI/SageSDI/app/ui/drawing/` — 각각 "기본 위젯 + `SageStyle`로 됨 / 커스텀 위젯 필요 / 필요 없음"으로 분류한다 (`style.md`: 기본 위젯으로 되는 것은 서브클래싱하지 않는다)
