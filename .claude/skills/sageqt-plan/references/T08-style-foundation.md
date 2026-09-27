@@ -42,13 +42,13 @@ PR 1개: `feature/style-foundation`
 - [ ] 팔레트 생성, 앱 폰트
 - [ ] 폰트 리소스 등록 (실행 파일 타깃)
 - [ ] `main.cpp`에서 스타일 · 팔레트 · 폰트 적용 (스키마 준비보다 먼저)
-- [ ] Windows · Linux(가능하면 WSLg) · macOS 화면 확인, 스크린샷을 PR에 첨부
+- [ ] Windows · Linux(가능하면 WSLg) · macOS 화면 확인, 스크린샷을 `docs/screenshots/T08/`에 커밋
 
 ## 완료 기준
 - 3-OS CI 통과
 - 디자인 값이 `SageDesignDefine.h` 밖에 0개다 (색 리터럴 · 여백 숫자 검색)
 - 등록된 폰트 패밀리가 세 OS에서 기대한 이름으로 잡힌다 (로그 또는 테스트)
-- Windows · macOS 스크린샷이 PR에 있다
+- Windows · macOS 스크린샷이 `docs/screenshots/T08/`에 있다
 
 ## 범위 밖
 - 개별 위젯 · 화면 — T09 이후

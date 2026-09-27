@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-27] docs/workflow-direct-merge
+- **목적**: PR 없이 CI 통과 후 `develop`에 반영하는 실제 방식을 `git-workflow` 규칙으로 만든다
+- **변경 내용**: `git-workflow` SKILL.md · `pr-and-release.md`에 develop 반영 절차 · 체크리스트 · 보호 원칙. UI 스크린샷 위치 `docs/screenshots/<주제 ID>/`(coding-design · T08 · T10). 리뷰 스킬 문구. 결정 기록 1건. DEBT 1건(Windows CI Qt 새 설치 간헐 실패)
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-09-27)
+
 ## [2026-09-27] chore/ci-guards
 - **목적**: PR 없이 머지할 때도 머지 전에 CI로 검증하고, 주석 금지 규칙을 도구로 검사한다
 - **변경 내용**: `build.yml` · `font-metrics.yml`의 push 트리거를 모든 브랜치(`'**'`)로. 정적 분석 job에 주석 grep(`//` · `/*`, `://` 제외) 단계. `format-and-tools.md` 도구 표 갱신. 위반 검출 테스트: 주석 커밋이 "Check comments" 단계만 실패시킴 (실행 36318817652), 되돌린 뒤 36319310012 통과

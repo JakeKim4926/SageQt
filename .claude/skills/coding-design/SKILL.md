@@ -56,7 +56,8 @@ SageQt/                                 ← 저장소 루트
 │   ├── DEBT_LOG.md
 │   ├── RELEASE_NOTES.md
 │   ├── decisions/                      ← PR_LOG.md, MIGRATION_PLAN.md
-│   └── plans/done/                     ← 끝난 계획 주제 파일 (이력, sageqt-plan)
+│   ├── plans/done/                     ← 끝난 계획 주제 파일 (이력, sageqt-plan)
+│   └── screenshots/<주제 ID>/          ← UI 확인 스크린샷 (git-workflow)
 ├── tests/                              ← Qt Test. 소스 계층 구조를 따라간다
 │   ├── core/
 │   └── infra/

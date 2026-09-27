@@ -136,6 +136,7 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 | 2026-09-27 | 워크플로 핸들러는 JSON을 `QJsonObject`로 주고받는다 (payload · 응답). 목록은 `QList`, 식별자(업무 · 작업 종류 · 탭)는 `SageDefine.h`의 `enum class` | 문자열 JSON 조립 · 검색을 직접 만들지 않는다. SageSDI의 문자열 검색식 JSON은 중첩을 무시해 `payload` · `error` 안의 값을 최상위처럼 읽었다 — `QJsonObject`는 중첩을 명시적으로 따라가야 한다 (T03 테스트로 고정). T14 · T15가 이 계약을 쓴다 |
 | 2026-09-27 | **앱 식별 정보** — 조직 이름 `Sage`, 앱 이름 `SageQt`, 표시 이름 `SageQt`, DB 파일 이름 `sageqt.db`, macOS 번들 ID `com.sage.sageqt`, 회사명 `Sage` · 제품명 `SageQt` · 저작권 `Copyright © 2026 Sage` | T04에서 한 번에 정했다 (사용자 확정). 조직 · 앱 이름이 `QStandardPaths` 데이터 폴더를 정하므로 바꾸면 사용자 데이터 위치가 바뀐다. T06 · T11 · T17은 이 값을 쓴다 |
 | 2026-09-27 | SageSDI의 레거시 컬럼 마이그레이션(`must_change_pw` `ALTER TABLE`)을 옮기지 않는다 — 처음부터 그 컬럼을 포함한 스키마 | SageSDI 배포본이 없다 (사용자 확정) |
+| 2026-09-27 | 작업 브랜치는 PR 없이 `develop`에 반영한다 — 브랜치 push CI가 모두 통과하면 로컬에서 squash merge. PR은 요청할 때만. UI 스크린샷은 `docs/screenshots/<주제 ID>/` | 사용자 결정. 브랜치 push에도 CI가 돌게 해서(`chore/ci-guards`) PR 없이도 머지 전에 세 OS · 정적 분석을 확인한다 |
 
 ---
 

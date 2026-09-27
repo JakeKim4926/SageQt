@@ -2,10 +2,31 @@
 
 `git-workflow`의 상세 규칙이다. PR을 만들거나, 머지하거나, 릴리스할 때 읽는다.
 
-## PR 규칙
+## develop 반영 절차 (기본)
+
+PR 없이 반영한다. CI가 작업 브랜치 push에서도 돌기 때문에 머지 전에 세 OS 검증을 받을 수 있다.
+
+1. 작업 브랜치를 push한다 (`git push -u origin <브랜치명>`)
+2. **그 커밋 해시로** CI 실행을 찾아 모든 job이 `success`인지 확인한다 (`sageqt-plan` 공통 함정: 최근 실행이 아니라 해시로)
+3. 로컬에서 `develop`을 최신으로 받고 squash merge한다
+   ```bash
+   git checkout develop
+   git pull origin develop
+   git merge --squash <브랜치명>
+   git commit            # 아래 squash merge 메시지 형식
+   git push origin develop
+   ```
+4. `develop`의 CI도 통과하는지 확인한다
+5. *머지 후 정리*대로 브랜치를 지우고, *PR 작업 로그*를 남긴다 (로그 커밋은 3번 전에 작업 브랜치에 넣는다)
+
+UI 변경의 스크린샷은 `docs/screenshots/<주제 ID>/`에 커밋하고, 수동 확인 표는 주제 파일의 *결과* 절에 적는다.
+
+---
+
+## PR 규칙 (사용자가 PR을 요청한 경우)
 
 ### PR 목적지
-작업 완료 후 PR은 반드시 `develop` 기준으로 생성한다.
+PR은 반드시 `develop` 기준으로 생성한다.
 기본 브랜치가 `main`인 저장소에서의 실수를 막기 위해 `--base develop`을 명시한다.
 
 ```bash
@@ -40,11 +61,10 @@ PR 본문에는 아래 항목을 반드시 기재한다.
 
 ## 머지 전 체크리스트
 
-- [ ] PR에 작업 목적이 기재되어 있는가
-- [ ] PR에 변경 범위가 기재되어 있는가
-- [ ] UI 변경이 있다면 스크린샷이 첨부되어 있는가
+- [ ] 작업 브랜치 CI의 모든 job이 통과했는가 (커밋 해시로 확인)
+- [ ] PR_LOG에 목적과 변경 범위가 기재되어 있는가
+- [ ] UI 변경이 있다면 스크린샷이 `docs/screenshots/<주제 ID>/`에 있는가
 - [ ] 커밋 메시지가 컨벤션을 따르는가
-- [ ] 빌드/컴파일 오류가 없는가
 
 ---
 
@@ -54,8 +74,8 @@ PR 본문에는 아래 항목을 반드시 기재한다.
 - 작업 브랜치에서 `develop`으로 머지할 때는 **squash merge**를 기본으로 사용한다
 - 여러 개의 작업 커밋을 `develop`에 깔끔한 단위로 남긴다
 - 불필요한 merge commit은 만들지 않는다
-- PR 제목은 squash merge 후 `develop`에 남는 최종 커밋 제목으로 간주한다
-- PR 안의 개별 커밋 제목은 squash merge 본문 후보가 되므로 의미 있는 문장으로 유지한다
+- squash merge 커밋 제목이 `develop`에 남는 최종 제목이다
+- 브랜치 안의 개별 커밋 제목은 squash merge 본문 후보가 되므로 의미 있는 문장으로 유지한다
 
 ### squash merge 메시지 형식
 기본적으로 아래 형식을 따른다.
@@ -122,8 +142,8 @@ git push origin --delete <브랜치명>
 ## develop / main 보호 원칙
 
 ### develop
-- 직접 push 금지
-- 반드시 PR을 통해 반영
+- 작업 커밋을 직접 push하지 않는다 — squash merge 커밋만 push한다
+- 반영 전 작업 브랜치의 CI가 모두 통과해야 한다 (*develop 반영 절차*)
 - 통합 개발 기준 브랜치로 사용
 
 ### main
@@ -135,10 +155,10 @@ git push origin --delete <브랜치명>
 
 ## 문서 브랜치 운영 원칙
 
-`docs/*` 브랜치도 동일한 PR 규칙을 따른다.
+`docs/*` 브랜치도 동일한 *develop 반영 절차*를 따른다.
 
-- 목적 없이 직접 머지하지 않는다
-- `develop`을 PR 목적지로 사용한다
+- 목적 없이 머지하지 않는다
+- `develop`으로 반영한다
 - 구조 문서 변경 시 관련 문서와 함께 정리한다
 - 필요하면 PR 로그와 연결한다
 
@@ -146,13 +166,13 @@ git push origin --delete <브랜치명>
 
 ## PR 작업 로그
 
-PR을 생성하거나 머지할 때마다 `docs/decisions/PR_LOG.md`에 아래 형식으로 기록한다.
+`develop`에 반영할 때마다 (PR이 있든 없든) `docs/decisions/PR_LOG.md`에 아래 형식으로 기록한다.
 
 ```markdown
 ## [yyyy-mm-dd] 브랜치명
 - **목적**: 무엇을 위한 작업인지
 - **변경 내용**: 주요 작업 요약
-- **PR 링크**: (있으면)
+- **PR 링크**: (있으면. 없으면 "없음")
 - **결과**: merged / closed / pending
 ```
 

@@ -23,12 +23,12 @@ description: >
 
 ## 기본 원칙
 
-- `main`과 `develop`에는 직접 커밋하지 않는다
+- `main`과 `develop`에는 작업 커밋을 직접 하지 않는다
 - 모든 작업은 작업 브랜치에서 수행한다
-- 모든 PR의 기본 목적지는 `develop`이다
+- **작업 브랜치 → `develop` 반영은 PR 없이 한다** — 작업 브랜치를 push하면 CI가 돌고, 모든 job이 통과하면 로컬에서 `develop`으로 squash merge해 push한다 (사용자 결정 2026-09-27). PR은 사용자가 요청할 때만 만든다
 - 버전 릴리스 시점에만 `develop → main` PR을 생성한다
-- 머지 후에는 작업 브랜치를 삭제한다
-- PR 생성 및 머지 이력은 `docs/decisions/PR_LOG.md`에 기록한다
+- 머지 후에는 작업 브랜치를 로컬 · 원격 모두 삭제한다
+- 머지 이력은 `docs/decisions/PR_LOG.md`에 기록한다 (PR이 없으면 PR 링크 칸에 "없음")
 
 ## 브랜치 단위 원칙 (엄격 적용)
 
@@ -88,7 +88,7 @@ feature/* │ fix/* │ refactor/* │ docs/*
 ```
 
 ### 원칙
-- 일반 작업 브랜치는 모두 `develop`으로 PR을 보낸다
+- 일반 작업 브랜치는 CI 통과 후 `develop`으로 squash merge한다 (절차는 `references/pr-and-release.md`)
 - `main`은 직접 수정하지 않는다
 - `develop → main`은 버전 릴리스 시점에만 수행한다
 - 현재 `release` 브랜치는 운영하지 않는다
@@ -177,7 +177,8 @@ PR을 만들거나, 머지하거나, 릴리스할 때는 **`references/pr-and-re
 
 | 상황 | 볼 섹션 |
 |---|---|
-| PR 생성 | PR 규칙 · PR 작업 로그 |
+| `develop`에 반영 (기본) | develop 반영 절차 · 머지 전 체크리스트 · PR 작업 로그 |
+| PR 생성 (요청 시) | PR 규칙 |
 | 머지 | 머지 전 체크리스트 · 머지 전략 · 머지 후 정리 |
 | 릴리스 | 릴리스 머지 · 릴리스 태그 |
 | 문서 작업 | 문서 브랜치 운영 원칙 |
@@ -192,5 +193,5 @@ PR을 만들거나, 머지하거나, 릴리스할 때는 **`references/pr-and-re
 - 작업은 항상 목적이 분명한 브랜치에서 시작한다
 - 통합은 `develop`에서 수행한다
 - 배포 반영은 `main`에서 관리한다
-- PR은 단순 병합 수단이 아니라 변경 목적과 범위를 기록하는 문서다
+- 머지 기록(PR_LOG, squash 메시지)은 단순 병합 흔적이 아니라 변경 목적과 범위를 기록하는 문서다
 - 모든 릴리스는 실행 가능한 상태와 기록(RELEASE_NOTES, PR_LOG)을 함께 남긴다

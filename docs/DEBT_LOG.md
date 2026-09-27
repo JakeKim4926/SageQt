@@ -5,6 +5,12 @@
 
 ## 열린 항목
 
+### [2026-09-27] 검증누락 — Windows CI의 Qt 새 설치가 간헐적으로 실패한다
+- 위치: .github/workflows/build.yml (Install Qt, aqtinstall 076e165 + py7zr 1.1.3)
+- 설명: 캐시가 없을 때 aqtinstall이 py7zr Bad7zFile로 실패한 적이 있다 (실행 36318817652 windows-x64-debug). 같은 조건의 release job은 성공했다. 캐시는 브랜치 범위라 새 브랜치의 첫 실행은 항상 새로 설치한다.
+- 위험도: 중 — 코드와 무관한 실패가 머지 전 검증을 막을 수 있다
+- 후속: 다시 나오면 py7zr 버전 고정이나 재시도를 검토한다. aqtinstall 정식 릴리스 전환(기존 DEBT)과 함께 본다
+
 ### [2026-09-27] 검증누락 — Linux 실제 화면(X11 · Wayland)에서 폰트 메트릭을 재지 않았다
 - 위치: .github/workflows/font-metrics.yml (Linux는 offscreen만)
 - 설명: Windows · macOS는 실제 플랫폼을 쟀지만 Linux 러너에는 디스플레이가 없어 offscreen만 쟀다. Windows에서는 offscreen의 영문 · 숫자 폭이 실제보다 최대 12.5% 넓었다.
