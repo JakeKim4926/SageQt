@@ -28,7 +28,7 @@ env:
 
 jobs:
   measure:
-    name: font-metrics-${{ matrix.preset }}
+    name: font-metrics-${{ matrix.preset }}-${{ matrix.qpa-platform }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -38,14 +38,27 @@ jobs:
             qt-host: windows
             qt-arch: win64_msvc2022_64
             preset: windows-x64-release
+            qpa-platform: offscreen
+          - os: windows-2025
+            qt-host: windows
+            qt-arch: win64_msvc2022_64
+            preset: windows-x64-release
+            qpa-platform: windows
           - os: macos-15
             qt-host: mac
             qt-arch: clang_64
             preset: macos-arm64-release
+            qpa-platform: offscreen
+          - os: macos-15
+            qt-host: mac
+            qt-arch: clang_64
+            preset: macos-arm64-release
+            qpa-platform: cocoa
           - os: ubuntu-24.04
             qt-host: linux
             qt-arch: linux_gcc_64
             preset: linux-x64-release
+            qpa-platform: offscreen
 
     steps:
       - name: Checkout (actions/checkout v7.0.1)
@@ -76,14 +89,14 @@ jobs:
       - name: Measure
         shell: bash
         env:
-          QT_QPA_PLATFORM: offscreen
+          QT_QPA_PLATFORM: ${{ matrix.qpa-platform }}
         run: |
           probe=$(find out/build/${{ matrix.preset }} -type f \( -name SageFontProbe -o -name SageFontProbe.exe \))
-          "$probe" SageQt/resources font-metrics-${{ matrix.preset }}.json
+          "$probe" SageQt/resources font-metrics-${{ matrix.preset }}-${{ matrix.qpa-platform }}.json
 
       - name: Upload (actions/upload-artifact v7.0.1)
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: font-metrics-${{ matrix.preset }}
-          path: font-metrics-${{ matrix.preset }}.json
+          name: font-metrics-${{ matrix.preset }}-${{ matrix.qpa-platform }}
+          path: font-metrics-${{ matrix.preset }}-${{ matrix.qpa-platform }}.json
           if-no-files-found: error
