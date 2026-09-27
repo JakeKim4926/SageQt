@@ -32,7 +32,7 @@ inline const QString SAGE_UI_FILE_NOT_FOUND = QStringLiteral("파일을 찾을 �
 ### 디자인 값 (색 · 여백 · 폰트 크기)
 위젯·화면 코드에 색 리터럴(`QColor(...)`, `"#RRGGBB"`)과 여백·크기 숫자를 쓰지 않는다.
 디자인 값은 **`ui/style/SageDesignDefine.h` 한 곳**에 둔다. `SageStyle`, delegate, 커스텀 위젯이 모두 이 값을 쓴다.
-세부 목록은 UI 스킬(`sageqt-ui`)이 정한다.
+세부 목록은 `sageqt-ui/references/design-values.md`에 있다.
 
 ### 파일 경로 / 폴더명
 ```cpp

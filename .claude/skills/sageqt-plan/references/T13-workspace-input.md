@@ -11,7 +11,7 @@ SageSDI의 작업 영역(업무별 탭 · 업무 전환 시 상태 보존)과 �
    - 읽을 reference: `coding-design/references/ui-composition.md` (탭은 패널 단위 · 한 위젯이 두 탭 역할 금지) · `style.md`, `coding-rules/references/values-and-platform.md` (`QFileDialog` · 경로 규칙) · `api-shape.md`
 3. 결정 — 착수 시 사용자와 확정
    - 입력 파일 필터: SageSDI는 엑셀 필터를 쓴다 (아래). 샘플 업무는 어떤 파일이든 받는다. 권장 — 필터를 핸들러가 정하게 한다 (업무마다 입력 형식이 다르다). 핸들러 인터페이스 변경이므로 T03 결과와 맞춘다
-   - 탭 구현: `QTabWidget` 또는 `QTabBar` + `QStackedWidget` — `sageqt-ui`의 탭 규격에 맞는 쪽
+   - 탭 구현은 `QTabBar` + `QStackedWidget` (`sageqt-ui/references/widgets.md`, `ui-composition.md` *탭은 패널 단위*). 선택 탭 Bold로 탭 폭이 흔들리는지 확인 (`screens.md`)
 4. 재확인할 사실
    - `SageWorkspacePanel::ApplyDroppedInputPaths` (`:507-`): 여러 파일을 떨어뜨렸을 때의 처리
    - 자동 불러오기 플래그(`m_bAutoLoadOnInput`)를 누가 켜는지 (입력 표를 쓰는 업무?)

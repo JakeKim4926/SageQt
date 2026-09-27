@@ -43,7 +43,7 @@ SageSDI의 사이드바(앱 제목 · 업무 트리 · 기타 동작)를 옮긴�
 | 항목 데이터에 업무 번호와 동작 번호를 같은 정수로 섞기 (`SetItemData`, 동작 10001) | 역할(role)을 분리한다 — 항목 종류 · 업무 · 동작 |
 | `SendMessage(WM_SAGE_SIDEBAR_WORKFLOW / ACTION)`로 부모에 알림 | 의미 있는 signal (`workflowSelected` · `passwordChangeRequested` 등) |
 | `sageAuth` 전역 참조 | 세션을 주입받는다 |
-| `CSageSidebarTree` 커스텀 그리기 | `sageqt-ui` 분류에 따른다 (기본 트리 + `SageStyle` 우선) |
+| `CSageSidebarTree` 커스텀 그리기 | `QTreeView` + `SageSidebarDelegate` (`sageqt-ui/references/widgets.md`) |
 
 ## 함정
 - "이전 선택으로 되돌림"을 선택 변경 signal 안에서 하면 **signal이 다시 발생해 재진입**할 수 있다. 되돌리는 동안 신호를 막거나 선택 모델로 처리한다

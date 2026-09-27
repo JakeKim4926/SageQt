@@ -43,12 +43,12 @@ SageSDI의 디자인 규칙(`sagesdi-ui`)과 T02 측정 결과를 바탕으로 S
 
 ## 작업
 PR 1개: `docs/sageqt-ui-skill`
-- [ ] `sagesdi-ui` 분석 — 유지 · 변경 · 폐기 표
-- [ ] 상수 477개 분류표
-- [ ] 커스텀 컨트롤 25종 분류표
-- [ ] 레이아웃 정책 결정 (T02 근거, 사용자 확정)
-- [ ] `.claude/skills/sageqt-ui/` 작성 — 디자인 값 목록, `SageStyle` 재정의 범위, 위젯 변형(`Q_PROPERTY` enum) 목록, 화면별 규격
-- [ ] 다른 스킬의 "UI 스킬" 참조를 실제 경로로 갱신, 계획 재점검
+- [x] `sagesdi-ui` 분석 — 유지 · 변경 · 폐기 표
+- [x] 상수 477개 분류표
+- [x] 커스텀 컨트롤 25종 분류표
+- [x] 레이아웃 정책 결정 (T02 근거, 사용자 확정)
+- [x] `.claude/skills/sageqt-ui/` 작성 — 디자인 값 목록, `SageStyle` 재정의 범위, 위젯 변형(`Q_PROPERTY` enum) 목록, 화면별 규격
+- [x] 다른 스킬의 "UI 스킬" 참조를 실제 경로로 갱신, 계획 재점검
 
 ## 완료 기준
 - `sageqt-ui` SKILL.md가 300줄 이하이고 references로 나뉘어 있다
@@ -60,4 +60,22 @@ PR 1개: `docs/sageqt-ui-skill`
 - `SageDesignDefine.h` · `SageStyle` 코드 — T08
 
 ## 확인한 사실
-(진행 중 기록)
+- 규모가 지시서와 같다: `sagesdi-ui` 915줄, `SageDefine.h` `constexpr` 477개(색 42), `drawing/` 25종 (2026-09-27, SageSDI `2a6c179`)
+- 분석은 에이전트 세 개로 나눠 초안을 만들고, 표본을 원본과 대조해 확정했다 (값 · 줄 번호 · 사용 수). 분류표는 `docs/decisions/sageqt-ui/`
+  - 상수: `SageDesignDefine.h` 212 · `SageDefine.h`(해당 주제) 117 · 이관됨 52 · 옮기지 않음 96
+  - 컨트롤: 기본 위젯 + SageStyle 9 · 커스텀 위젯 9 · delegate 2 · 불필요 3 · 공용 자원 2
+  - `sagesdi-ui`: 유지 133 · 변경 111 · 폐기 34, 근거가 삭제된 화면 14건
+- SageSDI에는 DPI 인식 설정이 없다 (`dpiAware` 등 0건) → 96 DPI 논리 픽셀로 본다 (추론 — T08에서 화면 확인)
+- SageSDI 문서의 px 폰트 크기와 코드의 0.1pt 값이 pt × 96 / 72로 정확히 맞는다 (105 → 14px, 143 → 19px, 98 → 13px 등) — 픽셀 지정 결정의 근거
+- 문서 · 코드 충돌: `SAGE_EDIT_TEXT_TOP_PAD = 9`(문서 7), `SAGE_ICON_STROKE = 2`(문서 1.5 · 2), `SAGE_BUTTON_TEXT_TOP_OFFSET = 0`(문서 2). SageSDI 문서의 `SAGE_ICON_BUTTON_SIZE` · `SAGE_LABEL_EDIT_GAP`은 코드에 없다
+- 표 선택 행의 첫 열 글자는 `SAGE_COLOR_TEXT` 그대로다 (`SageListCtrl.cpp:331`)
+- 스킬에 인용한 `SAGE_` 이름을 디자인 값 목록 · 원본과 스크립트로 대조했다 — 잘못 인용한 1개(`SAGE_ICON_BUTTON_SIZE`)를 고쳤다
+
+## 결과
+- 작업 브랜치 CI 통과 후 `develop`에 squash merge
+- `.claude/skills/sageqt-ui/` — SKILL.md 130줄 + references 4개 (`design-values.md`는 원본에서 스크립트로 생성: 색 41 · 폰트 10 · 여백 · 크기 161, 쓰는 방식 열 포함)
+- 결정 6건 (`MIGRATION_PLAN.md` 결정 기록): 레이아웃 정책 · 변형은 얇은 서브클래스 · 값 출처는 코드 · 미사용 경로 제외 · 규격 없는 상태와 값은 T08
+- 다른 스킬의 미정 표현 0개 (`style.md` · `values-and-platform.md` · `checklists.md`), `style.md`에 얇은 서브클래스 예외. T08 · T11 · T13 지시 반영
+- 교훈
+  - 에이전트가 만든 표는 표본을 원본과 대조해야 믿을 수 있다 — 상수표는 맞았지만, 에이전트의 "GDI 보정값 4개"는 비고로 확인되는 것이 2개뿐이었다
+  - 값을 손으로 옮기지 않고 원본에서 생성하면 옮겨 적기 오류가 없다 — 대신 생성 규칙(쓰는 방식 분류)을 명시한다

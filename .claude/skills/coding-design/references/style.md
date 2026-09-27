@@ -1,6 +1,6 @@
 # 스타일
 
-`coding-design`의 상세 규칙이다. 모양을 바꾸거나 커스텀 위젯 · delegate를 그릴 때 읽는다. 세부 규격(색 목록, 위젯별 치수)은 UI 스킬(`sageqt-ui`)이 정한다.
+`coding-design`의 상세 규칙이다. 모양을 바꾸거나 커스텀 위젯 · delegate를 그릴 때 읽는다. 세부 규격(색 목록, 위젯별 치수)은 `sageqt-ui` 스킬에 있다.
 
 ## 화면은 그리는 방법을 몰라야 한다
 
@@ -30,10 +30,11 @@ SageStyle + 디자인 값        표준 위젯의 모양 · 색 · 여백 · 폰
 - 색 · 여백 · 폰트 크기의 출처는 `coding-rules/references/values-and-platform.md`의 *디자인 값*을 따른다. `SageStyle`, delegate, 커스텀 위젯의 `paintEvent`가 모두 같은 값을 쓴다
 - 여러 위젯이 공유하는 그리기 조각은 `ui/style/`에 두고, 위젯과 `SageStyle`만 호출한다. 화면 클래스는 호출하지 않는다
 - **Qt 기본 위젯으로 되는 것은 서브클래싱하지 않는다.** 모양은 `SageStyle`이 바꾼다. 커스텀 위젯은 기본 위젯에 없는 요소(필 바, 배지, 상태 카드 등)에만 만든다
+- 예외: 기본 위젯에 **변형 `Q_PROPERTY`만 붙이는 얇은 서브클래스**는 만든다 (예: `SageButton : QPushButton`). `paintEvent` · 모양 코드를 두지 않고, 그리기는 계속 `SageStyle`이 한다 (결정 2026-09-27, T07)
 - 기본 위젯에 없는 새 종류의 UI 요소가 필요하면 한 곳에서만 쓰이더라도 위젯으로 만든다. "지금은 여기서만 쓰니까"가 반복되면 그리기 코드가 화면마다 복제된다
 - **UI는 코드로 만든다. Qt Designer `.ui` 파일을 쓰지 않는다** — 위젯 생성 · 배치 방식을 하나로 유지하고, `ui-composition.md`의 *화면 클래스 작성 형태*를 모든 화면에 똑같이 적용하기 위해서다
 
-세부 규격(색 목록, 위젯별 치수, `SageStyle`이 재정의할 항목)은 UI 스킬(`sageqt-ui`)이 정한다.
+세부 규격은 `sageqt-ui` 스킬에 있다 — 값 `references/design-values.md`, `SageStyle` 재정의 범위 `references/style-scope.md`, 위젯 · 변형 목록 `references/widgets.md`, 화면별 규격 `references/screens.md`.
 
 **판단 기준: 위젯을 하나 추가할 때 화면 클래스의 그리기나 스타일 코드를 함께 고쳐야 하는가.**
 고쳐야 한다면 확장점이 없다는 신호다.

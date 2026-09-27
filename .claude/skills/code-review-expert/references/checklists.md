@@ -101,7 +101,7 @@ ui  ──→  core  ←──  infra
 - 고정 좌표 대신 레이아웃을 쓰는가
 - 상태 변화(실행 중 / 완료 / 실패)가 예측 가능한가
 
-세부 규격(색 목록, 위젯별 치수)은 UI 스킬(`sageqt-ui`)이 작성된 뒤 그 기준을 따른다.
+세부 규격은 `sageqt-ui` 스킬(`design-values.md` · `style-scope.md` · `widgets.md` · `screens.md`)을 따른다. 특히 글자 폭 고정 · 포인트 폰트 · GDI식 서체 이름 · 규격 없는 값의 추측을 확인한다.
 
 ---
 
