@@ -2,6 +2,8 @@
 
 #include <QApplication>
 
+#ifdef _WIN32
+#endif
 int main(int argc, char* argv[])
 {
     QApplication application(argc, argv);
