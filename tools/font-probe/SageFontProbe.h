@@ -15,6 +15,7 @@ private:
     static bool describeEnvironment(QJsonObject& outEnvironment, QString& outError);
     static QJsonArray describeLegacyFaces();
     static QJsonArray describeRoles();
+    static QJsonObject describeFontMetrics(const QFont& font);
     static QJsonObject describeResolvedFont(const QFont& font);
     static QJsonArray measureTexts(const QFont& font);
 };

@@ -14,6 +14,8 @@ struct SageFontProbeRole
 };
 
 inline constexpr double SAGE_FONT_PROBE_TENTHS_PER_POINT = 10.0;
+inline constexpr double SAGE_FONT_PROBE_REFERENCE_DPI = 96.0;
+inline constexpr double SAGE_FONT_PROBE_POINTS_PER_INCH = 72.0;
 inline constexpr int SAGE_FONT_PROBE_INVALID_FONT_ID = -1;
 inline constexpr qsizetype SAGE_FONT_PROBE_ARGUMENT_COUNT = 3;
 inline constexpr qsizetype SAGE_FONT_PROBE_FONT_DIRECTORY_ARGUMENT = 1;
@@ -85,6 +87,8 @@ inline const QString SAGE_FONT_PROBE_KEY_ROLE = QStringLiteral("role");
 inline const QString SAGE_FONT_PROBE_KEY_REQUESTED_FAMILY = QStringLiteral("requestedFamily");
 inline const QString SAGE_FONT_PROBE_KEY_REQUESTED_WEIGHT = QStringLiteral("requestedWeight");
 inline const QString SAGE_FONT_PROBE_KEY_POINT_SIZE = QStringLiteral("pointSize");
+inline const QString SAGE_FONT_PROBE_KEY_PIXEL_SIZE = QStringLiteral("pixelSize");
+inline const QString SAGE_FONT_PROBE_KEY_PIXEL_METRICS = QStringLiteral("pixelMetrics");
 inline const QString SAGE_FONT_PROBE_KEY_RESOLVED_FAMILY = QStringLiteral("resolvedFamily");
 inline const QString SAGE_FONT_PROBE_KEY_RESOLVED_STYLE = QStringLiteral("resolvedStyle");
 inline const QString SAGE_FONT_PROBE_KEY_RESOLVED_WEIGHT = QStringLiteral("resolvedWeight");

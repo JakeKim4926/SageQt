@@ -90,24 +90,39 @@ QJsonArray SageFontProbe::describeRoles()
 {
     QJsonArray roles;
     for (const SageFontProbeRole& role : SAGE_FONT_PROBE_ROLES) {
-        QFont font(role.m_family);
-        font.setWeight(role.m_weight);
-        font.setPointSizeF(role.m_pointSizeTenths / SAGE_FONT_PROBE_TENTHS_PER_POINT);
+        const double pointSize = role.m_pointSizeTenths / SAGE_FONT_PROBE_TENTHS_PER_POINT;
+        const int pixelSize = qRound(pointSize * SAGE_FONT_PROBE_REFERENCE_DPI / SAGE_FONT_PROBE_POINTS_PER_INCH);
 
-        const QFontMetricsF metrics(font);
-        QJsonObject roleReport = describeResolvedFont(font);
+        QFont pointFont(role.m_family);
+        pointFont.setWeight(role.m_weight);
+        pointFont.setPointSizeF(pointSize);
+
+        QFont pixelFont(role.m_family);
+        pixelFont.setWeight(role.m_weight);
+        pixelFont.setPixelSize(pixelSize);
+
+        QJsonObject roleReport = describeFontMetrics(pointFont);
         roleReport.insert(SAGE_FONT_PROBE_KEY_ROLE, role.m_name);
         roleReport.insert(SAGE_FONT_PROBE_KEY_REQUESTED_FAMILY, role.m_family);
         roleReport.insert(SAGE_FONT_PROBE_KEY_REQUESTED_WEIGHT, static_cast<int>(role.m_weight));
-        roleReport.insert(SAGE_FONT_PROBE_KEY_POINT_SIZE, font.pointSizeF());
-        roleReport.insert(SAGE_FONT_PROBE_KEY_HEIGHT, metrics.height());
-        roleReport.insert(SAGE_FONT_PROBE_KEY_ASCENT, metrics.ascent());
-        roleReport.insert(SAGE_FONT_PROBE_KEY_DESCENT, metrics.descent());
-        roleReport.insert(SAGE_FONT_PROBE_KEY_LINE_SPACING, metrics.lineSpacing());
-        roleReport.insert(SAGE_FONT_PROBE_KEY_TEXTS, measureTexts(font));
+        roleReport.insert(SAGE_FONT_PROBE_KEY_POINT_SIZE, pointFont.pointSizeF());
+        roleReport.insert(SAGE_FONT_PROBE_KEY_PIXEL_SIZE, pixelSize);
+        roleReport.insert(SAGE_FONT_PROBE_KEY_PIXEL_METRICS, describeFontMetrics(pixelFont));
         roles.append(roleReport);
     }
     return roles;
+}
+
+QJsonObject SageFontProbe::describeFontMetrics(const QFont& font)
+{
+    const QFontMetricsF metrics(font);
+    QJsonObject report = describeResolvedFont(font);
+    report.insert(SAGE_FONT_PROBE_KEY_HEIGHT, metrics.height());
+    report.insert(SAGE_FONT_PROBE_KEY_ASCENT, metrics.ascent());
+    report.insert(SAGE_FONT_PROBE_KEY_DESCENT, metrics.descent());
+    report.insert(SAGE_FONT_PROBE_KEY_LINE_SPACING, metrics.lineSpacing());
+    report.insert(SAGE_FONT_PROBE_KEY_TEXTS, measureTexts(font));
+    return report;
 }
 
 QJsonObject SageFontProbe::describeResolvedFont(const QFont& font)
