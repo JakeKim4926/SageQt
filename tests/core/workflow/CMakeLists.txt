@@ -1,0 +1,15 @@
+qt_add_executable(SageWorkflowResponseTest SageWorkflowResponseTest.cpp)
+target_link_libraries(SageWorkflowResponseTest PRIVATE sage_core Qt::Test)
+add_test(NAME SageWorkflowResponseTest COMMAND SageWorkflowResponseTest)
+
+qt_add_executable(SageWorkflowResultPresenterTest SageWorkflowResultPresenterTest.cpp)
+target_link_libraries(SageWorkflowResultPresenterTest PRIVATE sage_core Qt::Test)
+add_test(NAME SageWorkflowResultPresenterTest COMMAND SageWorkflowResultPresenterTest)
+
+qt_add_executable(SageWorkflowRegistryTest SageWorkflowRegistryTest.cpp)
+target_link_libraries(SageWorkflowRegistryTest PRIVATE sage_core Qt::Test)
+add_test(NAME SageWorkflowRegistryTest COMMAND SageWorkflowRegistryTest)
+
+qt_add_executable(SageSampleWorkflowHandlerTest handlers/SageSampleWorkflowHandlerTest.cpp)
+target_link_libraries(SageSampleWorkflowHandlerTest PRIVATE sage_core Qt::Test)
+add_test(NAME SageSampleWorkflowHandlerTest COMMAND SageSampleWorkflowHandlerTest)

@@ -31,8 +31,7 @@ description: >
 
 | ID | 단계 | 주제 | 선행 | 결정 대기 | 상태 |
 |---|---|---|---|---|---|
-| [T03](references/T03-workflow-core.md) | 로직 | 워크플로 core 이관 · 테스트 기반 | — | 요청 ID 이름 | 대기 |
-| [T04](references/T04-db-infra.md) | 로직 | DB 기반 (QtSql) | T03 | 앱 식별 정보 · 레거시 마이그레이션 생략 | 대기 |
+| [T04](references/T04-db-infra.md) | 로직 | DB 기반 (QtSql) | — | 앱 식별 정보 · 레거시 마이그레이션 생략 | 대기 |
 | [T05](references/T05-auth.md) | 로직 | 인증 · 사용자 | T04 | 비밀번호 해시 방식 · 비밀번호 정책 | 대기 |
 | [T06](references/T06-app-bootstrap.md) | 로직 | 앱 조립 (`main.cpp`) | T05 | — | 대기 |
 | [T07](references/T07-ui-skill.md) | UI 기반 | `sageqt-ui` 스킬 작성 | — | — | 대기 |
@@ -159,6 +158,7 @@ MFC → Qt 이관에서 조용히 동작이 바뀌는 지점, 도구 · 환경 �
 | 배치 파일 작성 | `printf`로 쓰지 않는다 — 경로의 `\18`을 8진수로 해석해 경로가 깨진다. Write 도구로 쓴다 |
 | CI 결과 확인 | 푸시 직후 "최근 실행"을 조회하면 이전 실행을 볼 수 있다 → **커밋 해시로** 실행을 찾는다. job 상태가 실행 상태보다 늦게 반영될 수 있다 → 모든 job이 completed일 때까지 확인한다 |
 | 위반 검출 테스트 | "실패해야 하는" 확인은 실패 원인이 의도한 것인지 로그로 본다. 환경 문제로 실패한 것을 성공으로 오인하지 않는다 |
+| 로컬 CMake | `C:/Program Files/CMake`의 **3.23.0-rc2**가 PATH에서 먼저 잡힐 수 있다. 이 RC는 `define_property` 버그로 `find_package(Qt6 COMPONENTS Test)`가 실패한다 → VS 번들 `C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe`(4.3.1)를 경로로 지정한다 |
 | SageSDI 원본 사실 | 주제 파일의 경로 · 줄 번호는 작성 시점(2026-09-24) 기준이다. 착수 시 다시 확인한다 |
 
 ---

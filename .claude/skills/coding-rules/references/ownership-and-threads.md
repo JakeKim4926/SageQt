@@ -56,6 +56,8 @@ raw 포인터(`T*`)는 항상 **빌려 쓰는 것**이다.
 예: DB 연결 스코프 — 연결 객체를 먼저 비운 뒤 `QSqlDatabase::removeDatabase`를 호출해야 한다.
 이 클래스만 소멸자를 갖고, 복사를 `= delete`로 막는다.
 
+인터페이스(`ISage*`)의 `virtual ~ISage*() = default;`는 정리 코드가 없어 이 규약의 대상이 아니다. `std::unique_ptr<ISage*>`로 구현체를 지울 때 필요하므로 모든 인터페이스에 둔다.
+
 ### 규약 4 — 람다 연결에는 반드시 수신 객체를 넘긴다
 
 ```cpp

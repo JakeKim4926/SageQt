@@ -13,6 +13,7 @@ add_compile_options(
 )
 
 add_subdirectory(define)
+add_subdirectory(core)
 add_subdirectory(ui)
 
 qt_add_executable(SageQt
@@ -30,6 +31,8 @@ target_link_libraries(SageQt
         sage_ui
         Qt::Widgets
 )
+
+add_subdirectory(${PROJECT_SOURCE_DIR}/tests ${PROJECT_BINARY_DIR}/tests)
 
 option(SAGE_BUILD_TOOLS "Build the developer tools under tools/" OFF)
 if(SAGE_BUILD_TOOLS)

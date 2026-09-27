@@ -12,7 +12,7 @@ SageSDI의 헤더(업무 제목 · 분류 · 로그인 상태 · 로그인/로�
 3. 결정 — 없음
 4. 재확인할 사실
    - SageSDI에 사용자 관리 화면(사용자 추가 · 삭제 · 역할 변경)이 있는지 — `SageUserService`에 `AddUser` · `LoadAll` · `RemoveUser`가 있고 저장소에 역할 변경 SQL이 있다. 화면이 없으면 이관 범위에 넣지 않는다 (사용자에게 보고)
-   - `SetCategory`에 들어가는 값이 무엇인지 (업무 분류? T03 사이드바 정보와의 관계)
+   - `SetCategory`의 값은 사이드바에서 선택한 업무 항목의 부모 그룹 라벨이다 (`SageSidebarPanel.cpp:75-84` `GetSelectedCategory`, T03에서 확인) → 핸들러의 `category()`를 쓴다
 
 ## SageSDI에서 옮길 것
 원본: `D:/Projects/SageSDI/SageSDI/app/ui/panels/SageHeaderPanel.h/.cpp`

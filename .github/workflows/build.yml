@@ -76,6 +76,9 @@ jobs:
       - name: Build
         run: cmake --build --preset ${{ matrix.preset }}
 
+      - name: Test
+        run: ctest --preset ${{ matrix.preset }}
+
   static-analysis:
     name: static-analysis
     runs-on: ubuntu-24.04

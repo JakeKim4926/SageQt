@@ -49,7 +49,7 @@ description: >
 
 ```
 SageQt/                                 ← 저장소 루트
-├── CMakeLists.txt                      ← 최상위 (하위 디렉터리 추가만)
+├── CMakeLists.txt                      ← 최상위 (하위 디렉터리 추가 · enable_testing()만)
 ├── CMakePresets.json                   ← OS별 세팅 — OS는 코드가 아니라 여기서 갈린다
 ├── CLAUDE.md
 ├── docs/

@@ -6,7 +6,7 @@
 SageSDI의 SQLite 연결 · 스키마 준비를 QtSql로 옮긴다. 이 주제가 끝나면 `sage_infra`가 연결 설정을 주입받아 작업마다 연결을 열고 닫으며, 스키마가 세 OS의 사용자 데이터 폴더에 만들어진다.
 
 ## 시작 전에
-1. 선행 주제: T03
+1. 선행 주제: 없음 (T03 완료 — `sage_core` · `tests/` 기반이 있다)
 2. 스킬 로드: `git-workflow`, `coding-design`, `coding-rules`
    - 읽을 reference: `coding-design/references/cmake-targets.md` · `threads-and-db.md`, `coding-rules/references/ownership-and-threads.md` (RAII 예외) · `values-and-platform.md`
 3. 결정 대기 — 사용자에게 확정받는다

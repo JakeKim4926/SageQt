@@ -89,13 +89,13 @@ SageSDI의 워크플로 모델(핸들러 인터페이스 · 등록부 · 응답 
 
 ## 작업
 PR 1개: `feature/workflow-core` (테스트 기반이 크면 `chore/test-foundation`으로 분리)
-- [ ] `sage_core` 타깃 생성 (`SageQt/core/`, include 루트 격리)
-- [ ] `tests/` 기반: 루트 `CMakeLists.txt`에 테스트 활성화와 `add_subdirectory(tests)`, Qt Test, `CMakePresets.json`에 테스트 프리셋, CI에서 테스트 실행
-- [ ] 핸들러 인터페이스 · 탭 · 결과 표 타입 · 결과 행 · 응답 · 결과 변환 · 등록부 · 샘플 핸들러 이관
-- [ ] 사이드바 표시 정보를 인터페이스에 추가 (`BuildTree()` 확인 후)
-- [ ] 쓰이는 문자열 상수를 `SageDefine.h`로 옮김 (쓰이지 않는 것은 옮기지 않는다)
-- [ ] 테스트: 결과 변환(성공 · 실패 · 요약 행 순서와 값), 샘플 핸들러 응답, 등록부 조회, JSON 중첩 읽기
-- [ ] 위반 검출 테스트: `core`에서 `<QWidget>`을 include하면 컴파일 에러가 나는지 확인하고 되돌린다
+- [x] `sage_core` 타깃 생성 (`SageQt/core/`, include 루트 격리)
+- [x] `tests/` 기반: 루트 `CMakeLists.txt`에 `enable_testing()`, `SageQt/CMakeLists.txt`에서 `tests/` 추가 (`cmake-targets.md`), Qt Test, `CMakePresets.json`에 테스트 프리셋, CI에서 테스트 실행
+- [x] 핸들러 인터페이스 · 탭 · 결과 표 타입 · 결과 행 · 응답 · 결과 변환 · 등록부 · 샘플 핸들러 이관
+- [x] 사이드바 표시 정보를 인터페이스에 추가 (`BuildTree()` 확인 후)
+- [x] 쓰이는 문자열 상수를 `SageDefine.h`로 옮김 (쓰이지 않는 것은 옮기지 않는다)
+- [x] 테스트: 결과 변환(성공 · 실패 · 요약 행 순서와 값), 샘플 핸들러 응답, 등록부 조회, JSON 중첩 읽기
+- [x] 위반 검출 테스트: `core`에서 `<QWidget>`을 include하면 컴파일 에러가 나는지 확인하고 되돌린다
 
 ## 완료 기준
 - 3-OS CI에서 빌드와 테스트가 모두 통과한다
@@ -109,4 +109,20 @@ PR 1개: `feature/workflow-core` (테스트 기반이 크면 `chore/test-foundat
 - 결과 표 화면 — T15
 
 ## 확인한 사실
-(진행 중 기록)
+- SageSDI 최신 커밋 `2a6c179`에서 원본 경로 · 줄 번호 · 값이 이 파일과 같다 (`SageDefine.h:241-243 · 317-318 · 342-357 · 383-385`)
+- 사이드바 업무 항목 라벨은 헤더 제목과 같은 `SAGE_UI_SAMPLE_NAME`, 그룹은 `SAGE_UI_SIDEBAR_GROUP_SAMPLE = L"샘플"` (`SageDefine.h:496`). 그룹 라벨은 헤더의 분류(`SetCategory`)로도 쓰인다 (`SageSidebarPanel.cpp:75-84`) → 핸들러에 `sidebarLabel()` · `category()`
+- SageSDI `JsonExtractIntText`는 숫자만 읽는다 (부호 없음). SageQt는 `QJsonValue::toInteger`라 음수를 `"-1"`로 읽는다 — SageSDI는 빈 문자열로 행을 건너뛴다. 음수 개수는 나오지 않으므로 그대로 둔다
+- SageSDI `GetFolderPath`는 구분자가 없으면 빈 문자열, `QFileInfo::path()`는 `"."`. 입력은 파일 창 · 드롭의 절대 경로라 같다. 테스트는 절대 경로로 고정
+- SageSDI의 문자열 검색식 JSON은 최상위 · 중첩을 구분하지 않는다. SageQt는 `payload` · `error` 안만 읽는다 — 최상위 키를 무시하는 테스트로 고정 (`buildRowsIgnoresSummaryKeysOutsidePayload`)
+- `enable_testing()`은 루트, `tests/`는 `SageQt/CMakeLists.txt`에서 추가해도 빌드 루트의 `ctest --preset`이 테스트 4개를 찾는다
+- `C:/Program Files/CMake`의 CMake 3.23.0-rc2는 `define_property(... INITIALIZE_FROM_VARIABLE)`를 잘못 거부해 `find_package(Qt6 COMPONENTS Test)`가 실패한다. VS 번들 CMake 4.3.1은 정상 (최소 재현으로 확인) → `sageqt-plan` 공통 함정에 추가
+- 위반 검출 테스트: `SageWorkflowResponse.cpp`에 `#include <QWidget>` → MSVC `C1083: 포함 파일을 열 수 없습니다. 'QWidget'` (로컬 Windows, 되돌림)
+- `git grep -il sample -- SageQt/` 결과: `SageQt/core/CMakeLists.txt` · `SageWorkflowRegistry.cpp` · `SageSampleWorkflowHandler.cpp/.h` · `SageDefine.h` — 완료 기준 D의 4곳
+
+## 결과
+- PR 없이 `develop`에 직접 머지 (사용자 결정). 머지 전 검증은 로컬 Windows — 빌드(경고 에러화) · 테스트 4개 17건 · clang-format · clang-tidy · 위반 검출 테스트. 세 OS 검증은 머지 후 `develop` CI
+- `sage_core` 타깃과 워크플로 모델 13개 파일, `tests/` 기반(Qt Test · 테스트 프리셋 6개 · CI `ctest` 단계), 테스트 4개
+- 규칙 추가: 인터페이스 기본 소멸자, 테스트 추가 위치, 테스트 데이터 리터럴 기준
+- 교훈
+  - 오류 원인을 "새 CMake의 새 검사"로 추정했다가 틀렸다 — 최소 재현을 두 버전에서 돌려 3.23-rc2 버그로 확정했다. 도구 오류는 먼저 어느 버전이 실행됐는지 확인한다
+  - 규칙 문구를 쓴 직후 실제 코드에 적용해 보니 모호했다 (테스트 기대값 리터럴) — 규칙은 첫 적용 때 다시 읽는다

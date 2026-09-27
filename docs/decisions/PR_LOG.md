@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-27] feature/workflow-core
+- **목적**: SageSDI 워크플로 모델을 `sage_core`로 옮기고 Qt Test 기반을 만든다 (sageqt-plan T03)
+- **변경 내용**: `sage_core` — 핸들러 인터페이스(`QJsonObject` · `QList` · `enum class`, 사이드바 라벨 · 분류 추가) · 탭 · 결과 표 타입 · 결과 행 · 응답 · 결과 변환 · 등록부 · 샘플 핸들러(요청 ID `sample-run`). `tests/` 기반과 테스트 4개(17건), 테스트 프리셋 6개, CI `ctest` 단계. 규칙 3건(인터페이스 기본 소멸자 · 테스트 추가 위치 · 테스트 데이터 리터럴). T03 완료 처리
+- **PR 링크**: 없음 — 사용자 결정으로 `develop`에 직접 squash merge
+- **결과**: merged (develop, 2026-09-27)
+
 ## [2026-09-27] chore/font-metrics-probe
 - **목적**: SageSDI 번들 폰트가 세 OS의 Qt에서 어떤 이름 · 크기로 그려지는지 실측해 T07 레이아웃 정책의 근거를 만든다 (sageqt-plan T02)
 - **변경 내용**: `coding-design`에 `tools/` · `SAGE_BUILD_TOOLS` 규칙. `SageQt/resources/`에 폰트 6개 + OFL 라이선스 2개. 측정 도구 `tools/font-probe`(역할 11종 × 문자열 9개, 포인트 · 픽셀 크기). `font-metrics.yml`로 Windows · macOS 실제 플랫폼 + 3 OS offscreen 측정. 결과 — GDI식 폰트 이름은 환경마다 다른 폰트로 잡힘, macOS는 72 DPI라 포인트 크기로 약 25% 작고 픽셀 크기로는 ±4% 안. T02 완료 처리

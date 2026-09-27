@@ -11,7 +11,7 @@ SageSDI의 사이드바(앱 제목 · 업무 트리 · 기타 동작)를 옮긴�
    - 읽을 reference: `coding-design/references/ui-composition.md` (창 역할 · 소유 규칙 · 작성 형태) · `style.md` · `model-view.md`, `coding-rules/references/api-shape.md` (signal/slot)
 3. 결정 — 없음. 사이드바 맨 위 앱 제목은 T04에서 정한 앱 식별 정보의 표시 이름을 따른다 (`MIGRATION_PLAN.md` 결정 기록)
 4. 재확인할 사실
-   - T03에서 핸들러에 추가한 사이드바 정보 필드
+   - T03에서 핸들러에 추가한 사이드바 정보 필드: `sidebarLabel()`(샘플 "샘플 업무") · `category()`(샘플 "샘플" — 트리의 그룹). 등록부는 지금 `findHandler`만 있다 — 트리를 만들 핸들러 목록 접근은 이 주제에서 추가한다
 
 ## SageSDI에서 옮길 것
 원본: `D:/Projects/SageSDI/SageSDI/app/ui/panels/SageSidebarPanel.cpp`
