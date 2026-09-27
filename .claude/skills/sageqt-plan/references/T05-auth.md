@@ -6,7 +6,7 @@
 SageSDI의 사용자 · 로그인 · 비밀번호 변경 · 초기 관리자 생성을 옮긴다. core는 경계 인터페이스로 저장소를 쓰고, 세션은 전역이 아니라 주입받는 객체가 된다.
 
 ## 시작 전에
-1. 선행 주제: T04
+1. 선행 주제: 없음 (T04 완료 — Repository는 `SageDbConnection`으로 작업마다 연결을 연다. SQL은 Repository `.cpp` 안 상수)
 2. 스킬 로드: `git-workflow`, `coding-design`, `coding-rules`
    - 읽을 reference: `coding-design/references/cmake-targets.md` (경계 인터페이스) · `threads-and-db.md`, `coding-rules/references/api-shape.md` (null 계약 · `std::optional`) · `values-and-platform.md`
 3. 결정 대기 — 사용자에게 확정받는다

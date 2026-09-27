@@ -28,3 +28,4 @@ BreakConstructorInitializers: BeforeComma
 PackConstructorInitializers: Never
 ConstructorInitializerIndentWidth: 4
 IncludeBlocks: Preserve
+FixNamespaceComments: false

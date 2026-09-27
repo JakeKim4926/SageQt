@@ -11,7 +11,7 @@ SageSDI `CSageSDIApp::InitInstance` · `ExitInstance`가 하던 앱 시작 · �
    - 읽을 reference: `coding-design/references/threads-and-db.md` (전역 상태 · 종료 대기 · 스키마 준비 시점) · `cmake-targets.md`
 3. 결정 — 없음. 조직 이름 · 앱 이름은 T04에서 정한 앱 식별 정보를 따른다 (`MIGRATION_PLAN.md` 결정 기록)
 4. 재확인할 사실
-   - T04에서 정한 DB 파일 이름과 경로
+   - DB 경로는 `SageDbConfig::buildDefaultConfig`가 `QStandardPaths::AppDataLocation` + `sageqt.db`로 만든다 (T04). 조직 · 앱 이름(`Sage` · `SageQt`, 결정 기록)을 **먼저** 설정해야 이 경로가 맞다. 스키마 준비는 `SageSchemaInitializer::prepare`
 
 ## SageSDI에서 옮길 것
 원본: `D:/Projects/SageSDI/SageSDI/SageSDI.cpp`

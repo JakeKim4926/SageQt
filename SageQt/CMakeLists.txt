@@ -1,4 +1,4 @@
-find_package(Qt6 6.11 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 6.11 REQUIRED COMPONENTS Core Sql Widgets)
 qt_standard_project_setup(REQUIRES 6.11)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -14,6 +14,7 @@ add_compile_options(
 
 add_subdirectory(define)
 add_subdirectory(core)
+add_subdirectory(infra)
 add_subdirectory(ui)
 
 qt_add_executable(SageQt

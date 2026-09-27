@@ -63,11 +63,11 @@ CREATE TABLE IF NOT EXISTS SageUser (
 
 ## 작업
 PR 1개: `feature/db-infra`
-- [ ] `sage_infra` 타깃 생성 (`SageQt/infra/`, `Qt::Sql` PRIVATE)
-- [ ] 연결 설정 값 타입 (경로 · 옵션) — `main.cpp`가 주입한다
-- [ ] RAII 연결 스코프: 고유 이름으로 열기, busy timeout, `PRAGMA foreign_keys = ON`, 닫을 때 순서 보장
-- [ ] 스키마 준비 (테이블 생성, 반복 실행해도 안전)
-- [ ] 테스트: 임시 폴더에 스키마 생성 · 두 번 실행해도 성공 · 새 연결마다 `foreign_keys`가 켜져 있음 · 여러 `QtConcurrent` 작업이 각자 연결을 열어 동시에 조회
+- [x] `sage_infra` 타깃 생성 (`SageQt/infra/`, `Qt::Sql` PRIVATE)
+- [x] 연결 설정 값 타입 (경로 · 옵션) — `main.cpp`가 주입한다
+- [x] RAII 연결 스코프: 고유 이름으로 열기, busy timeout, `PRAGMA foreign_keys = ON`, 닫을 때 순서 보장
+- [x] 스키마 준비 (테이블 생성, 반복 실행해도 안전)
+- [x] 테스트: 임시 폴더에 스키마 생성 · 두 번 실행해도 성공 · 새 연결마다 `foreign_keys`가 켜져 있음 · 여러 `QtConcurrent` 작업이 각자 연결을 열어 동시에 조회
 
 ## 완료 기준
 - 3-OS CI에서 빌드와 테스트가 모두 통과한다
@@ -80,4 +80,16 @@ PR 1개: `feature/db-infra`
 - 앱 시작 시 스키마 준비 호출 — T06
 
 ## 확인한 사실
-(진행 중 기록)
+- 결정: 앱 식별 정보는 조직 `Sage` · 앱 `SageQt` · 표시 `SageQt` · DB `sageqt.db` · 번들 ID `com.sage.sageqt` · 회사 `Sage` · 제품 `SageQt` · 저작권 `Copyright © 2026 Sage`. 레거시 마이그레이션은 옮기지 않는다 (`MIGRATION_PLAN.md` 결정 기록)
+- Qt 문서: `QSQLITE_BUSY_TIMEOUT`은 밀리초, 0 이하면 끔. SQLite는 없는 DB 파일은 만들지만 **상위 폴더는 만들지 않는다** (문서에 폴더 언급 없음) — SageSDI도 `EnsureDirectoryExists`(`SqlContext.cpp:41`)로 먼저 만들었다 → `SageDbConnection`이 `QDir::mkpath`
+- SageSDI 오류 문구를 옮겼다 (`SqlContext.cpp:37 · 54 · 117 · 204 · 224`). 폴더 생성 실패의 `ErrorCode=%lu`(Win32 `GetLastError`)는 뺐다
+- 로컬 `qsqlite.dll` 1,986,872바이트 (`D:/Qt/6.11.2/msvc2022_64/plugins/sqldrivers/`)
+- "공개 헤더에 QSql 타입 0개"는 infra 밖(`main.cpp` · core · ui)이 쓰는 헤더(`SageDbConfig.h` · `SageSchemaInitializer.h`) 기준이다. 연결 스코프 `SageDbConnection.h`는 Repository가 infra 안에서 쓰는 부품이라 `QSqlDatabase`가 나온다 (사용자 확인). `grep -rl QSql SageQt/`는 `SageQt/infra/` 밖에서 0건
+- `Qt::Sql`은 `sage_infra`가 PRIVATE로 링크하지만, 정적 라이브러리라 소비 타깃에서도 이름이 해석되어야 한다 → `SageQt/CMakeLists.txt`의 `find_package`에 `Sql`
+- clang-format LLVM 기본값 `FixNamespaceComments`가 `} // namespace` 주석을 넣는다 — T03 테스트에 이미 들어가 있었다. `.clang-format`에서 끄고 지웠다
+
+## 결과
+- PR 없이 `develop`에 직접 머지 (T03과 같은 방식). 머지 전 검증은 로컬 Windows — 빌드(경고 에러화) · 테스트 7개 · clang-format · clang-tidy · grep(QSql 누출 · 플랫폼 분기 · `auto` · 주석). 세 OS는 머지 후 `develop` CI
+- `sage_infra`: `SageDbConfig` · `SageDbConnection`(RAII) · `SageSchemaInitializer` · `SageDbDefine.h`. 테스트 3개(`tests/infra/db/`)
+- 교훈
+  - 포맷 도구가 규칙 위반(주석)을 만들 수 있다 — 도구 적용 뒤 결과를 규칙으로 다시 본다. 주석 금지는 도구로 검사하지 않아 한 주제 동안 남아 있었다

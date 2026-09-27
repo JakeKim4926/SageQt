@@ -132,7 +132,7 @@ QJsonObject successResponse(const QJsonObject& payload)
     return SageWorkflowResponse::success(QStringLiteral("sample-run"), payload);
 }
 
-} // namespace
+}
 
 class SageWorkflowResultPresenterTest : public QObject
 {

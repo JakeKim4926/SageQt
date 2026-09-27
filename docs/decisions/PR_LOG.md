@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-27] feature/db-infra
+- **목적**: SageSDI의 SQLite 연결 · 스키마 준비를 QtSql로 옮긴다 (sageqt-plan T04)
+- **변경 내용**: `sage_infra` — `SageDbConfig`(기본 경로 = 앱 데이터 폴더 `sageqt.db`, busy timeout 5000ms) · `SageDbConnection`(고유 연결 이름 · 폴더 생성 · `PRAGMA foreign_keys` · RAII 정리) · `SageSchemaInitializer`(`SageUser`). 테스트 3개. 앱 식별 정보 · 레거시 마이그레이션 생략 결정 기록. `.clang-format` `FixNamespaceComments: false`와 T03 테스트의 namespace 주석 제거. T04 완료 처리
+- **PR 링크**: 없음 — `develop`에 직접 squash merge
+- **결과**: merged (develop, 2026-09-27)
+
 ## [2026-09-27] feature/workflow-core
 - **목적**: SageSDI 워크플로 모델을 `sage_core`로 옮기고 Qt Test 기반을 만든다 (sageqt-plan T03)
 - **변경 내용**: `sage_core` — 핸들러 인터페이스(`QJsonObject` · `QList` · `enum class`, 사이드바 라벨 · 분류 추가) · 탭 · 결과 표 타입 · 결과 행 · 응답 · 결과 변환 · 등록부 · 샘플 핸들러(요청 ID `sample-run`). `tests/` 기반과 테스트 4개(17건), 테스트 프리셋 6개, CI `ctest` 단계. 규칙 3건(인터페이스 기본 소멸자 · 테스트 추가 위치 · 테스트 데이터 리터럴). T03 완료 처리
