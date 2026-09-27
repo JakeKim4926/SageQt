@@ -44,19 +44,19 @@
 
 ## 작업
 PR 1개: `chore/static-analysis`
-- [ ] `.clang-format` — `format-and-tools.md`의 포맷 6개 규칙을 옮긴다
-- [ ] 기존 소스(`SageQt/**`)에 clang-format을 돌려 변경이 0줄인지 확인한다. 변경이 생기면 포맷 커밋을 분리한다
-- [ ] `.clang-tidy` — 네이밍 표, `auto` · `NULL` · C 스타일 캐스트 금지, `explicit` · `override` · `const`
-- [ ] `build.yml`에 정적 분석 job 추가 (ubuntu-24.04): Qt 설치(기존 고정 action · aqtinstall 그대로) → configure(`linux-x64-debug` + compile commands) → clang-format 검사 → clang-tidy → clazy → 플랫폼 분기 검사
-- [ ] 플랫폼 분기 검사: 소스에 `Q_OS_` · `_WIN32` · `__APPLE__` · `__linux__` · `<windows.h>`가 있으면 실패
-- [ ] 빌드 job 6개의 configure에 경고 에러화 추가
-- [ ] **음성 테스트**: 같은 PR에서 위반을 일부러 넣은 커밋 4개(포맷 · 네이밍 · 플랫폼 분기 · 컴파일 경고)로 해당 job이 실패하는지 확인하고, 각각 되돌린다. 실행 링크를 PR 본문에 남긴다
-- [ ] (승인 시) `docs/DEBT_LOG.md` 신설 + aqtinstall 항목 — 별도 `docs:` 커밋
-- [ ] 도구로 검사할 수 없는 규칙이 있으면 `format-and-tools.md`에 명시 — 별도 `docs:` 커밋, `sageqt-plan` 재점검
+- [x] `.clang-format` — `format-and-tools.md`의 포맷 6개 규칙을 옮긴다
+- [x] 기존 소스(`SageQt/**`)에 clang-format을 돌려 변경이 0줄인지 확인한다. 변경이 생기면 포맷 커밋을 분리한다
+- [x] `.clang-tidy` — 네이밍 표, `auto` · `NULL` · C 스타일 캐스트 금지, `explicit` · `override` · `const`
+- [x] `build.yml`에 정적 분석 job 추가 (ubuntu-24.04): Qt 설치(기존 고정 action · aqtinstall 그대로) → configure(`linux-x64-debug` + compile commands) → clang-format 검사 → clang-tidy → clazy → 플랫폼 분기 검사
+- [x] 플랫폼 분기 검사: 소스에 `Q_OS_` · `_WIN32` · `__APPLE__` · `__linux__` · `<windows.h>`가 있으면 실패
+- [x] 빌드 job 6개의 configure에 경고 에러화 추가
+- [x] **위반 검출 테스트**: 같은 PR에서 위반을 일부러 넣은 커밋 4개(포맷 · 네이밍 · 플랫폼 분기 · 컴파일 경고)로 해당 job이 실패하는지 확인하고, 각각 되돌린다. 실행 링크를 PR 본문에 남긴다
+- [x] (승인 시) `docs/DEBT_LOG.md` 신설 + aqtinstall 항목 — 별도 `docs:` 커밋
+- [x] 도구로 검사할 수 없는 규칙이 있으면 `format-and-tools.md`에 명시 — 별도 `docs:` 커밋, `sageqt-plan` 재점검
 
 ## 완료 기준
 - `develop`에서 빌드 job 6개와 정적 분석 job이 모두 통과한다
-- 음성 테스트 4개가 각각 해당 job을 실패시켰다 (실행 링크 4개)
+- 위반 검출 테스트 4개가 각각 해당 job을 실패시켰다 (실행 링크 4개)
 - 현재 소스에 clang-format을 돌린 결과 변경 0줄
 - 로컬과 CI의 clang-format 주 버전이 같다
 
@@ -65,4 +65,24 @@ PR 1개: `chore/static-analysis`
 - pre-commit 훅 — 요청되지 않았다
 
 ## 확인한 사실
-(진행 중 기록)
+- 로컬 clang-format · clang-tidy는 22.1.3 (VS 번들). CI는 clang-format을 PyPI `clang-format==22.1.3`으로 패치 버전까지 맞췄고, clang-tidy는 apt.llvm.org `clang-tidy-22`(22.1.8, PyPI에는 22.1.3이 없다)
+- aqtinstall 최신 릴리스는 여전히 3.3.0 (2026-09-24) → DEBT 항목으로 기록
+- clang-tidy에는 `auto`를 금지하는 검사가 없다 (`modernize-use-auto`는 반대로 권한다) → CI grep으로 검사, `format-and-tools.md` 표 수정
+- `cppcoreguidelines-pro-type-cstyle-cast`는 `(double)x` 같은 값 변환 캐스트를 잡지 못한다 → `google-readability-casting` (로컬 위반 샘플로 확인)
+- clang-tidy는 옵션 이름이 틀려도 경고 없이 무시한다 → 위반 샘플 파일로 검사 6종이 모두 걸리는지 확인했다
+- Ubuntu 24.04 apt의 clazy는 1.11(clang 15.0.7 기반)이고, GCC 14의 `<format>` 헤더를 파싱하지 못한다 (실행 35961092504)
+- clazy v1.17.1(`55a7af4`) + LLVM 22: 러너에 LLVM 16이 먼저 잡혀 `-DLLVM_ROOT=/usr/lib/llvm-22`가 필요하고, 정적 라이브러리 링크는 LLVM 22의 새 라이브러리(`clang::lifetimes`) 때문에 실패한다 → `-DCLAZY_LINK_CLANG_DYLIB=ON` + `libclang-cpp22-dev`. 빌드 약 2분 30초
+- clazy 검사: level1 + `missing-qobject-macro` · `old-style-connect` (level2 중 규칙이 요구하는 두 개), `non-pod-global-static` 끔
+- `Q_OBJECT` 전개는 clang-tidy 네이밍 검사에 걸리지 않는다 (Qt 헤더가 시스템 헤더로 들어온다)
+- 도입 전 develop CI(`d08a284`)의 컴파일 경고 0건 — 경고 에러화로 깨지는 코드가 없었다
+
+## 결과
+- PR [#9](https://github.com/JakeKim4926/SageQt/pull/9) `chore/static-analysis`
+- `.clang-format` · `.clang-tidy` 추가, CI에 `static-analysis` job(포맷 · clang-tidy · clazy · 플랫폼 분기 · `auto` grep), 빌드 job 6개 경고 에러화
+- 위반 검출 테스트 5개(포맷 · 네이밍 · 플랫폼 분기 · 컴파일 경고 + clazy)가 모두 의도한 원인으로 실패했다 — 실행 링크는 PR #9 본문. 되돌린 뒤 최종 실행 36295555518에서 7개 job 통과
+- `develop` 기준 실행은 머지 직후 확인한다 (PR 브랜치와 트리가 같다)
+- DEBT 2건: aqtinstall 고정 커밋, clazy 소스 빌드
+- 교훈
+  - 검사 도구는 "통과"만으로 믿지 않는다. 옵션 이름 오타 · 약한 검사(캐스트)는 위반 샘플을 넣어야 드러났다
+  - 배포판 패키지 도구(clazy 1.11)는 러너의 새 컴파일러 헤더를 못 읽을 수 있다. 버전이 오래된 도구는 먼저 CI에서 한 번 돌려 본다
+  - 작업 브랜치에서 `commit -a`를 쓰지 않는다 — 준비 중인 다른 목적의 변경이 섞였다
