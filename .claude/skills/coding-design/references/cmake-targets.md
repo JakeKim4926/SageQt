@@ -22,12 +22,14 @@
 | `sage_ui` | `SageQt/ui` | `sage_core`, `sage_common`, `sage_define`, `Qt::Widgets`, `Qt::Concurrent` |
 | `SageQt` | `SageQt/` (`main.cpp`) | 위 전부 |
 | 테스트 | `tests/` | 대상 타깃 + `Qt::Test` |
+| 개발 도구 | `tools/<도구>/` | 필요한 Qt 모듈만. 앱 계층 타깃은 링크하지 않는다 |
 
 - `sage_core`는 `Qt::Gui` / `Qt::Widgets`를 링크하지 않는다 → `core`에서 `<QWidget>`을 include하면 컴파일 에러
 - `sage_ui`는 `sage_infra`를 링크하지 않는다 → `ui`에서 `"infra/..."`를 include하면 컴파일 에러
 - `Qt::Sql`은 `sage_infra`가 **PRIVATE**로 링크한다 → `QSqlDatabase` · `QSqlQuery`가 `infra` 밖으로 새지 않는다. Repository의 공개 헤더에는 DTO와 경계 인터페이스만 나타난다
 - **`target_link_libraries` 변경은 계층 규칙 변경이다.** 컴파일 에러를 없애려고 링크를 추가하지 않는다 — 배치가 잘못됐다는 신호다. 변경이 필요해 보이면 작업을 멈추고 승인을 받는다
 - `file(GLOB)` 금지. 소스 파일은 목록에 명시한다 (새 파일이 리뷰에서 드러나도록)
+- 개발 도구는 최상위 `CMakeLists.txt`의 `SAGE_BUILD_TOOLS` 옵션(기본 `OFF`)이 켜졌을 때만 추가한다. 앱 빌드와 빌드 job에는 들어가지 않고, 도구를 쓰는 CI job과 정적 분석 job만 켠다. 도구 코드도 `coding-rules`를 똑같이 따른다
 
 ## 계층 경계 인터페이스
 
