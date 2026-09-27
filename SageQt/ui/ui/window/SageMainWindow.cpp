@@ -6,5 +6,4 @@ SageMainWindow::SageMainWindow(QWidget* parent)
     : QMainWindow(parent)
 {
     setWindowTitle(SAGE_UI_MAIN_WINDOW_TITLE);
-    connect(this, SIGNAL(destroyed()), this, SLOT(close()));
 }
