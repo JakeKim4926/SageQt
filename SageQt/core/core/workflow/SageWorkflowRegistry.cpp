@@ -2,9 +2,11 @@
 
 #include "core/workflow/handlers/SageSampleWorkflowHandler.h"
 
+#include <utility>
+
 SageWorkflowRegistry::SageWorkflowRegistry()
 {
-    m_handlers.push_back(std::make_unique<SageSampleWorkflowHandler>());
+    registerHandler(std::make_unique<SageSampleWorkflowHandler>());
 }
 
 const ISageWorkflowHandler* SageWorkflowRegistry::findHandler(SageWorkflowType workflowType) const
@@ -15,4 +17,19 @@ const ISageWorkflowHandler* SageWorkflowRegistry::findHandler(SageWorkflowType w
         }
     }
     return nullptr;
+}
+
+QList<const ISageWorkflowHandler*> SageWorkflowRegistry::handlers() const
+{
+    QList<const ISageWorkflowHandler*> result;
+    result.reserve(static_cast<qsizetype>(m_handlers.size()));
+    for (const std::unique_ptr<ISageWorkflowHandler>& handler : m_handlers) {
+        result.append(handler.get());
+    }
+    return result;
+}
+
+void SageWorkflowRegistry::registerHandler(std::unique_ptr<ISageWorkflowHandler> handler)
+{
+    m_handlers.push_back(std::move(handler));
 }

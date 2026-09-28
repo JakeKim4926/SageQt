@@ -3,6 +3,10 @@ qt_add_library(sage_ui STATIC
     ui/dialogs/SageFramelessDlg.h
     ui/dialogs/SageMessageBoxDlg.cpp
     ui/dialogs/SageMessageBoxDlg.h
+    ui/models/SageSidebarModel.cpp
+    ui/models/SageSidebarModel.h
+    ui/panels/SageSidebarPanel.cpp
+    ui/panels/SageSidebarPanel.h
     ui/style/SageDesignDefine.h
     ui/style/SageFontCatalog.cpp
     ui/style/SageFontCatalog.h
@@ -17,6 +21,12 @@ qt_add_library(sage_ui STATIC
     ui/widgets/SageButton.h
     ui/widgets/SageDialogCaptionBar.cpp
     ui/widgets/SageDialogCaptionBar.h
+    ui/widgets/SageLabel.cpp
+    ui/widgets/SageLabel.h
+    ui/widgets/SageSidebarDelegate.cpp
+    ui/widgets/SageSidebarDelegate.h
+    ui/widgets/SageSurface.cpp
+    ui/widgets/SageSurface.h
     ui/window/SageMainWindow.cpp
     ui/window/SageMainWindow.h
 )
@@ -29,6 +39,6 @@ target_include_directories(sage_ui
 target_link_libraries(sage_ui
     PUBLIC
         Qt::Widgets
-    PRIVATE
+        sage_core
         sage_define
 )

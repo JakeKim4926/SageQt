@@ -6,7 +6,7 @@
 SageSDI의 헤더(업무 제목 · 분류 · 로그인 상태 · 로그인/로그아웃 버튼)를 옮긴다.
 
 ## 시작 전에
-1. 선행 주제: T11 (창 배치 시작)
+1. 선행 주제: 없음 (T11 완료 — `SageMainWindow`에 사이드바가 배치됐다. 헤더는 오른쪽 영역 맨 위에 둔다)
 2. 스킬 로드: `sageqt-ui`, `coding-design`, `coding-rules`, `git-workflow`
    - 읽을 reference: `coding-design/references/ui-composition.md` · `style.md` (배지 등 변형은 `Q_PROPERTY`), `coding-rules/references/api-shape.md`
 3. 결정 — 없음

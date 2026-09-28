@@ -16,7 +16,7 @@
 |---|---|---|---|---|
 | `SageButton` | 기본 위젯 + SageStyle | `SageButton : QPushButton` (아이콘 단독은 `QToolButton`) | `SageButtonVariant { Secondary, Primary, Ghost }` (`Danger`는 호출 0곳 — `style-scope.md`) | T08 · T09 · T10 · T12 ~ T16 |
 | `SageEdit` | 기본 위젯 + SageStyle | `SageLineEdit : QLineEdit` | `SageLineEditVariant { Normal, Error }` | T08 · T10 |
-| `SageLabel` | 기본 위젯 + SageStyle | `SageLabel : QLabel` | `SageLabelVariant { Title, Section, SecondaryCaption, MutedCaption, FormLabel, Hint, SidebarLogo }` | T10 ~ T13 · T15 |
+| `SageLabel` | 기본 위젯 + SageStyle | `SageLabel : QLabel` | `SageLabelVariant { Title, Section, SecondaryCaption, MutedCaption, FormLabel, Hint, SidebarLogo }` — 값은 쓰는 주제에서 추가 (T11: `SidebarLogo`) | T10 ~ T13 · T15 |
 | `SageSectionLabel` | 기본 위젯 + SageStyle | `SageLabel` (`Section`) | 위 enum의 `Section` | T13 · T15 |
 | `SageTabCtrl` | 기본 위젯 + SageStyle | `QTabBar` + `QStackedWidget` | — | T13 |
 | `SageHeaderCtrl` | 기본 위젯 + SageStyle | `QHeaderView` | — | T15 · T16 |
@@ -34,13 +34,14 @@
 | `SageEmptyState` | 커스텀 위젯 | `SageEmptyState` | — | T16 |
 | `SageListCtrl` | delegate | `QTableView` + model/proxy + `QHeaderView` + `SageResultTableDelegate` | — (model role) | T15 · T16 |
 | `SageSidebarTree` | delegate | `QTreeView` + `SageSidebarDelegate` | — | T11 |
+| (SageSDI의 패널 `OnEraseBkgnd` 면 칠하기) | 기본 위젯 + SageStyle | `SageSurface : QWidget` | `SageSurfaceVariant { Sidebar }` | T11 |
 | `SageUiResources` | 공용 자원 | 앱 폰트 · 역할 폰트 · `QPalette` · `SageDesignDefine.h` | — | T08 |
 | `SageUiStyle` | 공용 자원 | `SageStyle` 요소 그리기 + `ui/style/` 공용 조각 | — | T08 |
 | `SageComboBox` | 옮기지 않음 | — | — | 사용처 0 |
 | `SageListBox` | 옮기지 않음 | — | — | 사용처 0 (근거 화면 삭제) |
 | `SageOptionCheck` | 옮기지 않음 | — | — | 사용처 0 (`SageResultTablePanel.h`가 include만) |
 
-행 수 25. 이름(`SageButton` · `SageLineEdit` 등)은 후보다 — 착수 주제에서 `coding-rules/references/naming.md`로 확정한다.
+행 수 26 (SageSDI 25종 + 패널 면 `SageSurface`). 이름(`SageButton` · `SageLineEdit` 등)은 후보다 — 착수 주제에서 `coding-rules/references/naming.md`로 확정한다.
 
 ### 옮기지 않는 경로 (SageSDI 사용처 0)
 

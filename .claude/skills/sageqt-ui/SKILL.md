@@ -51,7 +51,7 @@ description: >
    | 다이얼로그 캡션 제목 | 9.0pt 캡션 폰트 | `SAGE_FONT_CONTENT_SEMIBOLD` (`SageDialogCaptionBar.cpp:58`) | SemiBold 14px (*본문 강조*) |
 2. **SageSDI에서 호출 0곳인 경로는 옮기지 않는다** — 버튼 아이콘 `SEARCH` · `ADD` · `MOVE_UP` · `MOVE_DOWN`, 빈 상태의 동작 버튼(`SetAction`), 섹션 힌트(`SetHintText`), 경고 인라인 메시지(enum 값 `SAGE_INLINE_WARNING`), `CSageComboBox` · `CSageListBox` · `CSageOptionCheck`, 숫자 형식 상수 (`widgets.md`)
 3. **SageSDI에 규격이 없는 상태는 사용자가 화면을 보고 정한다** — hover · focus · disabled (SageSDI는 hover가 없고 포커스 표시는 일부 버튼에만 있다). Fusion은 이것들을 그리므로, 그 위젯을 처음 만드는 주제에서 세 OS 스크린샷을 사용자에게 보여 주고 정한다 (버튼 · 캡션 T09 — hover · 포커스 없음으로 결정, 입력칸 T10, 탭 · 콤보 T13, 헤더 · 체크 상자 · 스크롤바 T15). 정한 규격은 이 skill에 적는다. 그 전에는 추측으로 값을 넣지 않는다
-4. **SageSDI에 값이 없는 규격은 코드 값을 먼저 찾고, 없으면 그 값을 처음 쓰는 주제에서 사용자와 정한다** — 버튼 · 입력칸 · 카드 반경, 행 상태 색, 「관리자」 배지 색, 사이드바 선택 글자색, 검색 박스 면, 필 바 선택 상태 (`style-scope.md` *미정*)
+4. **SageSDI에 값이 없는 규격은 코드 값을 먼저 찾고, 없으면 그 값을 처음 쓰는 주제에서 사용자와 정한다** — 버튼 · 입력칸 · 카드 반경, 행 상태 색, 「관리자」 배지 색, 검색 박스 면, 필 바 선택 상태 (`style-scope.md` *미정*)
 
 ## 레이아웃 정책 (CRITICAL)
 
@@ -65,7 +65,7 @@ description: >
 | 긴 경로 · 문장 | `QFontMetrics::elidedText` 또는 view 기본 말줄임 | 상태 카드 저장 경로 |
 
 - **폼 라벨**: 한 폼 안의 라벨 열은 그 폼의 가장 긴 라벨에 맞춰 같은 폭으로 정렬한다 (`QFormLayout` 또는 그리드). 64 · 96은 최소 폭이다. SageSDI의 96은 Windows GDI로 잰 「변경할 비밀번호」 88px에서 나온 값이라 다른 OS에서 맞는다는 보장이 없다
-- **고정 높이 안의 글자**: T02 측정에서 픽셀 크기 지정 시 줄 높이 차이는 -1.5 ~ +4.4%(로고 제외)라 한 줄 텍스트는 고정 높이 안에 들어간다. 로고(Gmarket Sans)만 macOS에서 -13.7% — T11에서 확인
+- **고정 높이 안의 글자**: T02 측정에서 픽셀 크기 지정 시 줄 높이 차이는 -1.5 ~ +4.4%(로고 제외)라 한 줄 텍스트는 고정 높이 안에 들어간다. 로고(Gmarket Sans)만 macOS에서 -13.7% — T11 세 OS 스크린샷에서 제목 칸(`SAGE_HEADER_HEIGHT`) 안에 들어감을 확인했다
 - 좌표 · 크기를 코드로 지정하지 않는다 — 고정 높이도 `setFixedHeight`가 아니라 위젯의 `sizeHint` · 레이아웃 제약으로 준다 (`ui-composition.md` 소유 규칙 3)
 - 간격 값은 SageSDI 규칙대로 4의 배수만 쓴다
 

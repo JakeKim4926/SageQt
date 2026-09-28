@@ -31,8 +31,7 @@ description: >
 
 | ID | 단계 | 주제 | 선행 | 결정 대기 | 상태 |
 |---|---|---|---|---|---|
-| [T11](references/T11-sidebar.md) | UI 이관 | 사이드바 | — | — | 대기 |
-| [T12](references/T12-header.md) | UI 이관 | 헤더 | T11 | — | 대기 |
+| [T12](references/T12-header.md) | UI 이관 | 헤더 | — | — | 대기 |
 | [T10](references/T10-login-dialogs.md) | UI 이관 | 로그인 · 비밀번호 변경 · 헤더 · 사이드바 연결 | T12 | — | 대기 |
 | [T13](references/T13-workspace-input.md) | UI 이관 | 작업 영역 탭 · 입력 패널 | T10 | — | 대기 |
 | [T14](references/T14-workflow-run.md) | UI 이관 | 실행 흐름 · 진행 표시 | T13 | 진행률 방식 | 대기 |

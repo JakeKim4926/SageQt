@@ -8,19 +8,24 @@
 |---|---|
 | 구성 | 왼쪽 사이드바 · 오른쪽에 헤더 → 탭 줄 → 작업 영역 (`ui-composition.md` *화면 클래스 구성*) |
 | 배경 | `QPalette::Window` (`SAGE_COLOR_APP_BACKGROUND`) |
-| 초기 · 최소 크기 | **SageSDI에 없다** (`CMainFrame`은 제목만 바꾸고 `OnGetMinMaxInfo`도 없다). 지금은 Qt 기본값이라 내용 없는 창이 약 200×100으로 뜬다 (T08 스크린샷). 창에 첫 패널이 들어가는 T11에서 사용자에게 확인한다 |
+| 초기 · 최소 크기 | SageSDI에 없다 (`CMainFrame`은 제목만 바꾸고 `OnGetMinMaxInfo`도 없다). 초기 `SAGE_MAIN_WINDOW_WIDTH` × `SAGE_MAIN_WINDOW_HEIGHT` (1280 × 800, 사용자 결정 2026-09-28). 최소 크기는 모든 패널이 들어오는 T16에서 내용 기준으로 정한다 |
 | 창 제목 | `SAGE_UI_MAIN_WINDOW_TITLE` (이미 있음) |
 
 ## 사이드바 (T11)
 
+SageSDI `SageSidebarPanel.cpp` · `SageSidebarTree.cpp`에서 옮긴다 (2026-09-28 코드 확인).
+
 | 항목 | 규격 |
 |---|---|
 | 폭 | `SAGE_SIDEBAR_WIDTH` 고정 |
-| 면 · 글자 | `SAGE_COLOR_SIDEBAR` · `SAGE_COLOR_SIDEBAR_TEXT`, 분류 글자 `SAGE_COLOR_SIDEBAR_CATEGORY` · 글자 간격 `SAGE_SIDEBAR_CATEGORY_CHAR_EXTRA` |
-| 여백 | 좌우 `SAGE_SIDEBAR_PAD_X`, 트리 위 `SAGE_SIDEBAR_TREE_TOP_PAD` |
-| 항목 | 높이 `SAGE_SIDEBAR_ITEM_HEIGHT`. 선택: 면 `SAGE_COLOR_SIDEBAR_SELECTED` + 왼쪽 바 `SAGE_SELECTION_ACCENT_WIDTH` `SAGE_COLOR_PRIMARY` (밝은 카멜 채움 금지). 선택 글자색 미정 |
-| 스크롤바 | 숨김. 업무가 넘칠 때의 규격은 없다 — T11에서 |
-| 로고 (앱 제목) | 폰트 *로고* 역할 (SKILL.md *폰트*), 표시 이름은 앱 식별 정보 (`MIGRATION_PLAN.md` 결정 기록) |
+| 면 | `SAGE_COLOR_SIDEBAR` — `SageSurface`(`Sidebar`)의 팔레트 (`style-scope.md` *변형 위젯의 polish*) |
+| 앱 제목 | 높이 `SAGE_HEADER_HEIGHT`, 왼쪽 여백 `SAGE_SIDEBAR_PAD_X`, 세로 가운데, 폰트 *로고* 역할, 글자 `SAGE_COLOR_SIDEBAR_TEXT`. 표시 이름 `SAGE_UI_APP_TITLE` (앱 식별 정보, `MIGRATION_PLAN.md` 결정 기록) |
+| 제목 아래 선 | 1px `SAGE_COLOR_SIDEBAR_DIVIDER`, 제목 바로 아래 (y = `SAGE_HEADER_HEIGHT`) |
+| 트리 위치 | 위 `SAGE_HEADER_HEIGHT + SAGE_SIDEBAR_TREE_TOP_PAD`, 아래 여백 `SAGE_MARGIN`, 좌우 여백 없음(행은 전체 폭) |
+| 항목 | 높이 `SAGE_SIDEBAR_ITEM_HEIGHT`, 글자 왼쪽 `SAGE_SIDEBAR_PAD_X` — 분류 · 업무 모두 같은 들여쓰기(들여쓰기 없음) |
+| 분류(그룹) 줄 | 캡션 폰트, `SAGE_COLOR_SIDEBAR_CATEGORY`, 자간 `SAGE_SIDEBAR_CATEGORY_CHAR_EXTRA`. 선택 표시 없음, 선택되지 않는다 (SageSDI는 선택만 되고 표시가 없어 업무 선택 표시가 사라졌다 — 선택을 막아 업무 표시를 유지한다) |
+| 업무 · 동작 줄 | 보통: 본문 폰트 · `SAGE_COLOR_SIDEBAR_TEXT`. 선택: 면 `SAGE_COLOR_SIDEBAR_SELECTED` + 왼쪽 바 `SAGE_SELECTION_ACCENT_WIDTH` `SAGE_COLOR_PRIMARY`, *본문 강조* 폰트 · `SAGE_COLOR_SIDEBAR_SELECTED_TEXT` |
+| 스크롤바 | 숨김 (SageSDI `TVS_NOSCROLL`) |
 | 그리기 | 트리 항목은 `SageSidebarDelegate` (`widgets.md`) |
 
 ## 헤더 (T12)

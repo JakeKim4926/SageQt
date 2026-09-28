@@ -18,6 +18,8 @@ public:
     SageStyle();
 
     QPalette standardPalette() const override;
+    void polish(QWidget* widget) override;
+    using QProxyStyle::polish;
     void drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
                        const QWidget* widget = nullptr) const override;
     void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
@@ -32,4 +34,6 @@ private:
     static void drawPushButtonPanel(const QStyleOption* option, QPainter* painter, const QWidget* widget);
     static void drawToolButtonPanel(const QStyleOption* option, QPainter* painter);
     static QColor pushButtonTextColor(const QStyleOption* option, const QWidget* widget);
+    static void polishSurface(QWidget* widget);
+    static void polishLabel(QWidget* widget);
 };

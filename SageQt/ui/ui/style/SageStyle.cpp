@@ -1,14 +1,18 @@
 #include "ui/style/SageStyle.h"
 
 #include "ui/style/SageDesignDefine.h"
+#include "ui/style/SageFontCatalog.h"
 #include "ui/style/SageIconEngine.h"
 #include "ui/style/SageStyleDefine.h"
 #include "ui/widgets/SageButton.h"
+#include "ui/widgets/SageLabel.h"
+#include "ui/widgets/SageSurface.h"
 
 #include <QAbstractButton>
 #include <QBrush>
 #include <QFrame>
 #include <QPainter>
+#include <QRect>
 #include <QStyleFactory>
 #include <QStyleOption>
 #include <QWidget>
@@ -34,6 +38,13 @@ QPalette SageStyle::standardPalette() const
     palette.setColor(QPalette::HighlightedText, SAGE_COLOR_TEXT);
     palette.setColor(QPalette::Accent, SAGE_COLOR_PRIMARY);
     return palette;
+}
+
+void SageStyle::polish(QWidget* widget)
+{
+    QProxyStyle::polish(widget);
+    polishSurface(widget);
+    polishLabel(widget);
 }
 
 void SageStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
@@ -73,6 +84,12 @@ void SageStyle::drawControl(ControlElement element, const QStyleOption* option, 
         const QStyleOptionFrame* frameOption = qstyleoption_cast<const QStyleOptionFrame*>(option);
         if (frameOption != nullptr && frameOption->frameShape == QFrame::Box) {
             qDrawPlainRect(painter, option->rect, SAGE_COLOR_BORDER, SAGE_BORDER_THICKNESS);
+            return;
+        }
+        if (frameOption != nullptr && frameOption->frameShape == QFrame::HLine) {
+            QRect line = option->rect;
+            line.setHeight(SAGE_BORDER_THICKNESS);
+            painter->fillRect(line, option->palette.color(QPalette::Mid));
             return;
         }
     }
@@ -131,6 +148,35 @@ void SageStyle::drawToolButtonPanel(const QStyleOption* option, QPainter* painte
 {
     const bool isPressed = option->state.testFlag(State_Sunken);
     painter->fillRect(option->rect, isPressed ? SAGE_COLOR_LIST_HEADER : SAGE_COLOR_PANEL);
+}
+
+void SageStyle::polishSurface(QWidget* widget)
+{
+    const SageSurface* surface = qobject_cast<const SageSurface*>(widget);
+    if (surface == nullptr) {
+        return;
+    }
+    QPalette palette = widget->palette();
+    if (surface->variant() == SageSurface::SageSurfaceVariant::Sidebar) {
+        palette.setColor(QPalette::Window, SAGE_COLOR_SIDEBAR);
+        palette.setColor(QPalette::Base, SAGE_COLOR_SIDEBAR);
+        palette.setColor(QPalette::WindowText, SAGE_COLOR_SIDEBAR_TEXT);
+        palette.setColor(QPalette::Text, SAGE_COLOR_SIDEBAR_TEXT);
+        palette.setColor(QPalette::Mid, SAGE_COLOR_SIDEBAR_DIVIDER);
+    }
+    widget->setPalette(palette);
+    widget->setAutoFillBackground(true);
+}
+
+void SageStyle::polishLabel(QWidget* widget)
+{
+    const SageLabel* label = qobject_cast<const SageLabel*>(widget);
+    if (label == nullptr) {
+        return;
+    }
+    if (label->variant() == SageLabel::SageLabelVariant::SidebarLogo) {
+        widget->setFont(SageFontCatalog::font(SageFontRole::Logo));
+    }
 }
 
 QColor SageStyle::pushButtonTextColor(const QStyleOption* option, const QWidget* widget)

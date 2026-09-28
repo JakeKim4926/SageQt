@@ -54,10 +54,10 @@ SageSDI의 사이드바(앱 제목 · 업무 트리 · 기타 동작)를 옮긴�
 
 ## 작업
 PR 1개: `feature/sidebar`
-- [ ] 사이드바 패널: 앱 제목 · 업무 트리(등록부 기반) · 기타 그룹
-- [ ] 선택 처리 4단계
-- [ ] `SageMainWindow`에 배치 (창의 최상위 레이아웃 시작)
-- [ ] 세 OS 스크린샷
+- [x] 사이드바 패널: 앱 제목 · 업무 트리(등록부 기반) · 기타 그룹
+- [x] 선택 처리 4단계
+- [x] `SageMainWindow`에 배치 (창의 최상위 레이아웃 시작)
+- [x] 세 OS 스크린샷
 
 ## 완료 기준
 - 3-OS CI 통과
@@ -71,4 +71,21 @@ PR 1개: `feature/sidebar`
 - 업무 변경 시 작업 영역 갱신 — T13
 
 ## 확인한 사실
-(진행 중 기록)
+- SageSDI 코드 대조 (2026-09-28, `SageSidebarPanel.cpp` · `SageSidebarTree.cpp`): 선택 글자색은 `SAGE_COLOR_SIDEBAR_SELECTED_TEXT`(흰색 — 스킬의 "미정"은 틀렸다), 분류 줄은 캡션 폰트 · `SAGE_COLOR_SIDEBAR_CATEGORY` · 선택 표시 없음, 선택 줄은 `SAGE_FONT_CONTENT_SEMIBOLD`. 제목 칸 높이는 `SAGE_HEADER_HEIGHT`(56)이고 바로 아래 1px `SAGE_COLOR_SIDEBAR_DIVIDER`, 트리는 56 + 16에서 시작하고 아래 `SAGE_MARGIN`. 분류 · 업무 모두 글자 왼쪽 `SAGE_SIDEBAR_PAD_X`(들여쓰기 없음). 스크롤 없음(`TVS_NOSCROLL`)
+- 샘플 업무는 로그인이 필요 없다 (`isLoginRequired` false) — 시작 시 경고가 뜨지 않는다
+- 분류 줄: SageSDI는 선택만 되고 표시가 없어 업무 선택 표시가 사라졌다. SageQt는 분류 줄을 선택할 수 없게 하고, Qt가 선택을 비우면 마지막 업무로 되돌린다 (`clickingGroupKeepsWorkflowSelected`)
+- 되돌림 재진입: 되돌리면 선택 signal이 다시 오지만 같은 업무라 4단계에서 끝난다 — 신호를 막지 않았다 (막으면 view의 선택 표시도 갱신되지 않는다)
+- 등록부에 `handlers()` · `registerHandler` 추가. 테스트 핸들러 2개(`tests/ui/panels/SageTestWorkflowHandler.h`)를 등록하면 사이드바 코드 수정 없이 분류별로 트리에 나타난다
+- 선택 처리 1 · 2 · 3 · 4단계는 자동 테스트로 확인했다 — 3단계는 테스트에서 로그인 상태를 만들어 T10을 기다리지 않았다. 사람이 누르는 수동 확인은 하지 않았다
+- 그린 값 (`drawsSidebarSurfaceDividerAndSelection`, offscreen): 폭 220, 선 y = 56, 트리 y = 72, 행 34, 왼쪽 바 · 선택 면 · 면 색, 로고 `Gmarket Sans TTF`
+- 세 OS 스크린샷 (`docs/screenshots/T11/`, 실행 36388325677): 사이드바 · 로고 · 분류 · 선택 줄이 같게 그려진다. 러너 화면이 Windows · macOS 1024 × 768이라 1280 × 800 창은 화면 밖으로 잘린다
+- `sage_ui`가 `sage_core`를 PUBLIC으로 링크 — `cmake-targets.md` 타깃 표에 있던 의존. `SageSidebarPanel.h`가 `SageDefine.h`를 include해 `sage_define`도 PUBLIC으로
+- 메인 창 초기 크기 1280 × 800 (사용자 결정), 최소 크기는 T16
+
+## 결과
+- 작업 브랜치 CI(build · static-analysis · screenshots) 통과 후 `develop`에 squash merge. PR 없음
+- `ui/panels/SageSidebarPanel`(선택 처리 4단계, signal `workflowSelected` · `passwordChangeRequested`), `ui/models/SageSidebarModel`(등록부 → 분류 그룹 + 기타), `ui/widgets/SageSidebarDelegate` · `SageSurface` · `SageLabel`, `SageStyle::polish`(면 팔레트 · 로고 폰트) · 구분선. `SageMainWindow`가 사이드바를 배치하고 등록부 · 세션을 주입받는다
+- 테스트: `tests/ui/panels/SageSidebarPanelTest`(8), 등록부 목록. 로컬 16/16
+- 교훈
+  - 스킬의 "미정"도 착수 때 원본 코드를 먼저 본다 — 사이드바 선택 글자색은 코드에 있었다
+  - 되돌림 재진입은 막기보다 멱등(같은 업무면 끝)으로 두는 편이 view 갱신을 해치지 않는다

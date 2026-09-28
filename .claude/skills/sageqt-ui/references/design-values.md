@@ -282,3 +282,12 @@
 | `SAGE_HISTORY_REASON_WIDTH` | `208` | 표 열 최소 폭 | 212 | 1 — SageWorkflowHistoryPanel.cpp | 위와 같음 (T16 확인) |
 
 합계: 색 41 · 폰트 10 · 여백 · 크기 161 = **212개** (분류표의 `SageDesignDefine.h` 행 수와 같다)
+
+## SageQt에서 정한 값
+
+SageSDI에 없어 사용자가 정한 값이다. 위 합계에 들지 않는다.
+
+| 이름 | 값 | 쓰는 방식 | 정한 곳 |
+|---|---|---|---|
+| `SAGE_MAIN_WINDOW_WIDTH` | `1280` | 초기 크기 | T11, 사용자 결정 2026-09-28 |
+| `SAGE_MAIN_WINDOW_HEIGHT` | `800` | 초기 크기 | T11, 사용자 결정 2026-09-28 |

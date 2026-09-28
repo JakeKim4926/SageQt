@@ -32,6 +32,10 @@ inline constexpr char SAGE_LOG_CATEGORY_APP[] = "sage.app";
 inline constexpr char SAGE_LOG_CATEGORY_UI[] = "sage.ui";
 
 inline const QString SAGE_UI_MAIN_WINDOW_TITLE = QStringLiteral("SageQt");
+inline const QString SAGE_UI_APP_TITLE = QStringLiteral("SageQt");
+inline const QString SAGE_UI_SIDEBAR_GROUP_ETC = QStringLiteral("기타");
+inline const QString SAGE_UI_CHANGE_PW_MENU = QStringLiteral("비밀번호 변경");
+inline const QString SAGE_UI_LOGIN_REQUIRED = QStringLiteral("로그인 상태에서만 사용가능합니다.");
 
 inline const QString SAGE_UI_TIP_CLOSE = QStringLiteral("닫기");
 inline const QString SAGE_UI_MSGBOX_TITLE_INFO = QStringLiteral("알림");

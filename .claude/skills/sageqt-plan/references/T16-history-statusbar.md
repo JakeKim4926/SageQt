@@ -12,6 +12,7 @@ SageSDI의 실행 기록 탭과 메인 창 상태 표시줄을 옮긴다. 이 �
 3. 결정 — 착수 시 사용자와 확정
    - 상태 표시줄의 키보드 표시기 (아래): MFC 마법사 기본값이다. 권장 — 옮기지 않고 상태 메시지만
 4. 재확인할 사실
+   - **메인 창 최소 크기** — T11에서 초기 크기만 1280 × 800으로 정했다 (사용자 결정). 모든 패널이 들어온 이 주제에서 내용이 잘리지 않는 최소 크기를 재서 사용자에게 확인한다 (`sageqt-ui/references/screens.md` *메인 창*)
    - `SageWorkflowHistoryPanel.cpp`의 `AppendEntry`: 응답 JSON에서 출력 경로 · 사유를 어떻게 꺼내는지, 시각 형식
    - 기록 필터(`UpdateFilterLabels` · `RebuildVisibleRows`)의 기준, 빈 상태 표시(`UpdateEmptyState`)
 

@@ -1,6 +1,7 @@
 #include "SageDefine.h"
 #include "core/auth/SageAuthSession.h"
 #include "core/auth/SageUserService.h"
+#include "core/workflow/SageWorkflowRegistry.h"
 #include "infra/auth/SagePbkdf2PasswordHasher.h"
 #include "infra/db/SageDbConfig.h"
 #include "infra/db/SageSchemaInitializer.h"
@@ -63,8 +64,9 @@ int main(int argc, char* argv[])
         noticeDialog.exec();
     }
     SageAuthSession authSession;
+    const SageWorkflowRegistry workflowRegistry;
 
-    SageMainWindow mainWindow;
+    SageMainWindow mainWindow(workflowRegistry, authSession);
     mainWindow.show();
     const int exitCode = QApplication::exec();
 

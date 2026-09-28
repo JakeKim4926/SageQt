@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-28] feature/sidebar
+- **목적**: SageSDI 사이드바를 옮기고 메인 창의 첫 패널 배치를 시작 (sageqt-plan T11)
+- **변경 내용**: `SageSidebarPanel` · `SageSidebarModel` · `SageSidebarDelegate` · `SageSurface` · `SageLabel`, `SageStyle` polish · 구분선, 등록부 `handlers()` · `registerHandler`, `SageMainWindow` 배치(초기 1280 × 800), `sage_ui` → `sage_core` 링크. 테스트(트리 구성 · 선택 처리 · 그린 값). 사이드바 규격을 SageSDI 코드로 확정, 스크린샷 `docs/screenshots/T11/`. T11 완료 처리
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-09-28)
+
 ## [2026-09-28] feature/frameless-dialog
 - **목적**: 프레임리스 다이얼로그 기반과 메시지 상자, 시작 시 안내 연결 (sageqt-plan T09)
 - **변경 내용**: `SageFramelessDlg` · `SageMessageBoxDlg` · `SageDialogCaptionBar` · `SageButton` · `SageIconEngine`, `SageStyle` 버튼 · 테두리 · 표준 아이콘, `main.cpp` 오류 · 초기 비밀번호 안내. 테스트(키 동작 · 크기 · 그린 색). `screenshots.yml` + `tools/dialog-capture`(세 OS 끌어서 이동 · Enter 확인). SageSDI 코드 대조로 `sageqt-ui` 규격 정정(확인형 제외 · Primary Regular · 캡션 14px SemiBold), 사용자 결정(버튼 hover · 포커스 없음, 본문 말줄임 없음), Linux 끌기 DEBT. T09 완료 처리
