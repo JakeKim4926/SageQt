@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-28] feature/style-foundation
+- **목적**: 앱 전체의 모양을 한 곳에서 그리는 기반 — `SageStyle` · 팔레트 · 폰트 등록 · 역할 폰트 (sageqt-plan T08)
+- **변경 내용**: `ui/style/` (`SageDesignDefine.h` · `SageStyleDefine.h` · `SageStyle` · `SageFontRegistry` · `SageFontCatalog`), 폰트 qrc(실행 파일 타깃), `main.cpp` 적용, `tests/ui/style/` 2개. `screenshots.yml` 추가, `font-metrics.yml`에 Linux xcb 추가(Linux 폰트 DEBT 해결). 규칙 3건(`setStyle` 예외 · `tests/ui/` · 값은 쓰는 주제에서), 규격 없는 상태 판정을 T09 · T10 · T11 · T13 · T15로 넘김. 스크린샷 `docs/screenshots/T08/`. T08 완료 처리
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-09-28)
+
 ## [2026-09-28] docs/sageqt-ui-skill
 - **목적**: SageQt UI 규격 스킬을 만든다 — 디자인 값 · 레이아웃 정책 · 폰트 · 변형 · SageStyle 범위 · 화면별 규격 (sageqt-plan T07)
 - **변경 내용**: `.claude/skills/sageqt-ui/`(SKILL.md + design-values · style-scope · widgets · screens), `docs/decisions/sageqt-ui/` 분류표 3개(상수 477 · 컨트롤 25 · sagesdi-ui 분석). `style.md` 얇은 변형 서브클래스 예외, 다른 스킬의 미정 표현 제거, 결정 3건, T08 · T11 · T13 반영. T07 완료 처리

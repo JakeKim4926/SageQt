@@ -1,4 +1,12 @@
 qt_add_library(sage_ui STATIC
+    ui/style/SageDesignDefine.h
+    ui/style/SageFontCatalog.cpp
+    ui/style/SageFontCatalog.h
+    ui/style/SageFontRegistry.cpp
+    ui/style/SageFontRegistry.h
+    ui/style/SageStyle.cpp
+    ui/style/SageStyle.h
+    ui/style/SageStyleDefine.h
     ui/window/SageMainWindow.cpp
     ui/window/SageMainWindow.h
 )

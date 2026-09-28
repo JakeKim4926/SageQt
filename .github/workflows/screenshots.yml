@@ -1,0 +1,118 @@
+name: screenshots
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - SageQt/main.cpp
+      - SageQt/ui/**
+      - SageQt/resources/**
+      - .github/workflows/screenshots.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  QT_VERSION: 6.11.2
+  AQT_SOURCE: git+https://github.com/miurahr/aqtinstall.git@076e1659807d0b362a3ed684d54c2e9c775eb9c7
+
+jobs:
+  capture:
+    name: screenshot-${{ matrix.preset }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-2025
+            qt-host: windows
+            qt-arch: win64_msvc2022_64
+            preset: windows-x64-release
+          - os: macos-15
+            qt-host: mac
+            qt-arch: clang_64
+            preset: macos-arm64-release
+          - os: ubuntu-24.04
+            qt-host: linux
+            qt-arch: linux_gcc_64
+            preset: linux-x64-release
+
+    steps:
+      - name: Checkout (actions/checkout v7.0.1)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Install Qt (jurplel/install-qt-action v4.4.1, aqtinstall main 076e165 for the Qt 6.11 Windows layout)
+        uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125
+        with:
+          version: ${{ env.QT_VERSION }}
+          host: ${{ matrix.qt-host }}
+          target: desktop
+          arch: ${{ matrix.qt-arch }}
+          aqtsource: ${{ env.AQT_SOURCE }}
+          cache: true
+
+      - name: Set up MSVC (ilammy/msvc-dev-cmd v1.13.0)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
+
+      - name: Install X server and capture tools
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb imagemagick libxcb-cursor0 libxkbcommon-x11-0 libxcb-icccm4 libxcb-keysyms1 libxcb-shape0
+
+      - name: Configure
+        env:
+          QTDIR: ${{ env.QT_ROOT_DIR }}
+        run: cmake --preset ${{ matrix.preset }}
+
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }} --target SageQt
+
+      - name: Capture (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $app = Start-Process -FilePath "out/build/${{ matrix.preset }}/SageQt/SageQt.exe" -PassThru
+          Start-Sleep -Seconds 10
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+          $bitmap = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
+          $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+          $graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
+          $bitmap.Save("screenshot-${{ matrix.preset }}.png", [System.Drawing.Imaging.ImageFormat]::Png)
+          Stop-Process -Id $app.Id
+
+      - name: Capture (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          "out/build/${{ matrix.preset }}/SageQt/SageQt.app/Contents/MacOS/SageQt" &
+          app=$!
+          sleep 10
+          screencapture -x "screenshot-${{ matrix.preset }}.png"
+          kill "$app"
+
+      - name: Capture (Linux, xcb on Xvfb)
+        if: runner.os == 'Linux'
+        env:
+          QT_QPA_PLATFORM: xcb
+        run: |
+          xvfb-run --server-args="-screen 0 1280x800x24" bash -c '
+            "out/build/${{ matrix.preset }}/SageQt/SageQt" &
+            app=$!
+            sleep 10
+            import -window root "screenshot-${{ matrix.preset }}.png"
+            kill "$app"
+          '
+
+      - name: Upload (actions/upload-artifact v7.0.1)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: screenshot-${{ matrix.preset }}
+          path: screenshot-${{ matrix.preset }}.png
+          if-no-files-found: error

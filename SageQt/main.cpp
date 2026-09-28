@@ -5,12 +5,16 @@
 #include "infra/db/SageDbConfig.h"
 #include "infra/db/SageSchemaInitializer.h"
 #include "infra/db/SageUserRepository.h"
+#include "ui/style/SageFontCatalog.h"
+#include "ui/style/SageFontRegistry.h"
+#include "ui/style/SageStyle.h"
 #include "ui/window/SageMainWindow.h"
 
 #include <QApplication>
 #include <QCoreApplication>
 #include <QLoggingCategory>
 #include <QString>
+#include <QStyle>
 #include <QThreadPool>
 
 #include <cstdlib>
@@ -24,8 +28,15 @@ int main(int argc, char* argv[])
     QCoreApplication::setOrganizationName(SAGE_ORGANIZATION_NAME);
     QCoreApplication::setApplicationName(SAGE_APPLICATION_NAME);
 
-    SageDbConfig dbConfig;
     QString error;
+    if (!SageFontRegistry::registerApplicationFonts(error)) {
+        qCWarning(sageAppLog).noquote() << error;
+    }
+    QApplication::setStyle(new SageStyle);
+    QApplication::setPalette(QApplication::style()->standardPalette());
+    QApplication::setFont(SageFontCatalog::font(SageFontRole::Body));
+
+    SageDbConfig dbConfig;
     if (!SageDbConfig::buildDefaultConfig(dbConfig, error) || !SageSchemaInitializer(dbConfig).prepare(error)) {
         qCCritical(sageAppLog).noquote() << error;
         return EXIT_FAILURE;

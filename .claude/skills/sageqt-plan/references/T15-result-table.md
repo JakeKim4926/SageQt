@@ -11,6 +11,7 @@ SageSDI의 결과 표 패널(`SageResultTablePanel` — 입력 표와 결과 표
    - 읽을 reference: **`coding-design/references/model-view.md`** (책임 분담표 — 이 주제의 기준), `ui-composition.md` (한 위젯이 두 탭 역할 금지 → 인스턴스 둘), `style.md`, `coding-rules/references/api-shape.md` (컨테이너 · `std::as_const`)
 3. 결정 — `sageqt-ui`의 표 규격을 따른다
 4. 재확인할 사실 — 착수 시 원문을 읽는다
+   - **T08에서 미룬 판정** — T08은 사용자가 화면을 볼 수 없어 규격 없는 상태를 정하지 않았다. 헤더 · 체크 상자 · 스크롤바의 hover · focus · disabled 규격과 스크롤바를 Fusion 기본으로 둘지를 세 OS 스크린샷으로 사용자와 정한다 (`sageqt-ui/references/style-scope.md` *미정*)
    - 검색 · 필터 기준 적용 방식 (`SageResultTablePanel.cpp`의 `RefreshRows` · `GetEffectiveCriteria` · `GetDefaultCriteria`): 필터 기준이 없을 때 어느 열을 검색하는지, 대소문자 · 부분 일치
    - 행 강조 범위(`nHighlightStart` · `nHighlightCount`)의 의미
    - 체크된 행 번호 문자열 형식 (`GetCheckedRowNums` · `RestoreCheckedRowNums`) — payload의 `rowNums`로 핸들러에 전달된다 (T14)

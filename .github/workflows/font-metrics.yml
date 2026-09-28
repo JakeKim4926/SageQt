@@ -59,6 +59,11 @@ jobs:
             qt-arch: linux_gcc_64
             preset: linux-x64-release
             qpa-platform: offscreen
+          - os: ubuntu-24.04
+            qt-host: linux
+            qt-arch: linux_gcc_64
+            preset: linux-x64-release
+            qpa-platform: xcb
 
     steps:
       - name: Checkout (actions/checkout v7.0.1)
@@ -78,6 +83,12 @@ jobs:
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
 
+      - name: Install X server
+        if: matrix.qpa-platform == 'xcb'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libxcb-cursor0 libxkbcommon-x11-0 libxcb-icccm4 libxcb-keysyms1 libxcb-shape0
+
       - name: Configure
         env:
           QTDIR: ${{ env.QT_ROOT_DIR }}
@@ -92,7 +103,7 @@ jobs:
           QT_QPA_PLATFORM: ${{ matrix.qpa-platform }}
         run: |
           probe=$(find out/build/${{ matrix.preset }} -type f \( -name SageFontProbe -o -name SageFontProbe.exe \))
-          "$probe" SageQt/resources font-metrics-${{ matrix.preset }}-${{ matrix.qpa-platform }}.json
+          ${{ matrix.qpa-platform == 'xcb' && 'xvfb-run -a' || '' }} "$probe" SageQt/resources font-metrics-${{ matrix.preset }}-${{ matrix.qpa-platform }}.json
 
       - name: Upload (actions/upload-artifact v7.0.1)
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a

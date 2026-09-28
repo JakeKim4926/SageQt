@@ -21,6 +21,20 @@ qt_add_executable(SageQt
     main.cpp
 )
 
+set(SAGE_FONT_RESOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+set(SAGE_FONT_RESOURCES
+    ${SAGE_FONT_RESOURCE_DIR}/GmarketSansTTFBold.ttf
+    ${SAGE_FONT_RESOURCE_DIR}/PretendardBold.ttf
+    ${SAGE_FONT_RESOURCE_DIR}/PretendardRegular.ttf
+    ${SAGE_FONT_RESOURCE_DIR}/PretendardSemiBold.ttf
+)
+
+qt_add_resources(SageQt "sage_fonts"
+    PREFIX "/fonts"
+    BASE ${SAGE_FONT_RESOURCE_DIR}
+    FILES ${SAGE_FONT_RESOURCES}
+)
+
 set_target_properties(SageQt
     PROPERTIES
         WIN32_EXECUTABLE TRUE

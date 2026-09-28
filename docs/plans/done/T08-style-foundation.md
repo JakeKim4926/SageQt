@@ -37,12 +37,12 @@
 
 ## 작업
 PR 1개: `feature/style-foundation`
-- [ ] `ui/style/SageDesignDefine.h` — `sageqt-ui`의 디자인 값
-- [ ] `ui/style/`의 `SageStyle` (Fusion 기반 `QProxyStyle`) — `sageqt-ui`가 정한 재정의 범위 중 T09 이전에 필요한 것부터
-- [ ] 팔레트 생성, 앱 폰트
-- [ ] 폰트 리소스 등록 (실행 파일 타깃)
-- [ ] `main.cpp`에서 스타일 · 팔레트 · 폰트 적용 (스키마 준비보다 먼저)
-- [ ] Windows · Linux(가능하면 WSLg) · macOS 화면 확인, 스크린샷을 `docs/screenshots/T08/`에 커밋
+- [x] `ui/style/SageDesignDefine.h` — `sageqt-ui`의 디자인 값
+- [x] `ui/style/`의 `SageStyle` (Fusion 기반 `QProxyStyle`) — `sageqt-ui`가 정한 재정의 범위 중 T09 이전에 필요한 것부터
+- [x] 팔레트 생성, 앱 폰트
+- [x] 폰트 리소스 등록 (실행 파일 타깃)
+- [x] `main.cpp`에서 스타일 · 팔레트 · 폰트 적용 (스키마 준비보다 먼저)
+- [x] Windows · Linux(가능하면 WSLg) · macOS 화면 확인, 스크린샷을 `docs/screenshots/T08/`에 커밋
 
 ## 완료 기준
 - 3-OS CI 통과
@@ -54,4 +54,23 @@ PR 1개: `feature/style-foundation`
 - 개별 위젯 · 화면 — T09 이후
 
 ## 확인한 사실
-(진행 중 기록)
+- 사용자가 화면을 볼 수 없는 상태(Mac mini 없음)에서 진행했다. 화면 판정은 CI 스크린샷으로 대신하고, 사람 판단이 필요한 항목은 그 위젯을 처음 쓰는 주제로 넘겼다 (`MIGRATION_PLAN.md` 2026-09-28 결정)
+  - hover · focus · disabled 규격: 버튼 · 캡션 T09, 입력칸 T10, 탭 · 콤보 T13, 헤더 · 체크 상자 · 스크롤바 T15
+  - Primary 흰색 글자 상수 · GDI 보정값 필요 여부 · 변형 그리기 방법 · 96 DPI 1:1 눈 확인: T09
+  - 메인 창 초기 · 최소 크기: T11
+- `SageDesignDefine.h`에는 T08이 쓰는 값만 옮겼다 — 팔레트 색 7개, 폰트 크기 6개, 폰트 변환 상수 3개, 패밀리 2개. 나머지는 쓰는 주제에서 옮긴다 (`design-values.md`)
+- `QApplication::setStyle(new SageStyle)`은 소유권 이전이라 `new`를 쓴다 — `ownership-and-threads.md`에 예외로 적었다
+- 폰트 4개가 세 OS에서 `Pretendard` · `Gmarket Sans TTF`로 등록된다 — `SageFontRegistryTest` (offscreen, 3-OS CI)
+- 스크린샷 (`docs/screenshots/T08/`, 실행 36329540896): 세 OS 모두 창이 팔레트 배경(248, 246, 241)으로 뜬다. 크기를 지정하지 않아 내용 없는 창이 약 200×100이다. Linux는 Xvfb라 창 장식이 없다
+- Linux xcb(Xvfb) 폰트 메트릭이 offscreen과 모두 같다 (`physicalDpi`만 95.9 / 100, 실행 36329540869). Wayland는 재지 않았다
+- Windows CI의 py7zr `Bad7zFile`이 screenshots windows job에서 다시 나왔다 (두 번째, 재실행으로 통과) — `DEBT_LOG.md`
+
+## 결과
+- 작업 브랜치 CI(build · font-metrics · screenshots) 통과 후 `develop`에 squash merge. PR 없음
+- `ui/style/`: `SageDesignDefine.h` · `SageStyleDefine.h` · `SageStyle`(Fusion 기반 `QProxyStyle`, `standardPalette`) · `SageFontRegistry` · `SageFontCatalog`(역할 7개, 픽셀 크기). 폰트 qrc는 실행 파일 타깃. `main.cpp`에서 스키마 준비 전에 스타일 · 팔레트 · 앱 폰트 적용
+- 테스트 `tests/ui/style/` 2개 (폰트 등록 · 역할 폰트 · 팔레트). 로컬 14/14, clang-tidy 0
+- 워크플로 `screenshots.yml` 추가 (Windows · macOS 실제 화면, Linux xcb on Xvfb), `font-metrics.yml`에 Linux xcb 추가 → Linux 폰트 DEBT 해결
+- 규칙: `setStyle` 소유권 예외, `tests/ui/`, 디자인 값은 쓰는 주제에서 옮긴다. `sageqt-ui`의 "T08에서 정한다"를 처음 쓰는 주제로 바꾸고 T09 · T10 · T11 · T13 · T15에 재확인 항목 추가
+- 교훈
+  - 사람이 볼 수 없을 때는 판정을 추측으로 채우지 말고, 판정할 대상이 처음 생기는 주제로 넘긴다 — 빈 창 스크린샷으로는 hover · focus를 판정할 수 없다
+  - Linux 실제 화면은 Xvfb로 CI에서 잴 수 있다 — WSLg 없이도 된다

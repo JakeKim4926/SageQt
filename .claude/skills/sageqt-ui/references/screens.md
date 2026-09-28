@@ -8,7 +8,7 @@
 |---|---|
 | 구성 | 왼쪽 사이드바 · 오른쪽에 헤더 → 탭 줄 → 작업 영역 (`ui-composition.md` *화면 클래스 구성*) |
 | 배경 | `QPalette::Window` (`SAGE_COLOR_APP_BACKGROUND`) |
-| 초기 · 최소 크기 | **SageSDI에 없다** (`CMainFrame`은 제목만 바꾸고 `OnGetMinMaxInfo`도 없다). T08에서 사용자에게 확인한다 |
+| 초기 · 최소 크기 | **SageSDI에 없다** (`CMainFrame`은 제목만 바꾸고 `OnGetMinMaxInfo`도 없다). 지금은 Qt 기본값이라 내용 없는 창이 약 200×100으로 뜬다 (T08 스크린샷). 창에 첫 패널이 들어가는 T11에서 사용자에게 확인한다 |
 | 창 제목 | `SAGE_UI_MAIN_WINDOW_TITLE` (이미 있음) |
 
 ## 사이드바 (T11)

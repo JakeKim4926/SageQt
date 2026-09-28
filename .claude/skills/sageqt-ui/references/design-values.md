@@ -1,11 +1,11 @@
 # 디자인 값 목록
 
-`sageqt-ui`의 상세 규격이다. `ui/style/SageDesignDefine.h`에 둘 값의 **전체 목록**이다 (T08이 이 목록으로 파일을 만든다). 스타일 · 위젯 · delegate를 그릴 때 값은 여기서 찾는다.
+`sageqt-ui`의 상세 규격이다. `ui/style/SageDesignDefine.h`에 둘 값의 **전체 목록**이다. 파일에는 **쓰는 주제에서** 해당 값을 옮긴다 (T08은 팔레트 · 폰트 값부터 — 쓰이지 않는 상수를 미리 넣지 않는다). 스타일 · 위젯 · delegate를 그릴 때 값은 여기서 찾는다.
 
 - 출처: SageSDI `SageSDI/SageDefine.h` — 값 · 줄 번호는 원문 그대로 (2026-09-27, 커밋 `2a6c179`). 분류 근거는 `docs/decisions/sageqt-ui/constants-classification.md`
 - 이름은 SageSDI 이름을 그대로 쓴다 — 원본과 대조하기 쉽게. 단위는 **96 DPI 기준 논리 픽셀**이다 (SKILL.md *레이아웃 정책*)
 - "쓰는 곳"은 SageSDI에서 그 이름을 쓰는 파일 수다. 이 목록에 없는 SageSDI 디자인 상수는 옮기지 않는다 (호출 0곳 · Win32 전용 — 분류표 참고)
-- "쓰는 방식" 열: **고정**(그 값 그대로) · **최소값**(글자 폭 — 레이아웃 · `QFontMetrics`가 더 넓힐 수 있다) · 표 열 최소 폭(`QHeaderView`) · 최대값 · GDI 보정(Qt에서 필요 여부를 T08에서 확인). 기준은 SKILL.md *레이아웃 정책*
+- "쓰는 방식" 열: **고정**(그 값 그대로) · **최소값**(글자 폭 — 레이아웃 · `QFontMetrics`가 더 넓힐 수 있다) · 표 열 최소 폭(`QHeaderView`) · 최대값 · GDI 보정(Qt에서 필요 여부를 처음 쓰는 주제에서 확인). 기준은 SKILL.md *레이아웃 정책*
 
 ## 색 (41개)
 
@@ -95,8 +95,8 @@
 | `SAGE_COMBO_FIELD_INSET` | `6` | 고정 | 141 | 2 — SageFilterComboBox.cpp, SageSearchBox.cpp |  |
 | `SAGE_EDIT_TEXT_TOP_PAD` | `9` | 고정 | 143 | 3 — SageLoginDlg.cpp, SagePasswordChangeDlg.cpp, SageWorkflowInputPanel.cpp | EM_SETRECT 서식 사각형 안쪽 여백 → Qt는 textMargins/스타일로 |
 | `SAGE_EDIT_TEXT_LEFT_PAD` | `10` | 고정 | 144 | 2 — SageSearchBox.cpp, SageWorkflowInputPanel.cpp | EM_SETRECT 서식 사각형 안쪽 여백 → Qt는 textMargins/스타일로 |
-| `SAGE_BUTTON_VERT_ADJUST` | `2` | GDI 보정 — T08에서 필요 여부 확인 | 148 | 1 — SageResultTablePanel.cpp | GDI 배치 보정값 — Qt에서 필요 여부 측정 후 판단 |
-| `SAGE_BUTTON_TEXT_TOP_OFFSET` | `0` | GDI 보정 — T08에서 필요 여부 확인 | 149 | 1 — SageButton.cpp | GDI 텍스트 위치 보정값(0) — Qt에서 필요 여부 측정 후 판단 |
+| `SAGE_BUTTON_VERT_ADJUST` | `2` | GDI 보정 — 처음 쓰는 주제에서 필요 여부 확인 | 148 | 1 — SageResultTablePanel.cpp | GDI 배치 보정값 — Qt에서 필요 여부 측정 후 판단 |
+| `SAGE_BUTTON_TEXT_TOP_OFFSET` | `0` | GDI 보정 — 처음 쓰는 주제에서 필요 여부 확인 | 149 | 1 — SageButton.cpp | GDI 텍스트 위치 보정값(0) — Qt에서 필요 여부 측정 후 판단 |
 | `SAGE_ACTION_GAP` | `8` | 고정 | 160 | 2 — SageResultTablePanel.cpp, SageWorkflowInputPanel.cpp |  |
 | `SAGE_CONTENT_PAD_X` | `24` | 고정 | 174 | 2 — SageHeaderPanel.cpp, SageWorkspacePanel.cpp |  |
 | `SAGE_CONTENT_PAD_Y` | `20` | 고정 | 175 | 1 — SageWorkspacePanel.cpp |  |

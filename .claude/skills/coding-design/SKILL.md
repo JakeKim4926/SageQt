@@ -60,7 +60,8 @@ SageQt/                                 ← 저장소 루트
 │   └── screenshots/<주제 ID>/          ← UI 확인 스크린샷 (git-workflow)
 ├── tests/                              ← Qt Test. 소스 계층 구조를 따라간다
 │   ├── core/
-│   └── infra/
+│   ├── infra/
+│   └── ui/                             ← 화면 없이(offscreen) 검증할 수 있는 스타일 · 폰트만
 ├── tools/                              ← 앱이 아닌 개발 도구 (측정 등). SAGE_BUILD_TOOLS=ON일 때만 빌드
 │   └── font-probe/                     ← 도구 1개 = 폴더 1개
 │
@@ -134,7 +135,7 @@ main.cpp — 모든 계층을 조립한다
 5. 표를 보여주면 → `references/model-view.md`
 6. 모양을 바꾸거나 커스텀 위젯을 그리면 → `references/style.md`
 7. 백그라운드 작업 · DB 접근 · 앱 공통 객체가 필요하면 → `references/threads-and-db.md`
-8. core · infra 클래스면 `tests/`의 같은 계층 경로에 테스트를 추가한다
+8. core · infra 클래스면 `tests/`의 같은 계층 경로에 테스트를 추가한다. ui는 `ui/style/`처럼 화면 없이 검증할 수 있는 것만 테스트한다
 9. 업무(워크플로)를 추가하면 핸들러 파일 1쌍 · core 소스 목록 · 업무 식별자 · 등록부 1곳만 고친다. 그 밖에 고칠 곳이 생기면 확장점이 없다는 신호다 → `references/ui-composition.md` 완료 기준 D
 
 ### 구조를 수정할 때

@@ -38,7 +38,7 @@
 | 값 | 면 | 테두리 | 글자 | 굵기 | 용도 |
 |---|---|---|---|---|---|
 | `Secondary` (기본) | `SAGE_COLOR_PANEL` | `SAGE_COLOR_BUTTON_BORDER` | `SAGE_COLOR_TEXT` | Regular | 파일 · 폴더 선택, 취소, 폴더 열기, 메시지 상자 「아니오」 |
-| `Primary` | `SAGE_COLOR_PRIMARY` | `SAGE_COLOR_PRIMARY` | 흰색 (상수 없음 — T08에서 `SageDesignDefine.h`에 추가) | Bold | 실행 · 저장 · 확인 — **화면당 1개** |
+| `Primary` | `SAGE_COLOR_PRIMARY` | `SAGE_COLOR_PRIMARY` | 흰색 (상수 없음 — 버튼을 만드는 T09에서 `SageDesignDefine.h`에 추가) | Bold | 실행 · 저장 · 확인 — **화면당 1개** |
 | `Ghost` | 없음 | 없음 | `SAGE_COLOR_TEXT_MUTED` | Regular | 초기화 · 선택 해제 |
 | `Danger` | `SAGE_COLOR_PANEL` | `SAGE_COLOR_DANGER_BORDER` | `SAGE_COLOR_ERROR` | Bold | 삭제 · 메시지 상자 「예」(확인형) |
 
@@ -47,11 +47,11 @@
 - 앱 기본 폰트(본문 14px Regular)는 `main.cpp`에서 `QApplication::setFont`로 한 번 적용한다
 - 역할 폰트(제목 · 섹션 · 캡션 · 요약 수치 · 로고)는 **`SageStyle::polish(QWidget*)`가 위젯의 변형을 보고 적용한다.** 화면 · 위젯 코드에서 `setFont`를 부르지 않는다 (`style.md`)
 - delegate와 커스텀 위젯의 `paintEvent`는 `ui/style/`의 공용 함수로 역할 폰트를 얻는다 — 역할 → 폰트 대응을 한 곳에 둔다
-- 변형이 바뀌면 위젯이 `SageStyle`에 다시 polish를 요청해야 폰트가 바뀐다 (`unpolish` → `polish`, 또는 `QEvent::StyleChange`). 방법은 T08에서 정한다
+- 변형이 바뀌면 위젯이 `SageStyle`에 다시 polish를 요청해야 폰트가 바뀐다 (`unpolish` → `polish`, 또는 `QEvent::StyleChange`). 방법은 변형 위젯을 처음 만드는 T09에서 정한다
 
-## 미정 — T08에서 화면을 보고 정한다
+## 미정 — 처음 쓰는 주제에서 사용자가 화면을 보고 정한다
 
-SageSDI에 규격이 없다. 추측으로 채우지 않는다 (SKILL.md *값 출처 원칙*).
+SageSDI에 규격이 없다. 추측으로 채우지 않는다 (SKILL.md *값 출처 원칙*). T08은 사용자 확인 없이 진행해 이 항목을 정하지 않았다 — 그 위젯을 처음 만드는 주제에서 세 OS 스크린샷을 사용자에게 보여 주고 정한다 (버튼 · 캡션 T09, 입력칸 T10, 탭 · 콤보 T13, 헤더 · 체크 상자 · 스크롤바 T15).
 
 | 항목 | 상태 |
 |---|---|
@@ -63,6 +63,6 @@ SageSDI에 규격이 없다. 추측으로 채우지 않는다 (SKILL.md *값 출
 | 「관리자」 배지 색 | 문서 · 코드 값 확인 필요 (T12) |
 | 사이드바 선택 항목 글자색 | 규격 없음 (T11) |
 | 검색 박스 면 · 필 바 선택 상태 | 규격 없음 (T15 · T16) |
-| 스크롤바 | 사이드바는 숨김. 나머지는 Fusion 기본으로 둘지 T08에서 |
+| 스크롤바 | 사이드바는 숨김(T11). 나머지는 Fusion 기본으로 둘지 T15에서 |
 | 체크 상자 (표 · 선택 바) | `SAGE_LIST_CHECK_BOX_SIZE` · `SAGE_LIST_CHECK_MARK_THICKNESS` 외 규격 없음 |
-| 흰색 글자 상수 | Primary 버튼 글자 — `SageDesignDefine.h`에 추가 |
+| 흰색 글자 상수 | Primary 버튼 글자 — T09에서 `SageDesignDefine.h`에 추가 |

@@ -6,13 +6,15 @@
 SageSDI의 프레임리스 다이얼로그 기반과 메시지 상자를 옮기고, T06에서 미뤄 둔 시작 시 안내(DB 오류 · 초기 관리자 비밀번호)를 이 메시지 상자로 연결한다.
 
 ## 시작 전에
-1. 선행 주제: T08
+1. 선행 주제: 없음 (T08 완료 — `SageStyle` · 팔레트 · 폰트가 `main.cpp`에서 적용된다)
 2. 스킬 로드: `sageqt-ui`, `coding-design`, `coding-rules`, `git-workflow`
    - 읽을 reference: `coding-design/references/ui-composition.md` (화면 클래스 작성 형태) · `style.md`, `coding-rules/references/api-shape.md` · `ownership-and-threads.md` (모달은 스택 값), `sageqt-ui`의 다이얼로그 규격
 3. 결정 — 없음 (`sageqt-ui` 규격을 따른다)
 4. 재확인할 사실
    - Qt 6.11의 `QWindow::startSystemMove()` 지원 범위 (Windows · macOS · X11 · Wayland)
    - Mac mini 준비 여부 — macOS에서 프레임리스 창의 이동 · 모양을 눈으로 확인해야 한다
+   - **T08에서 미룬 판정** — T08은 사용자가 화면을 볼 수 없어 규격 없는 상태를 정하지 않았다. 버튼 · 캡션의 hover · focus · disabled 규격, 변형 위젯의 그리기 방법, Primary 버튼 흰색 글자 상수, GDI 보정값(`SAGE_BUTTON_VERT_ADJUST` · `SAGE_BUTTON_TEXT_TOP_OFFSET`)의 필요 여부를 세 OS 스크린샷으로 사용자와 정한다 (`sageqt-ui/references/style-scope.md` *미정*)
+   - 96 DPI 1:1 대응 — 다이얼로그를 SageSDI 화면과 나란히 놓고 크기가 같은지 사용자가 확인한다 (`sageqt-ui` SKILL.md *단위*)
 
 ## SageSDI에서 옮길 것
 원본 루트: `D:/Projects/SageSDI/SageSDI/app/ui/`
