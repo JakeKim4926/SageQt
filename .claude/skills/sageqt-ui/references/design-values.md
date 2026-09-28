@@ -285,9 +285,10 @@
 
 ## SageQt에서 정한 값
 
-SageSDI에 없어 사용자가 정한 값이다. 위 합계에 들지 않는다.
+SageSDI 상수에 없어 사용자가 정했거나, SageSDI 코드의 리터럴에 이름을 붙인 값이다. 위 합계에 들지 않는다.
 
 | 이름 | 값 | 쓰는 방식 | 정한 곳 |
 |---|---|---|---|
 | `SAGE_MAIN_WINDOW_WIDTH` | `1280` | 초기 크기 | T11, 사용자 결정 2026-09-28 |
 | `SAGE_MAIN_WINDOW_HEIGHT` | `800` | 초기 크기 | T11, 사용자 결정 2026-09-28 |
+| `SAGE_DLG_EDIT_TEXT_PAD_X` | `4` | 고정 | T10 — SageSDI 다이얼로그 코드의 리터럴 (`SageLoginDlg.cpp:139`, `SagePasswordChangeDlg.cpp:162`)에 이름을 붙였다 |

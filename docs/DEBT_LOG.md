@@ -5,6 +5,12 @@
 
 ## 열린 항목
 
+### [2026-09-28] 임시구현 — design-values.md 생성 스크립트와 입력 분류표가 저장소 밖(임시 폴더)에 있다
+- 위치: .claude/skills/sageqt-ui/references/design-values.md (생성물), 생성 스크립트 gen_design_values.py · t07-constants.md (T07 세션의 임시 폴더)
+- 설명: T07부터 design-values.md를 스크립트로 생성해 왔는데, 스크립트와 입력 분류표가 세션 임시 폴더에만 있다. 임시 폴더가 지워지면 표를 다시 생성할 수 없고, 손으로 고치면 생성 규칙과 어긋난다
+- 위험도: 중 — 다음 규격 수정 때 생성 경로를 잃을 수 있다
+- 후속: 스크립트와 분류표를 tools/design-values/로 옮기거나, 생성을 그만두고 표를 직접 관리하는 쪽으로 정한다 (사용자 확인)
+
 ### [2026-09-28] 검증누락 — Linux에서 캡션 끌어서 이동이 요청한 거리만큼 움직이는지 확인하지 못했다
 - 위치: SageQt/ui/ui/widgets/SageDialogCaptionBar.cpp (`startSystemMove`), tools/dialog-capture/capture.py
 - 설명: CI(Xvfb + openbox + pyautogui)에서 (150, 100)을 끌면 창이 (600, 340) 움직여 화면 끝으로 밀려난다 (실행 36372865888 · 36373636749, 두 번 같음). Windows · macOS는 같은 스크립트로 정확히 (150, 100) 움직였다. 앱 문제인지 가짜 창 관리자 · 가짜 입력 문제인지 가르지 못했다. Wayland는 CI 환경이 없어 재지 않았다

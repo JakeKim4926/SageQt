@@ -1,6 +1,8 @@
 #include "ui/window/SageMainWindow.h"
 
 #include "SageDefine.h"
+#include "ui/dialogs/SageLoginDlg.h"
+#include "ui/dialogs/SagePasswordChangeDlg.h"
 #include "ui/panels/SageHeaderPanel.h"
 #include "ui/panels/SageSidebarPanel.h"
 #include "ui/style/SageDesignDefine.h"
@@ -12,14 +14,29 @@
 
 #include <optional>
 
-SageMainWindow::SageMainWindow(const SageWorkflowRegistry& registry, SageAuthSession& authSession, QWidget* parent)
+SageMainWindow::SageMainWindow(const SageWorkflowRegistry& registry, const SageUserService& userService,
+                               SageAuthSession& authSession, QWidget* parent)
     : QMainWindow(parent)
+    , m_userService(userService)
+    , m_authSession(authSession)
 {
     setWindowTitle(SAGE_UI_MAIN_WINDOW_TITLE);
     resize(SAGE_MAIN_WINDOW_WIDTH, SAGE_MAIN_WINDOW_HEIGHT);
     createWidgets(registry, authSession);
     createLayout();
     connectSignals();
+}
+
+void SageMainWindow::openLoginDialog()
+{
+    SageLoginDlg loginDialog(m_userService, m_authSession, this);
+    loginDialog.exec();
+}
+
+void SageMainWindow::openPasswordChangeDialog()
+{
+    SagePasswordChangeDlg passwordDialog(m_userService, m_authSession, this);
+    passwordDialog.exec();
 }
 
 void SageMainWindow::createWidgets(const SageWorkflowRegistry& registry, SageAuthSession& authSession)
@@ -53,6 +70,9 @@ void SageMainWindow::createLayout()
 void SageMainWindow::connectSignals()
 {
     connect(m_sidebarPanel, &SageSidebarPanel::workflowSelected, m_headerPanel, &SageHeaderPanel::showWorkflow);
+    connect(m_headerPanel, &SageHeaderPanel::loginRequested, this, &SageMainWindow::openLoginDialog);
+    connect(m_sidebarPanel, &SageSidebarPanel::passwordChangeRequested, this,
+            &SageMainWindow::openPasswordChangeDialog);
     const std::optional<SageWorkflowType> selectedWorkflow = m_sidebarPanel->selectedWorkflow();
     if (selectedWorkflow.has_value()) {
         m_headerPanel->showWorkflow(*selectedWorkflow);

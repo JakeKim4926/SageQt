@@ -59,6 +59,7 @@ SageQt/                                 ← 저장소 루트
 │   ├── plans/done/                     ← 끝난 계획 주제 파일 (이력, sageqt-plan)
 │   └── screenshots/<주제 ID>/          ← UI 확인 스크린샷 (git-workflow)
 ├── tests/                              ← Qt Test. 소스 계층 구조를 따라간다
+│   ├── app/                            ← 조립 수준 흐름 (실제 DB · 해시 + 창, main.cpp와 같은 조립). 공용 테스트 대역은 tests/ui/의 SageTest*.h
 │   ├── core/
 │   ├── infra/
 │   └── ui/                             ← 화면 없이(offscreen) 검증할 수 있는 스타일 · 폰트 · 다이얼로그 키 동작 · 그린 색

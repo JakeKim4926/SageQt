@@ -15,12 +15,13 @@ inline const QString SAGE_STYLE_BASE_NAME = QStringLiteral("Fusion");
 inline constexpr int SAGE_FONT_INVALID_ID = -1;
 inline constexpr double SAGE_ROUND_RECT_DIAMETER_TO_RADIUS = 0.5;
 inline constexpr double SAGE_STROKE_CENTER_OFFSET = 0.5;
+inline constexpr int SAGE_QT_LINE_EDIT_TEXT_MARGIN = 2;
 
 inline const QList<SageFontFile> SAGE_FONT_FILES = {
-    {QStringLiteral(":/fonts/PretendardRegular.ttf"), SAGE_FONT_FAMILY_PRETENDARD},
-    {QStringLiteral(":/fonts/PretendardSemiBold.ttf"), SAGE_FONT_FAMILY_PRETENDARD},
-    {QStringLiteral(":/fonts/PretendardBold.ttf"), SAGE_FONT_FAMILY_PRETENDARD},
-    {QStringLiteral(":/fonts/GmarketSansTTFBold.ttf"), SAGE_FONT_FAMILY_GMARKET},
+    {QStringLiteral(":/fonts/PretendardRegular.ttf"), SAGE_FONT_FAMILY_PRETENDARD.toString()},
+    {QStringLiteral(":/fonts/PretendardSemiBold.ttf"), SAGE_FONT_FAMILY_PRETENDARD.toString()},
+    {QStringLiteral(":/fonts/PretendardBold.ttf"), SAGE_FONT_FAMILY_PRETENDARD.toString()},
+    {QStringLiteral(":/fonts/GmarketSansTTFBold.ttf"), SAGE_FONT_FAMILY_GMARKET.toString()},
 };
 
 inline const QString SAGE_FONT_ERROR_REGISTER = QStringLiteral("폰트를 등록할 수 없습니다. Path=%1");

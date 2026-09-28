@@ -6,6 +6,7 @@ class QFrame;
 class SageAuthSession;
 class SageHeaderPanel;
 class SageSidebarPanel;
+class SageUserService;
 class SageWorkflowRegistry;
 
 class SageMainWindow : public QMainWindow
@@ -13,7 +14,12 @@ class SageMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    SageMainWindow(const SageWorkflowRegistry& registry, SageAuthSession& authSession, QWidget* parent = nullptr);
+    SageMainWindow(const SageWorkflowRegistry& registry, const SageUserService& userService,
+                   SageAuthSession& authSession, QWidget* parent = nullptr);
+
+private slots:
+    void openLoginDialog();
+    void openPasswordChangeDialog();
 
 private:
     void createWidgets(const SageWorkflowRegistry& registry, SageAuthSession& authSession);
@@ -21,6 +27,8 @@ private:
     void connectSignals();
 
 private:
+    const SageUserService& m_userService;
+    SageAuthSession& m_authSession;
     QWidget* m_centralWidget = nullptr;
     SageSidebarPanel* m_sidebarPanel = nullptr;
     QFrame* m_sidebarDivider = nullptr;

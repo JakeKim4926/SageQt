@@ -14,6 +14,7 @@ public:
         Title,
         SecondaryCaption,
         MutedCaption,
+        FormLabel,
         SidebarLogo
     };
     Q_ENUM(SageLabelVariant)

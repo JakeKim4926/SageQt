@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QColor>
-#include <QString>
+#include <QStringView>
 
 inline const QColor SAGE_COLOR_APP_BACKGROUND(248, 246, 241);
 inline const QColor SAGE_COLOR_PANEL(255, 255, 255);
@@ -18,6 +18,7 @@ inline const QColor SAGE_COLOR_BUTTON_TEXT(255, 255, 255);
 inline const QColor SAGE_COLOR_BUTTON_BORDER(201, 191, 177);
 inline const QColor SAGE_COLOR_WARNING(184, 135, 70);
 inline const QColor SAGE_COLOR_ERROR(184, 92, 74);
+inline const QColor SAGE_COLOR_INLINE_ERROR_TEXT(156, 68, 51);
 inline const QColor SAGE_COLOR_LIST_HEADER(242, 238, 231);
 inline const QColor SAGE_COLOR_LIST_HEADER_BORDER(228, 223, 215);
 inline const QColor SAGE_COLOR_SIDEBAR(36, 31, 26);
@@ -29,6 +30,22 @@ inline const QColor SAGE_COLOR_SIDEBAR_SELECTED_TEXT(255, 255, 255);
 
 inline constexpr int SAGE_MARGIN = 16;
 inline constexpr int SAGE_BUTTON_HEIGHT = 32;
+inline constexpr int SAGE_EDIT_HEIGHT = 32;
+inline constexpr int SAGE_EDIT_BORDER_WIDTH = 1;
+inline constexpr int SAGE_DLG_EDIT_TEXT_PAD_X = 4;
+inline constexpr int SAGE_ROW_GAP = 10;
+inline constexpr int SAGE_INLINE_MSG_HEIGHT = 24;
+inline constexpr int SAGE_INLINE_MSG_ICON_SIZE = 14;
+inline constexpr int SAGE_INLINE_MSG_ICON_GAP = 8;
+inline constexpr int SAGE_INLINE_ICON_RADIUS = 5;
+inline constexpr int SAGE_INLINE_ICON_STEM_TOP = 4;
+inline constexpr int SAGE_INLINE_ICON_STEM_BOTTOM = 8;
+inline constexpr int SAGE_INLINE_ICON_DOT_TOP = 10;
+inline constexpr int SAGE_INLINE_ICON_DOT_SIZE = 2;
+inline constexpr int SAGE_LOGIN_DLG_WIDTH = 320;
+inline constexpr int SAGE_PASSWORD_DLG_WIDTH = 360;
+inline constexpr int SAGE_LOGIN_DLG_LABEL_WIDTH = 64;
+inline constexpr int SAGE_PASSWORD_DLG_LABEL_WIDTH = 96;
 inline constexpr int SAGE_BORDER_THICKNESS = 1;
 inline constexpr int SAGE_ICON_SIZE = 15;
 inline constexpr int SAGE_ICON_STROKE = 2;
@@ -80,5 +97,5 @@ inline constexpr double SAGE_FONT_TENTHS_PER_POINT = 10.0;
 inline constexpr double SAGE_FONT_REFERENCE_DPI = 96.0;
 inline constexpr double SAGE_FONT_POINTS_PER_INCH = 72.0;
 
-inline const QString SAGE_FONT_FAMILY_PRETENDARD = QStringLiteral("Pretendard");
-inline const QString SAGE_FONT_FAMILY_GMARKET = QStringLiteral("Gmarket Sans TTF");
+inline constexpr QStringView SAGE_FONT_FAMILY_PRETENDARD = u"Pretendard";
+inline constexpr QStringView SAGE_FONT_FAMILY_GMARKET = u"Gmarket Sans TTF";

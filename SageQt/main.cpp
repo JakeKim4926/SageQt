@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
     SageAuthSession authSession;
     const SageWorkflowRegistry workflowRegistry;
 
-    SageMainWindow mainWindow(workflowRegistry, authSession);
+    SageMainWindow mainWindow(workflowRegistry, userService, authSession);
     mainWindow.show();
     const int exitCode = QApplication::exec();
 

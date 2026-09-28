@@ -45,7 +45,7 @@ description: >
    | 제목 · 섹션 제목 서체 | SemiBold / Bold (문서 안에서도 충돌) | `SAGE_TITLE_FONT_FACE = "Pretendard SemiBold"` | SemiBold |
    | 아이콘 선 굵기 | 1.5px / 2px | 2px | 2px |
    | Primary 버튼 개수 | 카드당 1개 (근거 화면 삭제) / 화면당 1개 | — | **화면당 1개** |
-   | 인라인 오류 자리 | 값이 비면 숨김 / 자리는 항상 비워 둠 | T10 착수 시 `SageLoginDlg` 코드로 확인 | 코드의 동작 |
+   | 인라인 오류 자리 | 값이 비면 숨김 / 자리는 항상 비워 둠 | 고정 배치 — 메시지가 없어도 줄이 남는다 (`SageLoginDlg.cpp:100-111`) | 자리는 항상 비워 둔다 |
    | Primary 버튼 굵기 | Bold | 호출부가 `SAGE_FONT_CONTROL` · `SAGE_FONT_CONTENT`(Regular)를 준다 (`SageMessageBoxDlg.cpp:97`, `SageLoginDlg.cpp:131`) | Regular |
    | 선택 탭 · 사이드바 선택 굵기 | Bold | `SAGE_FONT_CONTENT_SEMIBOLD` (`SageTabCtrl.cpp:58`, `SageSidebarTree.cpp:34`) | SemiBold 14px (*본문 강조*) |
    | 다이얼로그 캡션 제목 | 9.0pt 캡션 폰트 | `SAGE_FONT_CONTENT_SEMIBOLD` (`SageDialogCaptionBar.cpp:58`) | SemiBold 14px (*본문 강조*) |

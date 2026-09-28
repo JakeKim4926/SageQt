@@ -1,6 +1,9 @@
 #include "ui/style/SageStyle.h"
 
 #include "ui/widgets/SageButton.h"
+#include "ui/widgets/SageLineEdit.h"
+
+#include <QPainter>
 
 #include <QColor>
 #include <QImage>
@@ -23,9 +26,12 @@ private slots:
     void secondaryButtonDrawsBorder();
     void standardIconsAreDrawn();
     void messageIconHasTransparentBackground();
+    void lineEditTextStartsAfterBorderAndPad();
+    void lineEditBorderFollowsFocusAndError();
 
 private:
     static QColor faceColor(QPushButton& button);
+    static int firstDarkColumn(const QImage& image, int fromColumn);
 };
 
 void SageStyleTest::baseStyleIsFusion()
@@ -117,6 +123,65 @@ QColor SageStyleTest::faceColor(QPushButton& button)
     button.resize(button.sizeHint());
     const QImage image = button.grab().toImage();
     return image.pixelColor(1, 1);
+}
+
+void SageStyleTest::lineEditTextStartsAfterBorderAndPad()
+{
+    SageStyle style;
+    SageLineEdit edit;
+    edit.setStyle(&style);
+    edit.setText(QStringLiteral("I"));
+    edit.resize(200, 32);
+    QImage plain(200, 32, QImage::Format_RGB32);
+    plain.fill(Qt::white);
+    QPainter painter(&plain);
+    painter.setFont(edit.font());
+    painter.setPen(Qt::black);
+    painter.drawText(0, 20, QStringLiteral("I"));
+    painter.end();
+
+    const int textStart = firstDarkColumn(edit.grab().toImage(), 2) - firstDarkColumn(plain, 0);
+
+    QCOMPARE(textStart, 5);
+    QCOMPARE(edit.sizeHint().height(), 32);
+}
+
+void SageStyleTest::lineEditBorderFollowsFocusAndError()
+{
+    SageStyle style;
+    SageLineEdit edit;
+    edit.setStyle(&style);
+    edit.resize(200, 32);
+    edit.show();
+    QVERIFY(QTest::qWaitForWindowExposed(&edit));
+
+    edit.activateWindow();
+    edit.setFocus();
+    QVERIFY(QTest::qWaitForWindowActive(&edit));
+    QTRY_VERIFY(edit.hasFocus());
+    QCOMPARE(edit.grab().toImage().pixelColor(0, 10), QColor(154, 107, 63));
+
+    edit.clearFocus();
+    QTRY_VERIFY(!edit.hasFocus());
+    QCOMPARE(edit.grab().toImage().pixelColor(0, 10), QColor(220, 214, 205));
+
+    edit.setFocus();
+    QTRY_VERIFY(edit.hasFocus());
+
+    edit.setVariant(SageLineEdit::SageLineEditVariant::Error);
+    QCOMPARE(edit.grab().toImage().pixelColor(0, 10), QColor(184, 92, 74));
+}
+
+int SageStyleTest::firstDarkColumn(const QImage& image, int fromColumn)
+{
+    for (int x = fromColumn; x < image.width(); ++x) {
+        for (int y = 2; y < image.height() - 2; ++y) {
+            if (image.pixelColor(x, y).lightness() < 128) {
+                return x;
+            }
+        }
+    }
+    return -1;
 }
 
 QTEST_MAIN(SageStyleTest)

@@ -1,4 +1,4 @@
-find_package(Qt6 6.11 REQUIRED COMPONENTS Core Network Sql Widgets)
+find_package(Qt6 6.11 REQUIRED COMPONENTS Concurrent Core Network Sql Widgets)
 qt_standard_project_setup(REQUIRES 6.11)
 
 set(CMAKE_CXX_STANDARD 20)

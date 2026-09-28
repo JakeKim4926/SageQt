@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QFont>
+#include <QStringView>
 
 enum class SageFontRole
 {
@@ -21,5 +22,5 @@ public:
     static int pixelSize(int pointSizeTenths);
 
 private:
-    static QFont makeFont(const QString& family, QFont::Weight weight, int pointSizeTenths);
+    static QFont makeFont(QStringView family, QFont::Weight weight, int pointSizeTenths);
 };

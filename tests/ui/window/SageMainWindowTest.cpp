@@ -1,6 +1,8 @@
 #include "ui/window/SageMainWindow.h"
 
+#include "SageTestAuth.h"
 #include "core/auth/SageAuthSession.h"
+#include "core/auth/SageUserService.h"
 #include "core/workflow/SageWorkflowRegistry.h"
 #include "ui/panels/SageHeaderPanel.h"
 #include "ui/style/SageFontRegistry.h"
@@ -38,8 +40,11 @@ void SageMainWindowTest::initTestCase()
 void SageMainWindowTest::startsAtInitialSize()
 {
     const SageWorkflowRegistry registry;
+    const SageTestUserRepository repository;
+    const SageTestPasswordHasher hasher;
+    const SageUserService userService(repository, hasher);
     SageAuthSession session;
-    const SageMainWindow window(registry, session);
+    const SageMainWindow window(registry, userService, session);
 
     QCOMPARE(window.width(), 1280);
     QCOMPARE(window.height(), 800);
@@ -48,8 +53,11 @@ void SageMainWindowTest::startsAtInitialSize()
 void SageMainWindowTest::headerShowsSelectedWorkflow()
 {
     const SageWorkflowRegistry registry;
+    const SageTestUserRepository repository;
+    const SageTestPasswordHasher hasher;
+    const SageUserService userService(repository, hasher);
     SageAuthSession session;
-    const SageMainWindow window(registry, session);
+    const SageMainWindow window(registry, userService, session);
 
     const SageHeaderPanel* header = window.findChild<SageHeaderPanel*>();
     const QList<SageLabel*> labels = header->findChildren<SageLabel*>();
@@ -64,8 +72,11 @@ void SageMainWindowTest::headerShowsSelectedWorkflow()
 void SageMainWindowTest::drawsSidebarDividerAndAlignedLines()
 {
     const SageWorkflowRegistry registry;
+    const SageTestUserRepository repository;
+    const SageTestPasswordHasher hasher;
+    const SageUserService userService(repository, hasher);
     SageAuthSession session;
-    SageMainWindow window(registry, session);
+    SageMainWindow window(registry, userService, session);
     window.show();
     QVERIFY(QTest::qWaitForWindowExposed(&window));
     const SageHeaderPanel* header = window.findChild<SageHeaderPanel*>();

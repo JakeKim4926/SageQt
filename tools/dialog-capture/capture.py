@@ -9,6 +9,7 @@ import pyautogui
 from PIL import ImageGrab
 
 CAPTION_COLOR = (242, 238, 231)
+WORK_AREA_COLOR = (248, 246, 241)
 COLOR_TOLERANCE = 3
 CAPTION_HEIGHT = 40
 CAPTION_MIN_ROW_PIXELS = 200
@@ -18,6 +19,10 @@ SETTLE_SECONDS = 2
 DRAG_GRIP = (60, 20)
 DRAG_OFFSET = (150, 100)
 DRAG_SECONDS = 1.0
+HEADER_ROW_HEIGHT = 56
+HEADER_TOTAL_HEIGHT = 57
+CONTENT_PAD_X = 24
+LOGIN_BUTTON_HALF_WIDTH = 34
 
 
 def grab():
@@ -25,8 +30,12 @@ def grab():
 
 
 def find_caption(image):
+    return find_band(image, CAPTION_COLOR)
+
+
+def find_band(image, color):
     pixels = numpy.asarray(image.convert('RGB')).astype(int)
-    distance = numpy.abs(pixels - numpy.array(CAPTION_COLOR)).max(axis=2)
+    distance = numpy.abs(pixels - numpy.array(color)).max(axis=2)
     matches = distance <= COLOR_TOLERANCE
     band_rows = numpy.nonzero(matches.sum(axis=1) >= CAPTION_MIN_ROW_PIXELS)[0]
     if band_rows.size < CAPTION_MIN_ROWS:
@@ -93,6 +102,26 @@ def main():
             image = grab()
             image.save(out_dir / f'{prefix}-3-after-enter.png')
             result['closedByEnter'] = find_caption(image) is None
+
+            work_area = find_band(image, WORK_AREA_COLOR)
+            result['workArea'] = work_area
+            if work_area is None:
+                return result
+            login_x = (work_area[2] - (CONTENT_PAD_X + LOGIN_BUTTON_HALF_WIDTH) * scale) / scale
+            login_y = (work_area[1] - (HEADER_TOTAL_HEIGHT - HEADER_ROW_HEIGHT / 2) * scale) / scale
+            pyautogui.click(login_x, login_y)
+            image, login_caption = wait_for_caption()
+            image.save(out_dir / f'{prefix}-4-login.png')
+            result['loginOpened'] = login_caption is not None
+            if login_caption is None:
+                return result
+
+            pyautogui.press('enter')
+            time.sleep(SETTLE_SECONDS)
+            grab().save(out_dir / f'{prefix}-5-login-empty-id.png')
+            pyautogui.press('escape')
+            time.sleep(SETTLE_SECONDS)
+            result['loginClosedByEscape'] = find_caption(grab()) is None
             return result
         finally:
             app.kill()

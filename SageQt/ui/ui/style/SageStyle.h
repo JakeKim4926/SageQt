@@ -4,6 +4,7 @@
 #include <QIcon>
 #include <QPalette>
 #include <QProxyStyle>
+#include <QRect>
 #include <QSize>
 
 class QPainter;
@@ -26,6 +27,8 @@ public:
                      const QWidget* widget = nullptr) const override;
     QSize sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& contentsSize,
                            const QWidget* widget = nullptr) const override;
+    QRect subElementRect(SubElement element, const QStyleOption* option,
+                         const QWidget* widget = nullptr) const override;
     QIcon standardIcon(StandardPixmap standardIcon, const QStyleOption* option = nullptr,
                        const QWidget* widget = nullptr) const override;
 
@@ -33,6 +36,8 @@ private:
     static bool isPrimaryButton(const QWidget* widget);
     static void drawPushButtonPanel(const QStyleOption* option, QPainter* painter, const QWidget* widget);
     static void drawToolButtonPanel(const QStyleOption* option, QPainter* painter);
+    static void drawLineEditPanel(const QStyleOption* option, QPainter* painter, const QWidget* widget);
+    static void drawLineEditFrame(const QStyleOption* option, QPainter* painter, const QWidget* widget);
     static QColor pushButtonTextColor(const QStyleOption* option, const QWidget* widget);
     static void polishSurface(QWidget* widget);
     static void polishLabel(QWidget* widget);

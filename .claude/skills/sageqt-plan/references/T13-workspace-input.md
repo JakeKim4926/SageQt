@@ -6,13 +6,14 @@
 SageSDI의 작업 영역(업무별 탭 · 업무 전환 시 상태 보존)과 입력 패널(입력 파일 · 저장 폴더 · 파일 드롭)을 옮긴다.
 
 ## 시작 전에
-1. 선행 주제: T10 (인증 UI까지 연결된 창)
+1. 선행 주제: 없음 (T10 완료 — 로그인 · 비밀번호 변경까지 연결된 창. 실행 버튼의 로그인 필요 판단은 세션 `authStateChanged`를 받는다)
 2. 스킬 로드: `sageqt-ui`, `coding-design`, `coding-rules`, `git-workflow`
    - 읽을 reference: `coding-design/references/ui-composition.md` (탭은 패널 단위 · 한 위젯이 두 탭 역할 금지) · `style.md`, `coding-rules/references/values-and-platform.md` (`QFileDialog` · 경로 규칙) · `api-shape.md`
 3. 결정 — 착수 시 사용자와 확정
    - 입력 파일 필터: SageSDI는 엑셀 필터를 쓴다 (아래). 샘플 업무는 어떤 파일이든 받는다. 권장 — 필터를 핸들러가 정하게 한다 (업무마다 입력 형식이 다르다). 핸들러 인터페이스 변경이므로 T03 결과와 맞춘다
    - 탭 구현은 `QTabBar` + `QStackedWidget` (`sageqt-ui/references/widgets.md`, `ui-composition.md` *탭은 패널 단위*). 선택 탭 Bold로 탭 폭이 흔들리는지 확인 (`screens.md`)
 4. 재확인할 사실
+   - **T09 · T10에서 미룬 사용자 확인** — 프레임리스 다이얼로그의 캡션 닫기 버튼이 흰 사각형으로 보이는 것이 SageSDI 실제 화면과 같은지, 메시지 상자 · 로그인 창 · 메인 창을 SageSDI와 나란히 놓고 크기 · 글자 크기가 같은지(96 DPI 1:1). 스크린샷 `docs/screenshots/T09/` · `T10/`
    - **T08에서 미룬 판정** — T08은 사용자가 화면을 볼 수 없어 규격 없는 상태를 정하지 않았다. 탭 · 콤보의 hover · focus · disabled 규격을 세 OS 스크린샷으로 사용자와 정한다 (`sageqt-ui/references/style-scope.md` *미정*)
    - `SageWorkspacePanel::ApplyDroppedInputPaths` (`:507-`): 여러 파일을 떨어뜨렸을 때의 처리
    - 자동 불러오기 플래그(`m_bAutoLoadOnInput`)를 누가 켜는지 (입력 표를 쓰는 업무?)

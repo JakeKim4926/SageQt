@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-28] feature/login-dialog
+- **목적**: SageSDI 로그인 · 비밀번호 변경 다이얼로그와 강제 변경 흐름을 옮기고 헤더 · 사이드바 요청에 연결 (sageqt-plan T10)
+- **변경 내용**: `SageLoginDlg` · `SagePasswordChangeDlg`(서비스 호출은 QtConcurrent), `SageLineEdit` · `SageInlineMessage` · `FormLabel`, 입력칸 스타일(포커스 테두리 주 색 — 사용자 결정), 창 연결, 폰트 패밀리 상수 초기화 순서 버그 수정과 규칙, 조립 수준 로그인 흐름 테스트(실제 DB · PBKDF2), 스크린샷 워크플로에 로그인 창 확인. 규격을 SageSDI 코드로 확정. 스크린샷 `docs/screenshots/T10/`. T10 완료 처리
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-09-28)
+
 ## [2026-09-28] feature/header
 - **목적**: SageSDI 헤더(업무 제목 · 분류 · 인증 표시 · 로그인/로그아웃)를 옮긴다 (sageqt-plan T12)
 - **변경 내용**: `SageHeaderPanel` · `SageBadge`, `SageLabel` · `SageSurface` 변형 추가, 앱 팔레트 `Mid`, 사이드바 옆 세로 구분선, `SageAuthSession` → `QObject`(`authStateChanged`). 테스트(인증 표시 · 로그아웃 · 그린 값 · 창 배치). 헤더 규격을 SageSDI 코드로 확정(배지 알약 · 같은 색, 제목 19px). 스크린샷 `docs/screenshots/T12/`. T12 완료 처리

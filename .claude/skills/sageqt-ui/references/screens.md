@@ -102,10 +102,15 @@ SageSDI `SageHeaderPanel.cpp` · `SageBadge.cpp` · `SageSDIView.cpp`에서 옮�
 
 ## 로그인 · 비밀번호 변경 (T10)
 
+SageSDI `SageLoginDlg.cpp` · `SagePasswordChangeDlg.cpp` · `SageInlineError.cpp` · `SageEdit.cpp`에서 옮긴다 (2026-09-28 코드 확인).
+
 | 항목 | 규격 |
 |---|---|
-| 창 폭 | `SAGE_LOGIN_DLG_WIDTH` · `SAGE_PASSWORD_DLG_WIDTH`는 최소값 |
-| 라벨 열 | `SAGE_LOGIN_DLG_LABEL_WIDTH` · `SAGE_PASSWORD_DLG_LABEL_WIDTH`는 최소값, 가장 긴 라벨(「변경할 비밀번호」 등)에 맞춘다 |
-| 버튼 | 폭 `SAGE_LOGIN_DLG_BTN_WIDTH`는 최소값 |
-| 인라인 오류 | `SageInlineMessage` — 높이 `SAGE_INLINE_MSG_HEIGHT`, 글자 `SAGE_COLOR_INLINE_ERROR_TEXT`, 캡션 폰트. 자리를 비워 두는지는 SageSDI 코드의 동작을 따른다 (SKILL.md *값 출처 원칙*) |
-| 입력칸 오류 상태 | `SageLineEditVariant::Error` |
+| 창 폭 | `SAGE_LOGIN_DLG_WIDTH` · `SAGE_PASSWORD_DLG_WIDTH`는 최소값. 면 `SAGE_COLOR_PANEL` (프레임리스 기반) |
+| 배치 | 여백 `SAGE_MARGIN`. 입력 줄 사이 `SAGE_ROW_GAP`, 마지막 입력칸 바로 아래 인라인 오류 줄(간격 없음), 비밀번호 변경은 그 아래 안내 줄(간격 없음), 그 아래 `SAGE_ROW_GAP` 뒤 버튼 줄 |
+| 라벨 열 | `SAGE_LOGIN_DLG_LABEL_WIDTH` · `SAGE_PASSWORD_DLG_LABEL_WIDTH`는 최소값, 가장 긴 라벨(「새 비밀번호 확인」 등)에 맞춘다. 라벨과 입력칸 사이 `SAGE_ROW_GAP`. 라벨은 `SageLabel` `FormLabel`(본문 폰트 · `SAGE_COLOR_TEXT_MUTED`), 세로 가운데 |
+| 입력칸 | `SageLineEdit` — 비밀번호는 `QLineEdit::Password`. 새 비밀번호 · 확인은 최대 `SAGE_USER_PW_MAX_LEN`자 |
+| 인라인 오류 | `SageInlineMessage` — 입력칸 열에 맞춰 높이 `SAGE_INLINE_MSG_HEIGHT` 자리를 **항상 비워 둔다** (SageSDI는 고정 배치, 메시지가 없으면 빈 줄). 아이콘 `SAGE_INLINE_MSG_ICON_SIZE`(원 반지름 `SAGE_INLINE_ICON_RADIUS` · 선 `SAGE_BORDER_THICKNESS` · 줄기 `SAGE_INLINE_ICON_STEM_TOP`~`BOTTOM` · 점 `SAGE_INLINE_ICON_DOT_TOP` · `SAGE_INLINE_ICON_DOT_SIZE`, 색 `SAGE_COLOR_ERROR`), 아이콘과 글자 사이 `SAGE_INLINE_MSG_ICON_GAP`, 캡션 폰트 `SAGE_COLOR_INLINE_ERROR_TEXT`, 한 줄 말줄임 |
+| 안내 (비밀번호 변경) | `SAGE_UI_CHANGE_PW_HINT`, `SageLabel` `SecondaryCaption`, 높이 `SAGE_INLINE_MSG_HEIGHT` |
+| 버튼 | 「로그인」 · 「변경」 `Primary`, 「취소」 `Secondary`. 오른쪽 정렬, 사이 `SAGE_ROW_GAP`, 폭 `SAGE_LOGIN_DLG_BTN_WIDTH`는 최소값. Enter = 기본 버튼, Esc · 닫기 = 취소 |
+

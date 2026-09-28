@@ -72,6 +72,8 @@ if (workflowType == SageWorkflowType::Sample) { ... }
 `SageDefine.h`가 과도하게 비대해지면 도메인 전용 `Sage*Define.h`로 분리한다.
 도메인별 블록 구분에 주석을 쓰지 않는다. 접두사(`SAGE_UI_`, `SAGE_WORKFLOW_`)로 그룹을 드러낸다.
 
+**상수를 다른 헤더의 동적 초기화 상수(`QString` · `QColor` · `QList` 등)로 초기화하지 않는다.** 전역 상수의 초기화 순서는 파일 사이에서 정해져 있지 않아, 빈 값을 복사할 수 있다 (T10에서 `SAGE_FONT_FILES`가 빈 패밀리 이름을 받아 폰트 등록이 실패했다). 다른 상수가 가져다 쓰는 값은 컴파일 시간에 정해지는 타입(`constexpr` 정수 · `QStringView`)으로 둔다.
+
 ### 하드코딩 의심 패턴 체크리스트
 
 - [ ] 숫자 리터럴이 코드 안에 직접 있는가 → `SageDefine.h`

@@ -6,6 +6,7 @@
 #include "ui/style/SageStyleDefine.h"
 #include "ui/widgets/SageButton.h"
 #include "ui/widgets/SageLabel.h"
+#include "ui/widgets/SageLineEdit.h"
 #include "ui/widgets/SageSurface.h"
 
 #include <QAbstractButton>
@@ -38,6 +39,7 @@ QPalette SageStyle::standardPalette() const
     palette.setColor(QPalette::HighlightedText, SAGE_COLOR_TEXT);
     palette.setColor(QPalette::Accent, SAGE_COLOR_PRIMARY);
     palette.setColor(QPalette::Mid, SAGE_COLOR_BORDER);
+    palette.setColor(QPalette::Disabled, QPalette::Text, SAGE_COLOR_TEXT_PLACEHOLDER);
     return palette;
 }
 
@@ -57,6 +59,12 @@ void SageStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* opti
         return;
     case PE_PanelButtonTool:
         drawToolButtonPanel(option, painter);
+        return;
+    case PE_PanelLineEdit:
+        drawLineEditPanel(option, painter, widget);
+        return;
+    case PE_FrameLineEdit:
+        drawLineEditFrame(option, painter, widget);
         return;
     case PE_FrameFocusRect:
         if (qobject_cast<const QAbstractButton*>(widget) != nullptr) {
@@ -110,7 +118,20 @@ QSize SageStyle::sizeFromContents(ContentsType type, const QStyleOption* option,
     if (type == CT_PushButton) {
         size.setHeight(SAGE_BUTTON_HEIGHT);
     }
+    if (type == CT_LineEdit) {
+        size.setHeight(SAGE_EDIT_HEIGHT);
+    }
     return size;
+}
+
+QRect SageStyle::subElementRect(SubElement element, const QStyleOption* option, const QWidget* widget) const
+{
+    if (element == SE_LineEditContents) {
+        const int horizontalInset = SAGE_EDIT_BORDER_WIDTH + SAGE_DLG_EDIT_TEXT_PAD_X - SAGE_QT_LINE_EDIT_TEXT_MARGIN;
+        return option->rect.adjusted(horizontalInset, SAGE_EDIT_BORDER_WIDTH, -horizontalInset,
+                                     -SAGE_EDIT_BORDER_WIDTH);
+    }
+    return QProxyStyle::subElementRect(element, option, widget);
 }
 
 QIcon SageStyle::standardIcon(StandardPixmap standardIcon, const QStyleOption* option, const QWidget* widget) const
@@ -157,6 +178,25 @@ void SageStyle::drawToolButtonPanel(const QStyleOption* option, QPainter* painte
     painter->fillRect(option->rect, isPressed ? SAGE_COLOR_LIST_HEADER : SAGE_COLOR_PANEL);
 }
 
+void SageStyle::drawLineEditPanel(const QStyleOption* option, QPainter* painter, const QWidget* widget)
+{
+    const bool isEnabled = option->state.testFlag(State_Enabled);
+    painter->fillRect(option->rect, isEnabled ? SAGE_COLOR_PANEL : SAGE_COLOR_LIST_HEADER);
+    const QStyleOptionFrame* frameOption = qstyleoption_cast<const QStyleOptionFrame*>(option);
+    if (frameOption != nullptr && frameOption->lineWidth > 0) {
+        drawLineEditFrame(option, painter, widget);
+    }
+}
+
+void SageStyle::drawLineEditFrame(const QStyleOption* option, QPainter* painter, const QWidget* widget)
+{
+    const SageLineEdit* lineEdit = qobject_cast<const SageLineEdit*>(widget);
+    const bool isError = lineEdit != nullptr && lineEdit->variant() == SageLineEdit::SageLineEditVariant::Error;
+    const bool hasFocus = option->state.testFlag(State_HasFocus);
+    const QColor border = isError ? SAGE_COLOR_ERROR : hasFocus ? SAGE_COLOR_PRIMARY : SAGE_COLOR_BORDER;
+    qDrawPlainRect(painter, option->rect, border, SAGE_EDIT_BORDER_WIDTH);
+}
+
 void SageStyle::polishSurface(QWidget* widget)
 {
     const SageSurface* surface = qobject_cast<const SageSurface*>(widget);
@@ -194,6 +234,10 @@ void SageStyle::polishLabel(QWidget* widget)
         return;
     case SageLabel::SageLabelVariant::MutedCaption:
         widget->setFont(SageFontCatalog::font(SageFontRole::Caption));
+        setTextColor(widget, SAGE_COLOR_TEXT_MUTED);
+        return;
+    case SageLabel::SageLabelVariant::FormLabel:
+        widget->setFont(SageFontCatalog::font(SageFontRole::Body));
         setTextColor(widget, SAGE_COLOR_TEXT_MUTED);
         return;
     case SageLabel::SageLabelVariant::SidebarLogo:

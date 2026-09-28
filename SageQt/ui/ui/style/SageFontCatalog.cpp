@@ -32,9 +32,9 @@ int SageFontCatalog::pixelSize(int pointSizeTenths)
     return qRound(pointSizeTenths / SAGE_FONT_TENTHS_PER_POINT * SAGE_FONT_REFERENCE_DPI / SAGE_FONT_POINTS_PER_INCH);
 }
 
-QFont SageFontCatalog::makeFont(const QString& family, QFont::Weight weight, int pointSizeTenths)
+QFont SageFontCatalog::makeFont(QStringView family, QFont::Weight weight, int pointSizeTenths)
 {
-    QFont font(family);
+    QFont font(family.toString());
     font.setWeight(weight);
     font.setPixelSize(pixelSize(pointSizeTenths));
     return font;
