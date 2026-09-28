@@ -36,4 +36,5 @@ private:
     static QColor pushButtonTextColor(const QStyleOption* option, const QWidget* widget);
     static void polishSurface(QWidget* widget);
     static void polishLabel(QWidget* widget);
+    static void setTextColor(QWidget* widget, const QColor& color);
 };

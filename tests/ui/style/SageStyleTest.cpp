@@ -52,6 +52,7 @@ void SageStyleTest::paletteUsesSageSdiColors()
     QCOMPARE(palette.color(QPalette::Highlight), QColor(241, 227, 205));
     QCOMPARE(palette.color(QPalette::HighlightedText), QColor(47, 42, 36));
     QCOMPARE(palette.color(QPalette::Accent), QColor(154, 107, 63));
+    QCOMPARE(palette.color(QPalette::Mid), QColor(220, 214, 205));
 }
 
 void SageStyleTest::pushButtonHeightIsFixed()

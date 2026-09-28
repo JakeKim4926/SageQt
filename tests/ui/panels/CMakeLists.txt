@@ -7,3 +7,13 @@ qt_add_resources(SageSidebarPanelTest "sage_test_fonts"
 target_link_libraries(SageSidebarPanelTest PRIVATE sage_ui Qt::Test)
 add_test(NAME SageSidebarPanelTest COMMAND SageSidebarPanelTest)
 set_tests_properties(SageSidebarPanelTest PROPERTIES ENVIRONMENT QT_QPA_PLATFORM=offscreen)
+
+qt_add_executable(SageHeaderPanelTest SageHeaderPanelTest.cpp)
+qt_add_resources(SageHeaderPanelTest "sage_test_fonts"
+    PREFIX "/fonts"
+    BASE ${SAGE_FONT_RESOURCE_DIR}
+    FILES ${SAGE_FONT_RESOURCES}
+)
+target_link_libraries(SageHeaderPanelTest PRIVATE sage_ui Qt::Test)
+add_test(NAME SageHeaderPanelTest COMMAND SageHeaderPanelTest)
+set_tests_properties(SageHeaderPanelTest PROPERTIES ENVIRONMENT QT_QPA_PLATFORM=offscreen)

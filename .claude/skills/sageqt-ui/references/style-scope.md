@@ -17,12 +17,16 @@
 | `Highlight` | `SAGE_COLOR_LIST_ROW_SELECTED` | 표 선택 행 면 |
 | `HighlightedText` | `SAGE_COLOR_TEXT` | 표 선택 행 글자 (SageSDI 표는 선택 행 글자색을 바꾸지 않는다 — `SageListCtrl.cpp:331`) |
 | `Accent` | `SAGE_COLOR_PRIMARY` | 주요 액션 · 탭 인디케이터 · 진행 막대 |
+| `Mid` | `SAGE_COLOR_BORDER` | 구분선 `QFrame::HLine` · `VLine` (메인 창 세로선 · 헤더 하단선) |
 
 `SageSurface`의 변형은 자기 팔레트를 `SageStyle::polish`에서 받고, 자식 위젯이 물려받는다.
 
 | 변형 | `Window` · `Base` | `WindowText` · `Text` | `Mid` (구분선 `QFrame::HLine`) |
 |---|---|---|---|
 | `Sidebar` | `SAGE_COLOR_SIDEBAR` | `SAGE_COLOR_SIDEBAR_TEXT` | `SAGE_COLOR_SIDEBAR_DIVIDER` |
+| `Header` | `SAGE_COLOR_PANEL` | 앱 팔레트 그대로 | 앱 팔레트 그대로 |
+
+`SageLabel`의 변형은 polish에서 폰트와 글자색(`WindowText`)을 받는다 — `Title`(화면 제목 · 팔레트 그대로), `SecondaryCaption`(캡션 · `SAGE_COLOR_SECONDARY_TEXT`), `MutedCaption`(캡션 · `SAGE_COLOR_TEXT_MUTED`), `SidebarLogo`(로고 · 면 팔레트 그대로).
 
 ## 재정의하는 표준 위젯 요소
 
@@ -36,7 +40,7 @@
 | `QHeaderView` | `CE_HeaderSection` · `CE_HeaderLabel` | 높이 `SAGE_LIST_HEADER_HEIGHT`, 면 `SAGE_COLOR_LIST_HEADER`, 글자 `SAGE_COLOR_TEXT_MUTED`, 세로 구분선 없음, 항상 가운데 | — |
 | `QProgressBar` (상태 카드) | `CE_ProgressBarGroove` · `CE_ProgressBarContents` | 높이 `SAGE_STATUS_CARD_PROGRESS_HEIGHT`, 트랙 `SAGE_COLOR_LIST_GRID`, 채움 `SAGE_COLOR_PRIMARY` | — |
 | `QFrame` (패널 경계 `Box`) | `CE_ShapedFrame` | 1px `SAGE_COLOR_BORDER` | — |
-| `QFrame` (구분선 `HLine`) | `CE_ShapedFrame` | 1px `SAGE_BORDER_THICKNESS`, 색 팔레트 `Mid` — 앱 팔레트의 `Mid`는 처음 쓰는 곳에서 정한다 | — |
+| `QFrame` (구분선 `HLine` · `VLine`) | `CE_ShapedFrame` | 1px `SAGE_BORDER_THICKNESS`, 색 팔레트 `Mid` | — |
 
 표 행 · 사이드바 항목은 스타일이 아니라 delegate가 그린다 (`widgets.md`).
 
@@ -71,7 +75,6 @@ SageSDI에 규격이 없다. 추측으로 채우지 않는다 (SKILL.md *값 출
 | 읽기 전용 입력칸 면 (입력 경로 · 저장 위치) | 규격 없음 |
 | 버튼 · 입력칸 · 카드 반경 | 규격 없음. **주의**: SageSDI `RoundRect`는 타원 폭 · 높이를 받는다 — SageBadge는 반지름 상수를 그대로, 다른 곳은 `RADIUS * 2`를 넘긴다. Qt `drawRoundedRect`는 반지름을 받으므로 상수를 그대로 쓰면 배지 모서리가 두 배로 둥글어진다 |
 | 표 행 상태 색 (성공 · 실패 행 면 · 배지) | 실패 행 `#FDF6F4`만 문서에 있다. 코드(`SetRowStyle`)에서 확인 |
-| 「관리자」 배지 색 | 문서 · 코드 값 확인 필요 (T12) |
 | 검색 박스 면 · 필 바 선택 상태 | 규격 없음 (T15 · T16) |
 | 스크롤바 | 사이드바는 숨김(T11 완료). 나머지는 Fusion 기본으로 둘지 T15에서 |
 | 체크 상자 (표 · 선택 바) | `SAGE_LIST_CHECK_BOX_SIZE` · `SAGE_LIST_CHECK_MARK_THICKNESS` 외 규격 없음 |

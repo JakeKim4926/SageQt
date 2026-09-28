@@ -10,7 +10,8 @@ class SageSurface : public QWidget
 public:
     enum class SageSurfaceVariant
     {
-        Sidebar
+        Sidebar,
+        Header
     };
     Q_ENUM(SageSurfaceVariant)
 

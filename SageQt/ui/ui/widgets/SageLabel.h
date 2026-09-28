@@ -11,6 +11,9 @@ class SageLabel : public QLabel
 public:
     enum class SageLabelVariant
     {
+        Title,
+        SecondaryCaption,
+        MutedCaption,
         SidebarLogo
     };
     Q_ENUM(SageLabelVariant)

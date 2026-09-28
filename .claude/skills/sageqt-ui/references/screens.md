@@ -6,7 +6,7 @@
 
 | 항목 | 규격 |
 |---|---|
-| 구성 | 왼쪽 사이드바 · 오른쪽에 헤더 → 탭 줄 → 작업 영역 (`ui-composition.md` *화면 클래스 구성*) |
+| 구성 | 왼쪽 사이드바 · 1px 세로 구분선 `SAGE_COLOR_BORDER` (`SageSDIView.cpp` `OnDraw`) · 오른쪽에 헤더 → 탭 줄 → 작업 영역 (`ui-composition.md` *화면 클래스 구성*) |
 | 배경 | `QPalette::Window` (`SAGE_COLOR_APP_BACKGROUND`) |
 | 초기 · 최소 크기 | SageSDI에 없다 (`CMainFrame`은 제목만 바꾸고 `OnGetMinMaxInfo`도 없다). 초기 `SAGE_MAIN_WINDOW_WIDTH` × `SAGE_MAIN_WINDOW_HEIGHT` (1280 × 800, 사용자 결정 2026-09-28). 최소 크기는 모든 패널이 들어오는 T16에서 내용 기준으로 정한다 |
 | 창 제목 | `SAGE_UI_MAIN_WINDOW_TITLE` (이미 있음) |
@@ -30,13 +30,19 @@ SageSDI `SageSidebarPanel.cpp` · `SageSidebarTree.cpp`에서 옮긴다 (2026-09
 
 ## 헤더 (T12)
 
+SageSDI `SageHeaderPanel.cpp` · `SageBadge.cpp` · `SageSDIView.cpp`에서 옮긴다 (2026-09-28 코드 확인).
+
 | 항목 | 규격 |
 |---|---|
-| 높이 · 하단선 | `SAGE_HEADER_HEIGHT` 고정 · 1px `SAGE_COLOR_BORDER` |
-| 간격 | `SAGE_HEADER_GAP`, 제목과 분류 사이 `SAGE_HEADER_TITLE_GAP` |
-| 제목 | 폰트 *화면 제목* — 폭은 레이아웃이 정한다 (글자 수로 계산하지 않는다) |
-| 분류 · 사용자 라벨 · 로그인 버튼 | `SAGE_HEADER_CATEGORY_WIDTH` · `SAGE_USER_LABEL_WIDTH` · `SAGE_LOGIN_BTN_WIDTH`는 **최소값**. 사용자 라벨은 넘치면 말줄임 |
-| 역할 배지 | `SageBadge` — 높이 `SAGE_BADGE_HEIGHT`, 좌우 여백 `SAGE_BADGE_PAD_X`, 반경 `SAGE_BADGE_RADIUS`(`widgets.md` 반경 주의). 폭 = 글자 폭 + 여백. 「관리자」 배지 색 미정 |
+| 높이 · 하단선 | 줄 `SAGE_HEADER_HEIGHT` + 아래 1px `SAGE_COLOR_BORDER` (사이드바 제목 아래 선과 같은 높이). 면 `SAGE_COLOR_PANEL` — `SageSurface`(`Header`) |
+| 좌우 여백 | `SAGE_CONTENT_PAD_X` |
+| 배치 | 왼쪽: 제목 → `SAGE_HEADER_TITLE_GAP` → 분류. 오른쪽: 사용자 라벨 → `SAGE_HEADER_GAP` → 역할 배지 → `SAGE_HEADER_GAP` → 로그인 · 로그아웃 버튼. 모두 세로 가운데 |
+| 제목 | *화면 제목* 폰트 · `SAGE_COLOR_TEXT`, 글은 현재 업무 핸들러의 `headerTitle()`. 폭은 레이아웃이 정한다 (글자 수로 계산하지 않는다) |
+| 분류 | 캡션 폰트 · `SAGE_COLOR_SECONDARY_TEXT`, 글은 현재 업무 핸들러의 `category()`. 폭 `SAGE_HEADER_CATEGORY_WIDTH`는 **최소값** |
+| 사용자 라벨 | 캡션 폰트 · `SAGE_COLOR_TEXT_MUTED`, 오른쪽 정렬, 로그인 아이디. 폭 `SAGE_USER_LABEL_WIDTH`는 **최소값** |
+| 역할 배지 | `SageBadge`(`Neutral`) — 높이 `SAGE_BADGE_HEIGHT`, 좌우 여백 `SAGE_BADGE_PAD_X`, 폭 = 글자 폭 + 여백, 캡션 폰트. 면 `SAGE_COLOR_LIST_HEADER` · 테두리 1px `SAGE_COLOR_LIST_HEADER_BORDER` · 글자 `SAGE_COLOR_PRIMARY` — 관리자 · 사용자 같은 색. 모서리는 알약 모양: SageSDI가 `RoundRect`에 타원 지름 `SAGE_BADGE_HEIGHT`를 넘긴다 (`SAGE_BADGE_RADIUS`는 요약 막대 전용) |
+| 로그인 · 로그아웃 | `SageButton` `Secondary`, 본문 폰트, 폭 `SAGE_LOGIN_BTN_WIDTH`는 **최소값** · 높이 `SAGE_BUTTON_HEIGHT` |
+| 인증 표시 | 로그인 안 함: 로그인 버튼만. 로그인함: 사용자 라벨 · 역할 배지(관리자 `SAGE_UI_ROLE_ADMIN`, 아니면 `SAGE_UI_ROLE_USER`) · 로그아웃 버튼 |
 
 ## 탭 줄 · 작업 영역 (T13)
 

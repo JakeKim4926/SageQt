@@ -13,6 +13,8 @@ struct SageFontFile
 
 inline const QString SAGE_STYLE_BASE_NAME = QStringLiteral("Fusion");
 inline constexpr int SAGE_FONT_INVALID_ID = -1;
+inline constexpr double SAGE_ROUND_RECT_DIAMETER_TO_RADIUS = 0.5;
+inline constexpr double SAGE_STROKE_CENTER_OFFSET = 0.5;
 
 inline const QList<SageFontFile> SAGE_FONT_FILES = {
     {QStringLiteral(":/fonts/PretendardRegular.ttf"), SAGE_FONT_FAMILY_PRETENDARD},

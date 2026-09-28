@@ -5,6 +5,8 @@ qt_add_library(sage_ui STATIC
     ui/dialogs/SageMessageBoxDlg.h
     ui/models/SageSidebarModel.cpp
     ui/models/SageSidebarModel.h
+    ui/panels/SageHeaderPanel.cpp
+    ui/panels/SageHeaderPanel.h
     ui/panels/SageSidebarPanel.cpp
     ui/panels/SageSidebarPanel.h
     ui/style/SageDesignDefine.h
@@ -17,6 +19,8 @@ qt_add_library(sage_ui STATIC
     ui/style/SageStyle.cpp
     ui/style/SageStyle.h
     ui/style/SageStyleDefine.h
+    ui/widgets/SageBadge.cpp
+    ui/widgets/SageBadge.h
     ui/widgets/SageButton.cpp
     ui/widgets/SageButton.h
     ui/widgets/SageDialogCaptionBar.cpp

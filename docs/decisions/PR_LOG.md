@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-28] feature/header
+- **목적**: SageSDI 헤더(업무 제목 · 분류 · 인증 표시 · 로그인/로그아웃)를 옮긴다 (sageqt-plan T12)
+- **변경 내용**: `SageHeaderPanel` · `SageBadge`, `SageLabel` · `SageSurface` 변형 추가, 앱 팔레트 `Mid`, 사이드바 옆 세로 구분선, `SageAuthSession` → `QObject`(`authStateChanged`). 테스트(인증 표시 · 로그아웃 · 그린 값 · 창 배치). 헤더 규격을 SageSDI 코드로 확정(배지 알약 · 같은 색, 제목 19px). 스크린샷 `docs/screenshots/T12/`. T12 완료 처리
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-09-28)
+
 ## [2026-09-28] feature/sidebar
 - **목적**: SageSDI 사이드바를 옮기고 메인 창의 첫 패널 배치를 시작 (sageqt-plan T11)
 - **변경 내용**: `SageSidebarPanel` · `SageSidebarModel` · `SageSidebarDelegate` · `SageSurface` · `SageLabel`, `SageStyle` polish · 구분선, 등록부 `handlers()` · `registerHandler`, `SageMainWindow` 배치(초기 1280 × 800), `sage_ui` → `sage_core` 링크. 테스트(트리 구성 · 선택 처리 · 그린 값). 사이드바 규격을 SageSDI 코드로 확정, 스크린샷 `docs/screenshots/T11/`. T11 완료 처리

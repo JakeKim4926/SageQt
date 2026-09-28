@@ -16,14 +16,14 @@
 |---|---|---|---|---|
 | `SageButton` | 기본 위젯 + SageStyle | `SageButton : QPushButton` (아이콘 단독은 `QToolButton`) | `SageButtonVariant { Secondary, Primary, Ghost }` (`Danger`는 호출 0곳 — `style-scope.md`) | T08 · T09 · T10 · T12 ~ T16 |
 | `SageEdit` | 기본 위젯 + SageStyle | `SageLineEdit : QLineEdit` | `SageLineEditVariant { Normal, Error }` | T08 · T10 |
-| `SageLabel` | 기본 위젯 + SageStyle | `SageLabel : QLabel` | `SageLabelVariant { Title, Section, SecondaryCaption, MutedCaption, FormLabel, Hint, SidebarLogo }` — 값은 쓰는 주제에서 추가 (T11: `SidebarLogo`) | T10 ~ T13 · T15 |
+| `SageLabel` | 기본 위젯 + SageStyle | `SageLabel : QLabel` | `SageLabelVariant { Title, Section, SecondaryCaption, MutedCaption, FormLabel, Hint, SidebarLogo }` — 값은 쓰는 주제에서 추가 (T11: `SidebarLogo`, T12: `Title` · `SecondaryCaption` · `MutedCaption`) | T10 ~ T13 · T15 |
 | `SageSectionLabel` | 기본 위젯 + SageStyle | `SageLabel` (`Section`) | 위 enum의 `Section` | T13 · T15 |
 | `SageTabCtrl` | 기본 위젯 + SageStyle | `QTabBar` + `QStackedWidget` | — | T13 |
 | `SageHeaderCtrl` | 기본 위젯 + SageStyle | `QHeaderView` | — | T15 · T16 |
 | `SageFilterComboBox` | 기본 위젯 + SageStyle | `QComboBox` | 필드 색 차이를 변형으로 둘지 T15에서 | T15 |
 | `SageMessageBody` | 기본 위젯 + SageStyle | `QLabel` ×2 (아이콘 · 본문) + `SageStyle::standardIcon` | — | T09 |
 | `SageSelectionBar` | 기본 위젯 + SageStyle | `QCheckBox` + `QLabel` + `QPushButton` 조합 패널 | — | T15 |
-| `SageBadge` | 커스텀 위젯 | `SageBadge` | `SageBadgeVariant { Neutral, Warning }` | T12 · T15 |
+| `SageBadge` | 커스텀 위젯 | `SageBadge` | `SageBadgeVariant { Neutral, Warning }` — 값은 쓰는 주제에서 추가 (T12: `Neutral`) | T12 · T15 |
 | `SageDialogCaptionBar` | 커스텀 위젯 | `SageDialogCaptionBar` | — | T09 |
 | `SageInlineError` | 커스텀 위젯 | `SageInlineMessage` | `SageInlineMessageVariant { Error }` (경고는 사용처 0) | T10 |
 | `SageStatusCard` | 커스텀 위젯 | `SageStatusCard` (진행 막대는 `QProgressBar`) | `SageStatusCardVariant { Idle, Running, Completed, Failed }` | T14 |
@@ -34,7 +34,7 @@
 | `SageEmptyState` | 커스텀 위젯 | `SageEmptyState` | — | T16 |
 | `SageListCtrl` | delegate | `QTableView` + model/proxy + `QHeaderView` + `SageResultTableDelegate` | — (model role) | T15 · T16 |
 | `SageSidebarTree` | delegate | `QTreeView` + `SageSidebarDelegate` | — | T11 |
-| (SageSDI의 패널 `OnEraseBkgnd` 면 칠하기) | 기본 위젯 + SageStyle | `SageSurface : QWidget` | `SageSurfaceVariant { Sidebar }` | T11 |
+| (SageSDI의 패널 `OnEraseBkgnd` 면 칠하기) | 기본 위젯 + SageStyle | `SageSurface : QWidget` | `SageSurfaceVariant { Sidebar, Header }` | T11 · T12 |
 | `SageUiResources` | 공용 자원 | 앱 폰트 · 역할 폰트 · `QPalette` · `SageDesignDefine.h` | — | T08 |
 | `SageUiStyle` | 공용 자원 | `SageStyle` 요소 그리기 + `ui/style/` 공용 조각 | — | T08 |
 | `SageComboBox` | 옮기지 않음 | — | — | 사용처 0 |

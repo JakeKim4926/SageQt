@@ -6,7 +6,7 @@
 SageSDI의 로그인 다이얼로그와 비밀번호 변경 다이얼로그, 그리고 "로그인 성공 → 비밀번호 변경 강제" 흐름을 옮긴다. 헤더(T12) · 사이드바(T11)의 요청 signal을 두 다이얼로그에 연결하고, 로그인이 필요한 화면 동작을 실제 앱에서 확인한다.
 
 ## 시작 전에
-1. 선행 주제: T12 (헤더의 로그인 요청 signal · 인증 표시), T11 (사이드바의 비밀번호 변경 요청 signal). 다이얼로그는 T09의 프레임리스 기반을 상속한다
+1. 선행 주제: 없음 (T12 완료 — 헤더 `loginRequested` · 사이드바 `passwordChangeRequested` signal이 있고, 세션은 `authStateChanged`를 낸다. 창에서 이 signal을 다이얼로그에 연결한다)
 2. 스킬 로드: `sageqt-ui`, `coding-design`, `coding-rules`, `git-workflow`
    - 읽을 reference: `coding-design/references/ui-composition.md` · `threads-and-db.md` (UI 스레드에서 DB 작업 금지), `coding-rules/references/ownership-and-threads.md` · `api-shape.md`
 3. 결정 — 없음

@@ -3,6 +3,7 @@
 #include "SageDefine.h"
 
 #include <QObject>
+#include <QSignalSpy>
 #include <QTest>
 
 class SageAuthSessionTest : public QObject
@@ -13,6 +14,7 @@ private slots:
     void startsLoggedOut();
     void setLoginStoresUserAndRole();
     void logoutClearsUser();
+    void loginAndLogoutNotifyChange();
 };
 
 void SageAuthSessionTest::startsLoggedOut()
@@ -52,6 +54,17 @@ void SageAuthSessionTest::logoutClearsUser()
     QCOMPARE(session.isLoggedIn(), false);
     QCOMPARE(session.isAdmin(), false);
     QCOMPARE(session.currentUser().m_userId, 0);
+}
+
+void SageAuthSessionTest::loginAndLogoutNotifyChange()
+{
+    SageAuthSession session;
+    QSignalSpy changeSpy(&session, &SageAuthSession::authStateChanged);
+
+    session.setLogin(SageUserDto());
+    session.logout();
+
+    QCOMPARE(changeSpy.count(), 2);
 }
 
 QTEST_GUILESS_MAIN(SageAuthSessionTest)

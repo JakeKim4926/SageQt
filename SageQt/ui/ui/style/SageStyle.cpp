@@ -37,6 +37,7 @@ QPalette SageStyle::standardPalette() const
     palette.setColor(QPalette::Highlight, SAGE_COLOR_LIST_ROW_SELECTED);
     palette.setColor(QPalette::HighlightedText, SAGE_COLOR_TEXT);
     palette.setColor(QPalette::Accent, SAGE_COLOR_PRIMARY);
+    palette.setColor(QPalette::Mid, SAGE_COLOR_BORDER);
     return palette;
 }
 
@@ -89,6 +90,12 @@ void SageStyle::drawControl(ControlElement element, const QStyleOption* option, 
         if (frameOption != nullptr && frameOption->frameShape == QFrame::HLine) {
             QRect line = option->rect;
             line.setHeight(SAGE_BORDER_THICKNESS);
+            painter->fillRect(line, option->palette.color(QPalette::Mid));
+            return;
+        }
+        if (frameOption != nullptr && frameOption->frameShape == QFrame::VLine) {
+            QRect line = option->rect;
+            line.setWidth(SAGE_BORDER_THICKNESS);
             painter->fillRect(line, option->palette.color(QPalette::Mid));
             return;
         }
@@ -164,6 +171,9 @@ void SageStyle::polishSurface(QWidget* widget)
         palette.setColor(QPalette::Text, SAGE_COLOR_SIDEBAR_TEXT);
         palette.setColor(QPalette::Mid, SAGE_COLOR_SIDEBAR_DIVIDER);
     }
+    if (surface->variant() == SageSurface::SageSurfaceVariant::Header) {
+        palette.setColor(QPalette::Window, SAGE_COLOR_PANEL);
+    }
     widget->setPalette(palette);
     widget->setAutoFillBackground(true);
 }
@@ -174,9 +184,29 @@ void SageStyle::polishLabel(QWidget* widget)
     if (label == nullptr) {
         return;
     }
-    if (label->variant() == SageLabel::SageLabelVariant::SidebarLogo) {
+    switch (label->variant()) {
+    case SageLabel::SageLabelVariant::Title:
+        widget->setFont(SageFontCatalog::font(SageFontRole::Title));
+        return;
+    case SageLabel::SageLabelVariant::SecondaryCaption:
+        widget->setFont(SageFontCatalog::font(SageFontRole::Caption));
+        setTextColor(widget, SAGE_COLOR_SECONDARY_TEXT);
+        return;
+    case SageLabel::SageLabelVariant::MutedCaption:
+        widget->setFont(SageFontCatalog::font(SageFontRole::Caption));
+        setTextColor(widget, SAGE_COLOR_TEXT_MUTED);
+        return;
+    case SageLabel::SageLabelVariant::SidebarLogo:
         widget->setFont(SageFontCatalog::font(SageFontRole::Logo));
+        return;
     }
+}
+
+void SageStyle::setTextColor(QWidget* widget, const QColor& color)
+{
+    QPalette palette = widget->palette();
+    palette.setColor(QPalette::WindowText, color);
+    widget->setPalette(palette);
 }
 
 QColor SageStyle::pushButtonTextColor(const QStyleOption* option, const QWidget* widget)
