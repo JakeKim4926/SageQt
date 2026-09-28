@@ -18,6 +18,7 @@ private slots:
     void registersBundledFamilies();
     void pixelSizeConvertsTenthsOfPoint();
     void bodyResolvesToPretendardRegular();
+    void bodyStrongResolvesToPretendardSemiBold();
     void titleResolvesToPretendardSemiBold();
     void sectionResolvesToPretendardSemiBold();
     void listResolvesToPretendardRegular();
@@ -66,6 +67,11 @@ void SageFontRegistryTest::compareRole(SageFontRole role, const QString& family,
 void SageFontRegistryTest::bodyResolvesToPretendardRegular()
 {
     compareRole(SageFontRole::Body, QStringLiteral("Pretendard"), 400, 14);
+}
+
+void SageFontRegistryTest::bodyStrongResolvesToPretendardSemiBold()
+{
+    compareRole(SageFontRole::BodyStrong, QStringLiteral("Pretendard"), 600, 14);
 }
 
 void SageFontRegistryTest::titleResolvesToPretendardSemiBold()

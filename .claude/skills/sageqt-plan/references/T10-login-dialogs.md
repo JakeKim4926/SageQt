@@ -14,6 +14,7 @@ SageSDI의 로그인 다이얼로그와 비밀번호 변경 다이얼로그, 그
    - `SagePasswordChangeDlg.cpp`의 검증 순서와 메시지 (현재 비밀번호 확인 여부, 새 비밀번호 · 확인 불일치 처리). T05 서비스의 `changePassword`는 현재 비밀번호를 확인하지 않는다 (SageSDI와 같음) — 확인이 필요하면 `login(아이디, 현재 비밀번호)`로 할지 착수 시 원문을 보고 정한다
    - 로그인 · 비밀번호 변경은 PBKDF2 600,000회 해시를 계산한다 — 시간이 걸리므로 반드시 UI 스레드 밖에서 부른다 (소요 시간은 T05에서 재지 않았다)
    - 인라인 오류(`SageInlineError`)와 입력칸 오류 상태(`SAGE_EDIT_*`)의 표시 규격 — `sageqt-ui`
+   - **T09에서 미룬 사용자 확인** — 같은 프레임리스 기반(`SageFramelessDlg`)을 쓴다. (1) 캡션 닫기 버튼이 흰 사각형으로 보이는 것이 SageSDI 실제 화면과 같은지, (2) 96 DPI 1:1 — 메시지 상자 · 로그인 창을 SageSDI와 나란히 놓고 크기 · 글자 크기가 같은지. 스크린샷 `docs/screenshots/T09/`
    - **T08에서 미룬 판정** — T08은 사용자가 화면을 볼 수 없어 규격 없는 상태를 정하지 않았다. 입력칸의 hover · focus · disabled 규격을 세 OS 스크린샷으로 사용자와 정한다 (`sageqt-ui/references/style-scope.md` *미정*)
 
 ## SageSDI에서 옮길 것

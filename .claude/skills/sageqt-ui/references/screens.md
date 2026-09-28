@@ -79,12 +79,15 @@
 
 | 항목 | 규격 |
 |---|---|
-| 캡션 | 높이 `SAGE_DLG_CAPTION_HEIGHT`, 좌우 여백 `SAGE_DLG_CAPTION_PAD`, 닫기 버튼 `SAGE_DLG_CAPTION_BTN_SIZE` · 여백 `SAGE_DLG_CAPTION_BTN_PAD`, 면 `SAGE_COLOR_LIST_HEADER` |
-| 테두리 | 1px `SAGE_COLOR_BORDER` |
+| 캡션 | 높이 `SAGE_DLG_CAPTION_HEIGHT`, 좌우 여백 `SAGE_DLG_CAPTION_PAD`, 닫기 버튼 `SAGE_DLG_CAPTION_BTN_SIZE` · 오른쪽 여백 `SAGE_DLG_CAPTION_BTN_PAD`, 면 `SAGE_COLOR_LIST_HEADER`, 아래 1px `SAGE_COLOR_BORDER`, 제목 *본문 강조* `SAGE_COLOR_TEXT` 말줄임 |
+| 면 | `SAGE_COLOR_PANEL` (`SageMessageBoxDlg.cpp:62`) |
+| 테두리 | 1px `SAGE_COLOR_BORDER`. SageSDI는 `WS_BORDER`라 색을 Windows가 정한다 — 상수가 없어 이 값을 쓴다 |
 | 메시지 상자 폭 | `SAGE_MSGBOX_WIDTH`는 최소값 |
-| 본문 | 최대 높이 `SAGE_MSGBOX_MAX_TEXT_HEIGHT`(최대값), 넘치면 말줄임 |
+| 본문 | 최대 높이 `SAGE_MSGBOX_MAX_TEXT_HEIGHT`(최대값), 넘치면 자른다 — 말줄임 없음 (사용자 결정 2026-09-28: 쓰는 안내문이 모두 이 높이 안에 든다). 폭 `SAGE_MSGBOX_WIDTH`에서 줄을 바꾼다 |
 | 아이콘 | `SAGE_MSGBOX_ICON_SIZE` · `SAGE_MSGBOX_ICON_RADIUS`, 본문과 간격 `SAGE_MSGBOX_ICON_TEXT_GAP`, 선 `SAGE_ICON_STROKE` |
-| 버튼 | 확인형: 「예」 `Danger` · 「아니오」 `Secondary`. 알림형: 확인 1개 |
+| 종류 · 제목 | 정보 「알림」 · 경고 「경고」 · 오류 「오류」. 아이콘 없음 · 확인형(예 · 아니오)은 호출 0곳이라 옮기지 않는다 |
+| 배치 | 여백 `SAGE_MARGIN` — 캡션 아래 · 본문 아래 · 버튼 아래 · 좌우. 본문 높이는 아이콘 크기 이상, 한 줄이면 아이콘과 세로 가운데 |
+| 버튼 | 「확인」 1개 `Primary`, 오른쪽 정렬, 폭 `SAGE_LOGIN_DLG_BTN_WIDTH`는 최소값 · 높이 `SAGE_BUTTON_HEIGHT`. Enter = 확인, Esc · 닫기 = 취소 |
 
 ## 로그인 · 비밀번호 변경 (T10)
 

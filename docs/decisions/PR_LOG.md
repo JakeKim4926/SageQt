@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-28] feature/frameless-dialog
+- **목적**: 프레임리스 다이얼로그 기반과 메시지 상자, 시작 시 안내 연결 (sageqt-plan T09)
+- **변경 내용**: `SageFramelessDlg` · `SageMessageBoxDlg` · `SageDialogCaptionBar` · `SageButton` · `SageIconEngine`, `SageStyle` 버튼 · 테두리 · 표준 아이콘, `main.cpp` 오류 · 초기 비밀번호 안내. 테스트(키 동작 · 크기 · 그린 색). `screenshots.yml` + `tools/dialog-capture`(세 OS 끌어서 이동 · Enter 확인). SageSDI 코드 대조로 `sageqt-ui` 규격 정정(확인형 제외 · Primary Regular · 캡션 14px SemiBold), 사용자 결정(버튼 hover · 포커스 없음, 본문 말줄임 없음), Linux 끌기 DEBT. T09 완료 처리
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-09-28)
+
 ## [2026-09-28] feature/style-foundation
 - **목적**: 앱 전체의 모양을 한 곳에서 그리는 기반 — `SageStyle` · 팔레트 · 폰트 등록 · 역할 폰트 (sageqt-plan T08)
 - **변경 내용**: `ui/style/` (`SageDesignDefine.h` · `SageStyleDefine.h` · `SageStyle` · `SageFontRegistry` · `SageFontCatalog`), 폰트 qrc(실행 파일 타깃), `main.cpp` 적용, `tests/ui/style/` 2개. `screenshots.yml` 추가, `font-metrics.yml`에 Linux xcb 추가(Linux 폰트 DEBT 해결). 규칙 3건(`setStyle` 예외 · `tests/ui/` · 값은 쓰는 주제에서), 규격 없는 상태 판정을 T09 · T10 · T11 · T13 · T15로 넘김. 스크린샷 `docs/screenshots/T08/`. T08 완료 처리

@@ -46,8 +46,11 @@ description: >
    | 아이콘 선 굵기 | 1.5px / 2px | 2px | 2px |
    | Primary 버튼 개수 | 카드당 1개 (근거 화면 삭제) / 화면당 1개 | — | **화면당 1개** |
    | 인라인 오류 자리 | 값이 비면 숨김 / 자리는 항상 비워 둠 | T10 착수 시 `SageLoginDlg` 코드로 확인 | 코드의 동작 |
+   | Primary 버튼 굵기 | Bold | 호출부가 `SAGE_FONT_CONTROL` · `SAGE_FONT_CONTENT`(Regular)를 준다 (`SageMessageBoxDlg.cpp:97`, `SageLoginDlg.cpp:131`) | Regular |
+   | 선택 탭 · 사이드바 선택 굵기 | Bold | `SAGE_FONT_CONTENT_SEMIBOLD` (`SageTabCtrl.cpp:58`, `SageSidebarTree.cpp:34`) | SemiBold 14px (*본문 강조*) |
+   | 다이얼로그 캡션 제목 | 9.0pt 캡션 폰트 | `SAGE_FONT_CONTENT_SEMIBOLD` (`SageDialogCaptionBar.cpp:58`) | SemiBold 14px (*본문 강조*) |
 2. **SageSDI에서 호출 0곳인 경로는 옮기지 않는다** — 버튼 아이콘 `SEARCH` · `ADD` · `MOVE_UP` · `MOVE_DOWN`, 빈 상태의 동작 버튼(`SetAction`), 섹션 힌트(`SetHintText`), 경고 인라인 메시지(enum 값 `SAGE_INLINE_WARNING`), `CSageComboBox` · `CSageListBox` · `CSageOptionCheck`, 숫자 형식 상수 (`widgets.md`)
-3. **SageSDI에 규격이 없는 상태는 사용자가 화면을 보고 정한다** — hover · focus · disabled (SageSDI는 hover가 없고 포커스 표시는 일부 버튼에만 있다). Fusion은 이것들을 그리므로, 그 위젯을 처음 만드는 주제에서 세 OS 스크린샷을 사용자에게 보여 주고 정한다 (버튼 · 캡션 T09, 입력칸 T10, 탭 · 콤보 T13, 헤더 · 체크 상자 · 스크롤바 T15). 정한 규격은 이 skill에 적는다. 그 전에는 추측으로 값을 넣지 않는다
+3. **SageSDI에 규격이 없는 상태는 사용자가 화면을 보고 정한다** — hover · focus · disabled (SageSDI는 hover가 없고 포커스 표시는 일부 버튼에만 있다). Fusion은 이것들을 그리므로, 그 위젯을 처음 만드는 주제에서 세 OS 스크린샷을 사용자에게 보여 주고 정한다 (버튼 · 캡션 T09 — hover · 포커스 없음으로 결정, 입력칸 T10, 탭 · 콤보 T13, 헤더 · 체크 상자 · 스크롤바 T15). 정한 규격은 이 skill에 적는다. 그 전에는 추측으로 값을 넣지 않는다
 4. **SageSDI에 값이 없는 규격은 코드 값을 먼저 찾고, 없으면 그 값을 처음 쓰는 주제에서 사용자와 정한다** — 버튼 · 입력칸 · 카드 반경, 행 상태 색, 「관리자」 배지 색, 사이드바 선택 글자색, 검색 박스 면, 필 바 선택 상태 (`style-scope.md` *미정*)
 
 ## 레이아웃 정책 (CRITICAL)
@@ -75,6 +78,7 @@ description: >
 | 역할 | 패밀리 | 굵기 | 크기 | SageSDI 상수 |
 |---|---|---|---|---|
 | 본문 · 컨트롤 · 버튼 | `Pretendard` | Regular | 14px | `SAGE_CONTROL_FONT_POINT_SIZE` · `SAGE_CONTENT_FONT_POINT_SIZE` (105) |
+| 본문 강조 — 다이얼로그 캡션 제목 · 선택 탭 · 사이드바 선택 · 선택 바 개수 | `Pretendard` | SemiBold | 14px | `SAGE_CONTENT_FONT_POINT_SIZE` (105) + `SAGE_FONT_CONTENT_SEMIBOLD` |
 | 화면 제목 | `Pretendard` | SemiBold (`QFont::DemiBold`) | 19px | `SAGE_TITLE_FONT_POINT_SIZE` (143) |
 | 섹션 제목 · 헤더 | `Pretendard` | SemiBold | 15px | `SAGE_HEADER_FONT_POINT_SIZE` (113) |
 | 표 셀 · 목록 | `Pretendard` | Regular (선택 · 강조는 SemiBold · Bold) | 13px | `SAGE_LIST_FONT_POINT_SIZE` (98) |
@@ -82,7 +86,7 @@ description: >
 | 요약 수치 | `Pretendard` | SemiBold | 17px | `SAGE_SUMMARY_FONT_POINT_SIZE` (128) |
 | 로고 | `Gmarket Sans TTF` | Bold | 19px | `SAGE_TITLE_FONT_POINT_SIZE` (143) + `SAGE_LOGO_FONT_FACE` |
 
-- 굵기를 쓰는 곳: Primary · Danger 버튼 Bold, 선택 탭 Bold, 강조 열 Bold, 합계 밴드 라벨 Bold, 목록 선택 SemiBold
+- 굵기를 쓰는 곳: 강조 열 Bold, 합계 밴드 라벨 Bold, 목록 선택 SemiBold, *본문 강조* 행의 곳 SemiBold. 버튼은 변형과 무관하게 Regular다 (*값 출처 원칙* 표)
 - **등록하는 폰트 파일은 쓰이는 4개다** — `PretendardRegular` · `PretendardSemiBold` · `PretendardBold` · `GmarketSansTTFBold`. `GmarketSansTTFLight` · `Medium`은 저장소에 있지만(T02) 쓰는 곳이 0곳이라 등록하지 않는다
 - 앱 기본 폰트는 본문(14px Regular)이다. 역할 폰트를 누가 적용하는지는 `style-scope.md` *폰트 적용*
 

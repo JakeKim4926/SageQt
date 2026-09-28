@@ -5,6 +5,7 @@
 enum class SageFontRole
 {
     Body,
+    BodyStrong,
     Title,
     Section,
     List,

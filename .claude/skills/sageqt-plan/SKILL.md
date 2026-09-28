@@ -31,8 +31,7 @@ description: >
 
 | ID | 단계 | 주제 | 선행 | 결정 대기 | 상태 |
 |---|---|---|---|---|---|
-| [T09](references/T09-frameless-dialogs.md) | UI 기반 | 프레임리스 다이얼로그 · 메시지 상자 | — | — | 대기 |
-| [T11](references/T11-sidebar.md) | UI 이관 | 사이드바 | T09 | — | 대기 |
+| [T11](references/T11-sidebar.md) | UI 이관 | 사이드바 | — | — | 대기 |
 | [T12](references/T12-header.md) | UI 이관 | 헤더 | T11 | — | 대기 |
 | [T10](references/T10-login-dialogs.md) | UI 이관 | 로그인 · 비밀번호 변경 · 헤더 · 사이드바 연결 | T12 | — | 대기 |
 | [T13](references/T13-workspace-input.md) | UI 이관 | 작업 영역 탭 · 입력 패널 | T10 | — | 대기 |
@@ -43,7 +42,7 @@ description: >
 | [T18](references/T18-packaging.md) | 배포 | 패키징 · CI 산출물 | T17 | — | 대기 |
 | [T19](references/T19-signing.md) | 배포 | 서명 · 공증 | T18 | — | 대기 |
 
-외부 준비물: Mac mini — T09 전 (macOS 화면 판정이 시작된다. T08은 CI 스크린샷으로 진행) / Apple Developer Program — T19 전 / Windows 코드서명 인증서 — T19 전
+외부 준비물: Mac mini — macOS 실기 확인용 (T08 · T09는 CI 실제 화면 스크린샷 · 자동 끌기로 대신했다) / Apple Developer Program — T19 전 / Windows 코드서명 인증서 — T19 전
 
 ---
 

@@ -44,7 +44,7 @@ SageUserService::SageUserService(ISageUserRepository& repository, const SageDbCo
 |---|---|
 | 컴파일러 | *컴파일 경고* (CI에서는 에러) |
 | `clang-format` | *포맷* 전부 |
-| `clang-tidy` | 네이밍 형식(대소문자 · 접두사), `NULL` · C 캐스트 금지, `explicit` · `override` · 멤버 함수 `const` |
+| `clang-tidy` | 네이밍 형식(대소문자 · 접두사 — Qt 클래스 전방 선언 `class QLabel;`은 접두사 검사에서 뺀다), `NULL` · C 캐스트 금지, `explicit` · `override` · 멤버 함수 `const` |
 | `clazy` | Qt 전용 — detach, `Q_OBJECT` 누락, connect 오용 등 (level1 + `missing-qobject-macro` · `old-style-connect`) |
 | CI grep | `auto` 키워드, 플랫폼 분기(`Q_OS_` · `_WIN32` · `__APPLE__` · `__linux__` · `<windows.h>`), 주석(`//` · `/*`, 단 `://`는 제외) — clang-tidy에는 `auto` · 주석을 금지하는 검사가 없다 |
 

@@ -5,6 +5,7 @@
 #include "infra/db/SageDbConfig.h"
 #include "infra/db/SageSchemaInitializer.h"
 #include "infra/db/SageUserRepository.h"
+#include "ui/dialogs/SageMessageBoxDlg.h"
 #include "ui/style/SageFontCatalog.h"
 #include "ui/style/SageFontRegistry.h"
 #include "ui/style/SageStyle.h"
@@ -22,6 +23,14 @@
 
 Q_STATIC_LOGGING_CATEGORY(sageAppLog, SAGE_LOG_CATEGORY_APP)
 
+static int failStartup(const QString& error)
+{
+    qCCritical(sageAppLog).noquote() << error;
+    SageMessageBoxDlg errorDialog(SageMessageIcon::Error, error);
+    errorDialog.exec();
+    return EXIT_FAILURE;
+}
+
 int main(int argc, char* argv[])
 {
     QApplication application(argc, argv);
@@ -38,8 +47,7 @@ int main(int argc, char* argv[])
 
     SageDbConfig dbConfig;
     if (!SageDbConfig::buildDefaultConfig(dbConfig, error) || !SageSchemaInitializer(dbConfig).prepare(error)) {
-        qCCritical(sageAppLog).noquote() << error;
-        return EXIT_FAILURE;
+        return failStartup(error);
     }
 
     const SageUserRepository userRepository(dbConfig);
@@ -47,8 +55,12 @@ int main(int argc, char* argv[])
     const SageUserService userService(userRepository, passwordHasher);
     std::optional<QString> initialAdminPassword;
     if (!userService.ensureDefaultAdmin(initialAdminPassword, error)) {
-        qCCritical(sageAppLog).noquote() << error;
-        return EXIT_FAILURE;
+        return failStartup(error);
+    }
+    if (initialAdminPassword.has_value()) {
+        SageMessageBoxDlg noticeDialog(
+            SageMessageIcon::Info, SAGE_UI_INITIAL_ADMIN_PW_FORMAT.arg(SAGE_DEFAULT_ADMIN_ID, *initialAdminPassword));
+        noticeDialog.exec();
     }
     SageAuthSession authSession;
 

@@ -30,7 +30,7 @@ std::unique_ptr<SageUserService> service = std::make_unique<SageUserService>(rep
 
 최상위 창과 모달 다이얼로그는 스택 값으로 만든다.
 
-예외: **Qt API가 문서로 소유권을 가져가는 경우**에는 부모 없이 만들어 그 줄에서 넘긴다 — `QApplication::setStyle(new SageStyle)`. 넘긴 뒤의 포인터는 빌려 쓰는 것이다 (규약 2). 이 예외는 소유권 이전이 Qt 문서에 명시된 API에만 쓴다.
+예외: **Qt API가 문서로 소유권을 가져가는 경우**에는 부모 없이 만들어 그 줄에서 넘긴다 — `QApplication::setStyle(new SageStyle)`, `QIcon(new SageIconEngine(glyph))`. `QIconEngine::clone()`은 Qt가 요구하는 복제 함수라 `return new SageIconEngine(...)`으로 새 엔진을 돌려주고, 받은 `QIcon`이 소유한다. 넘긴 뒤의 포인터는 빌려 쓰는 것이다 (규약 2). 이 예외는 소유권 이전이 Qt 문서에 명시된 API에만 쓴다.
 
 ```cpp
 SageLoginDlg dialog(this);

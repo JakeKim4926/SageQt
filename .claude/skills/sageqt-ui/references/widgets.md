@@ -14,7 +14,7 @@
 
 | SageSDI | 분류 | SageQt | 변형 enum | 주제 |
 |---|---|---|---|---|
-| `SageButton` | 기본 위젯 + SageStyle | `SageButton : QPushButton` (아이콘 단독은 `QToolButton`) | `SageButtonVariant { Secondary, Primary, Ghost, Danger }` | T08 · T09 · T10 · T12 ~ T16 |
+| `SageButton` | 기본 위젯 + SageStyle | `SageButton : QPushButton` (아이콘 단독은 `QToolButton`) | `SageButtonVariant { Secondary, Primary, Ghost }` (`Danger`는 호출 0곳 — `style-scope.md`) | T08 · T09 · T10 · T12 ~ T16 |
 | `SageEdit` | 기본 위젯 + SageStyle | `SageLineEdit : QLineEdit` | `SageLineEditVariant { Normal, Error }` | T08 · T10 |
 | `SageLabel` | 기본 위젯 + SageStyle | `SageLabel : QLabel` | `SageLabelVariant { Title, Section, SecondaryCaption, MutedCaption, FormLabel, Hint, SidebarLogo }` | T10 ~ T13 · T15 |
 | `SageSectionLabel` | 기본 위젯 + SageStyle | `SageLabel` (`Section`) | 위 enum의 `Section` | T13 · T15 |
@@ -57,9 +57,9 @@
 | 흐린 글자색 | 셀 문자열 비교로 정한다 (`"—"`, `"미리보기 (저장 없음)"`) | model role로 — 문자열 비교를 옮기지 않는다 (T15) |
 | 요약 바 폭 부족 | 넘치는 항목부터 말없이 버린다, 배지는 첫 항목에만 | 동작을 그대로 옮길지 T15에서 확인 |
 | 경로 말줄임 | `DT_PATH_ELLIPSIS` | `Qt::ElideMiddle`은 결과가 다르다 — T14에서 비교 |
-| 메시지 본문 | 200px(`SAGE_MSGBOX_MAX_TEXT_HEIGHT`)에서 자르고 말줄임 | 최대값으로 옮긴다 (T09) |
+| 메시지 본문 | 200px(`SAGE_MSGBOX_MAX_TEXT_HEIGHT`)에서 자르고 말줄임 | 최대값으로 옮기고 말줄임은 하지 않는다 (T09, 사용자 결정) |
 | 검색창 Enter · 자식 알림 | 부모 `PreTranslateMessage` · `OnCommand`가 중계 | 위젯이 의미 있는 signal을 낸다 — 중계 금지 (`ui-composition.md`) |
 | Ctrl+A 전체 선택 | `SageHandleEditSelectAll` | `QLineEdit` 기본 (macOS Cmd+A) — 옮기지 않는다 |
 | SemiBold 선택 | 별도 서체 이름 `"Pretendard SemiBold"` | 패밀리 + 굵기 (SKILL.md *폰트*) |
 | 콤보 화살표 좌표 | 코드에 박힌 ±4 · −2 · +3 | 상수로 (`SAGE_ICON_ARROW_*`) |
-| 캡션 닫기 버튼 면 | `SetSurfaceColor`를 부르지 않아 캡션 위 흰 사각형으로 보이는 것으로 읽힌다 (화면 미확인) | T09에서 SageSDI 화면과 대조 |
+| 캡션 닫기 버튼 면 | `SetSurfaceColor`를 부르지 않아 `SAGE_COLOR_PANEL` — 캡션 위 흰 사각형 (코드 확인 2026-09-28) | 코드대로 옮기고 스크린샷으로 사용자가 SageSDI 화면과 대조 (T09) |

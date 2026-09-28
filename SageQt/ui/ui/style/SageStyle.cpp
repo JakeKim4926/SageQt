@@ -1,9 +1,18 @@
 #include "ui/style/SageStyle.h"
 
 #include "ui/style/SageDesignDefine.h"
+#include "ui/style/SageIconEngine.h"
 #include "ui/style/SageStyleDefine.h"
+#include "ui/widgets/SageButton.h"
 
+#include <QAbstractButton>
+#include <QBrush>
+#include <QFrame>
+#include <QPainter>
 #include <QStyleFactory>
+#include <QStyleOption>
+#include <QWidget>
+#include <qdrawutil.h>
 
 SageStyle::SageStyle()
     : QProxyStyle(QStyleFactory::create(SAGE_STYLE_BASE_NAME))
@@ -25,4 +34,109 @@ QPalette SageStyle::standardPalette() const
     palette.setColor(QPalette::HighlightedText, SAGE_COLOR_TEXT);
     palette.setColor(QPalette::Accent, SAGE_COLOR_PRIMARY);
     return palette;
+}
+
+void SageStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                              const QWidget* widget) const
+{
+    switch (element) {
+    case PE_PanelButtonCommand:
+        drawPushButtonPanel(option, painter, widget);
+        return;
+    case PE_PanelButtonTool:
+        drawToolButtonPanel(option, painter);
+        return;
+    case PE_FrameFocusRect:
+        if (qobject_cast<const QAbstractButton*>(widget) != nullptr) {
+            return;
+        }
+        break;
+    default:
+        break;
+    }
+    QProxyStyle::drawPrimitive(element, option, painter, widget);
+}
+
+void SageStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                            const QWidget* widget) const
+{
+    if (element == CE_PushButtonLabel) {
+        const QStyleOptionButton* buttonOption = qstyleoption_cast<const QStyleOptionButton*>(option);
+        if (buttonOption != nullptr) {
+            QStyleOptionButton labelOption(*buttonOption);
+            labelOption.palette.setColor(QPalette::ButtonText, pushButtonTextColor(option, widget));
+            QProxyStyle::drawControl(element, &labelOption, painter, widget);
+            return;
+        }
+    }
+    if (element == CE_ShapedFrame) {
+        const QStyleOptionFrame* frameOption = qstyleoption_cast<const QStyleOptionFrame*>(option);
+        if (frameOption != nullptr && frameOption->frameShape == QFrame::Box) {
+            qDrawPlainRect(painter, option->rect, SAGE_COLOR_BORDER, SAGE_BORDER_THICKNESS);
+            return;
+        }
+    }
+    QProxyStyle::drawControl(element, option, painter, widget);
+}
+
+QSize SageStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& contentsSize,
+                                  const QWidget* widget) const
+{
+    QSize size = QProxyStyle::sizeFromContents(type, option, contentsSize, widget);
+    if (type == CT_PushButton) {
+        size.setHeight(SAGE_BUTTON_HEIGHT);
+    }
+    return size;
+}
+
+QIcon SageStyle::standardIcon(StandardPixmap standardIcon, const QStyleOption* option, const QWidget* widget) const
+{
+    switch (standardIcon) {
+    case SP_TitleBarCloseButton:
+        return QIcon(new SageIconEngine(SageIconGlyph::Close));
+    case SP_MessageBoxInformation:
+        return QIcon(new SageIconEngine(SageIconGlyph::Info));
+    case SP_MessageBoxWarning:
+        return QIcon(new SageIconEngine(SageIconGlyph::Warning));
+    case SP_MessageBoxCritical:
+        return QIcon(new SageIconEngine(SageIconGlyph::Error));
+    default:
+        return QProxyStyle::standardIcon(standardIcon, option, widget);
+    }
+}
+
+bool SageStyle::isPrimaryButton(const QWidget* widget)
+{
+    const SageButton* button = qobject_cast<const SageButton*>(widget);
+    return button != nullptr && button->variant() == SageButton::SageButtonVariant::Primary;
+}
+
+void SageStyle::drawPushButtonPanel(const QStyleOption* option, QPainter* painter, const QWidget* widget)
+{
+    const bool isEnabled = option->state.testFlag(State_Enabled);
+    const bool isPressed = option->state.testFlag(State_Sunken);
+
+    if (isPrimaryButton(widget)) {
+        const QColor face = !isEnabled ? SAGE_COLOR_BORDER : isPressed ? SAGE_COLOR_PRIMARY_PRESS : SAGE_COLOR_PRIMARY;
+        painter->fillRect(option->rect, face);
+        return;
+    }
+
+    const QBrush face(!isEnabled || isPressed ? SAGE_COLOR_APP_BACKGROUND : SAGE_COLOR_PANEL);
+    const QColor border = isEnabled ? SAGE_COLOR_BUTTON_BORDER : SAGE_COLOR_BORDER;
+    qDrawPlainRect(painter, option->rect, border, SAGE_BORDER_THICKNESS, &face);
+}
+
+void SageStyle::drawToolButtonPanel(const QStyleOption* option, QPainter* painter)
+{
+    const bool isPressed = option->state.testFlag(State_Sunken);
+    painter->fillRect(option->rect, isPressed ? SAGE_COLOR_LIST_HEADER : SAGE_COLOR_PANEL);
+}
+
+QColor SageStyle::pushButtonTextColor(const QStyleOption* option, const QWidget* widget)
+{
+    if (!option->state.testFlag(State_Enabled)) {
+        return SAGE_COLOR_SECONDARY_TEXT;
+    }
+    return isPrimaryButton(widget) ? SAGE_COLOR_BUTTON_TEXT : SAGE_COLOR_TEXT;
 }

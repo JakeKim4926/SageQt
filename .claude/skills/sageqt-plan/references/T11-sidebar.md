@@ -6,7 +6,7 @@
 SageSDI의 사이드바(앱 제목 · 업무 트리 · 기타 동작)를 옮긴다. 업무 항목은 하드코딩하지 않고 **등록부의 핸들러 목록에서 만든다.** 이 주제에서 `SageMainWindow`의 첫 패널 배치가 시작된다.
 
 ## 시작 전에
-1. 선행 주제: T09 (로그인 필요 경고가 메시지 상자로 뜬다. T03의 핸들러 사이드바 정보를 쓴다)
+1. 선행 주제: 없음 (T09 완료 — `SageButton` · 메시지 상자 · `SageStyle` 버튼 그리기가 있다) (로그인 필요 경고가 메시지 상자로 뜬다. T03의 핸들러 사이드바 정보를 쓴다)
 2. 스킬 로드: `sageqt-ui`, `coding-design`, `coding-rules`, `git-workflow`
    - 읽을 reference: `coding-design/references/ui-composition.md` (창 역할 · 소유 규칙 · 작성 형태) · `style.md` · `model-view.md`, `coding-rules/references/api-shape.md` (signal/slot)
 3. 결정 — 없음. 사이드바 맨 위 앱 제목은 T04에서 정한 앱 식별 정보의 표시 이름을 따른다 (`MIGRATION_PLAN.md` 결정 기록)

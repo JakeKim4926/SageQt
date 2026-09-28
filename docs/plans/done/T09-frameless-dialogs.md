@@ -25,11 +25,12 @@ SageSDI의 프레임리스 다이얼로그 기반과 메시지 상자를 옮기�
 - 상단 캡션 영역(`y < SAGE_DLG_CAPTION_HEIGHT`)을 끌면 창이 이동 (`OnNcHitTest` → `HTCAPTION`)
 - 캡션 바는 클릭을 통과시킨다 (`drawing/SageDialogCaptionBar.cpp` `OnNcHitTest` → `HTTRANSPARENT`)
 - 캡션의 닫기 버튼 → 취소와 같음 (`OnCaptionClose` → `IDCANCEL`)
-- 규격: 캡션 높이 40 · 좌우 여백 16 · 버튼 28 · 버튼 여백 8 (`SageDefine.h:112-115`), 캡션 폰트 `SAGE_CAPTION_FONT_POINT_SIZE = 90` (9.0pt)
+- 규격: 캡션 높이 40 · 좌우 여백 16 · 버튼 28 · 버튼 여백 8 (`SageDefine.h:112-115`), 제목 폰트 `SAGE_FONT_CONTENT_SEMIBOLD` (14px SemiBold, `SageDialogCaptionBar.cpp:58` — 2026-09-28 코드 확인. 이전 기록의 9.0pt 캡션 폰트는 틀렸다)
 
 **메시지 상자** — `dialogs/SageMessageBoxDlg.h/.cpp`
 - 생성: 메시지 · 종류 · 부모. 편의 함수 `ShowSageMessageBox(text, type = MB_OK, parent = NULL)`
 - 종류는 Win32 플래그로 받는다: 아이콘 `MB_ICONERROR` · `MB_ICONWARNING` · `MB_ICONINFORMATION`, 확인형 여부(`IsConfirm`), 기본 버튼이 거부인지(`IsDefaultReject`)
+- 확인형(`MB_YESNO`)은 호출 0곳이다 (2026-09-28 — `ShowSageMessageBox` 호출 12곳 모두 아이콘 + `MB_OK`). 확인형 · `Danger` 버튼 · 포커스 링 · 기본 버튼 거부는 옮기지 않는다 (`sageqt-ui` *값 출처 원칙* 2)
 - 버튼 2개(수락 · 거부), 본문(`drawing/SageMessageBody`), 아이콘(`SageMessageIcon`), 캡션 제목은 종류에 따라 (`GetCaptionTitle`)
 - 규격: 폭 360, 본문 최대 높이 200, 아이콘 22 · 반지름 10 · 아이콘-본문 간격 12 (`SageDefine.h:119-130`의 `SAGE_MSGBOX_*` 전체)
 - 앱 전체 호출: 오류(`MB_ICONERROR`) 2곳, 경고(`MB_ICONWARNING`) 5곳, 정보(`MB_ICONINFORMATION`) 1곳 (2026-09-23)
@@ -56,10 +57,10 @@ SageSDI의 프레임리스 다이얼로그 기반과 메시지 상자를 옮기�
 
 ## 작업
 PR 1~2개: `feature/frameless-dialog`, (크면) `feature/message-box`
-- [ ] 프레임리스 다이얼로그 기반: 캡션 영역 · 제목 · 닫기 버튼 · 끌어서 이동 · 고정 크기 · 부모 기준 가운데
-- [ ] 메시지 상자: 아이콘 종류 · 버튼 구성 `enum class`, 본문, 규격
-- [ ] `main.cpp`의 시작 시 안내 두 가지를 메시지 상자로 연결
-- [ ] Windows · Linux · macOS에서 이동 · Esc · Enter 확인, 스크린샷
+- [x] 프레임리스 다이얼로그 기반: 캡션 영역 · 제목 · 닫기 버튼 · 끌어서 이동 · 고정 크기 · 부모 기준 가운데
+- [x] 메시지 상자: 아이콘 종류 · 버튼 구성 `enum class`, 본문, 규격
+- [x] `main.cpp`의 시작 시 안내 두 가지를 메시지 상자로 연결
+- [x] Windows · Linux · macOS에서 이동 · Esc · Enter 확인, 스크린샷
 
 ## 완료 기준
 - 3-OS CI 통과
@@ -72,4 +73,22 @@ PR 1~2개: `feature/frameless-dialog`, (크면) `feature/message-box`
 - 로그인 · 비밀번호 변경 다이얼로그 — T10
 
 ## 확인한 사실
-(진행 중 기록)
+- SageSDI 코드 대조 (2026-09-28): 확인형 메시지 상자 호출 0곳 → 확인형 · `Danger` · 포커스 링 제외. Primary 버튼 글자는 Regular. 버튼 눌림 · 비활성 색과 흰 글자(`SAGE_COLOR_BUTTON_TEXT`)는 `SageButton.cpp:68-93`에 있었다. 캡션 제목은 `SAGE_FONT_CONTENT_SEMIBOLD`(14px SemiBold) → 폰트 역할 `BodyStrong` 추가. `SAGE_BUTTON_TEXT_TOP_OFFSET`(0)은 옮기지 않고, `SAGE_BUTTON_VERT_ADJUST`는 결과 표 배치 값이라 T15로
+- `startSystemMove`의 지원 범위는 Qt 6.11 문서에 OS별로 적혀 있지 않다 ("Returns true if the operation was supported") — 실패하면 `sage.ui` 경고 로그에 플랫폼 이름을 남기게 했다. CI 세 OS 로그에 경고 없음
+- 끌어서 이동 (CI, `tools/dialog-capture`, 실행 36373636749): Windows · macOS는 (150, 100) 요청에 정확히 (150, 100). Linux(Xvfb + openbox, xcb)는 (600, 340)으로 튄다 — 두 번 같음, 원인 미확인 (`DEBT_LOG.md`). Wayland 미확인
+- Enter로 닫힘: 세 OS 모두 (CI). Esc · Enter · 닫기 버튼 · 창 틀 없음 · 폭 · 테두리 · 캡션 · 면 색은 `SageMessageBoxDlgTest`(offscreen)
+- 줄바꿈 라벨 크기: `setSizePolicy`를 통째로 바꾸면 heightForWidth 표시가 지워져 본문이 잘렸다 (84 / 필요 98). 가로 정책만 바꾸고, 창 크기 힌트를 최소 폭 이상으로 두어 초기 관리자 안내가 360×240으로 뜬다 (본문 292×118)
+- `QIconEngine`의 기본 `pixmap`은 배경을 지우지 않아 세 OS에서 아이콘에 잡음이 생겼다 → `pixmap` · `scaledPixmap`을 투명 배경 · 화면 배율로 재정의
+- clang-tidy 이름 검사가 Qt 클래스 전방 선언(`class QLabel;`)에 `Sage` 접두사를 요구해 `ClassIgnoredRegexp: '^Q[A-Z][A-Za-z]*$'` 추가. clazy `qproperty-without-notify` → `variantChanged` signal
+- DB 준비 실패 안내는 코드 경로만 연결했다 — 실제 실패를 띄워 보지 않았다. 부모 기준 가운데는 부모 없는 시작 안내라 화면 가운데로만 확인했다 (부모 있는 경우는 T10)
+- 사용자 결정 (2026-09-28): 버튼 hover · 포커스 표시 없음(SageSDI와 같다), 본문 200px 초과 시 말줄임 없이 자른다. 캡션 닫기 버튼의 흰 사각형 · 96 DPI 1:1 크기 비교는 T10에서 사용자가 SageSDI 화면과 대조한다
+
+## 결과
+- 작업 브랜치 CI(build · static-analysis · screenshots) 통과 후 `develop`에 squash merge. PR 없음
+- `ui/dialogs/`: `SageFramelessDlg`(1px 테두리 `QFrame` · 캡션 바 · 끌어서 이동 · Esc/닫기 = 취소 · 크기 힌트 ≥ 최소 폭), `SageMessageBoxDlg`(정보 · 경고 · 오류, 「확인」 Primary 1개, 평문 본문). `ui/widgets/`: `SageButton`(변형 `Secondary` · `Primary`), `SageDialogCaptionBar`. `ui/style/`: `SageIconEngine`, `SageStyle` 버튼 · 도구 버튼 · 테두리 · 표준 아이콘
+- `main.cpp`: DB 준비 실패 · 관리자 생성 실패는 오류 상자 후 종료, 초기 관리자 비밀번호는 알림 상자
+- 테스트: `tests/ui/dialogs/SageMessageBoxDlgTest`, `SageStyleTest` 버튼 · 아이콘, 폰트 `BodyStrong`. 로컬 15/15
+- `screenshots.yml`을 `tools/dialog-capture/capture.py`(스크린샷 → 캡션 색 띠 찾기 → 가짜 끌기 → 위치 비교 → Enter)로 교체. 스크린샷 `docs/screenshots/T09/`
+- 교훈
+  - 스킬 문서의 규격도 착수 때 원본 코드와 다시 대조해야 한다 — T07 문서에서 Primary Bold · 캡션 9pt · 흰색 상수 없음이 틀렸다
+  - "눈으로 확인"의 일부는 CI에서 잴 수 있다 — 끌기 이동은 스크린샷 전후 비교로, 크기 · 색은 offscreen `grab()`으로 확인했다

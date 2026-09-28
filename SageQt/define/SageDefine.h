@@ -29,8 +29,17 @@ enum class SageUserRole
 inline const QString SAGE_ORGANIZATION_NAME = QStringLiteral("Sage");
 inline const QString SAGE_APPLICATION_NAME = QStringLiteral("SageQt");
 inline constexpr char SAGE_LOG_CATEGORY_APP[] = "sage.app";
+inline constexpr char SAGE_LOG_CATEGORY_UI[] = "sage.ui";
 
 inline const QString SAGE_UI_MAIN_WINDOW_TITLE = QStringLiteral("SageQt");
+
+inline const QString SAGE_UI_TIP_CLOSE = QStringLiteral("닫기");
+inline const QString SAGE_UI_MSGBOX_TITLE_INFO = QStringLiteral("알림");
+inline const QString SAGE_UI_MSGBOX_TITLE_WARNING = QStringLiteral("경고");
+inline const QString SAGE_UI_MSGBOX_TITLE_ERROR = QStringLiteral("오류");
+inline const QString SAGE_UI_MSGBOX_OK = QStringLiteral("확인");
+inline const QString SAGE_LOG_WINDOW_MOVE_UNSUPPORTED =
+    QStringLiteral("창 끌어서 이동을 시작할 수 없습니다. Platform=%1");
 
 inline const QString SAGE_UI_COMPLETED = QStringLiteral("완료");
 inline const QString SAGE_UI_FAILED = QStringLiteral("실패");
@@ -95,6 +104,9 @@ inline const QString SAGE_UI_CHANGE_PW_TOO_LONG = QStringLiteral("비밀번호�
 inline const QString SAGE_UI_CHANGE_PW_INVALID_CHAR = QStringLiteral("비밀번호는 영문과 숫자만 사용할 수 있습니다.");
 
 inline const QString SAGE_DEFAULT_ADMIN_ID = QStringLiteral("admin");
+inline const QString SAGE_UI_INITIAL_ADMIN_PW_FORMAT =
+    QStringLiteral("관리자 계정을 새로 만들었습니다.\n\n아이디: %1\n초기 비밀번호: %2\n\n"
+                   "이 비밀번호는 지금 한 번만 표시됩니다. 적어 두고 첫 로그인에서 변경하세요.");
 inline constexpr int SAGE_INITIAL_PW_LENGTH = 14;
 inline const QString SAGE_INITIAL_PW_ALPHABET =
     QStringLiteral("ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789");

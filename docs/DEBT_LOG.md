@@ -5,6 +5,12 @@
 
 ## 열린 항목
 
+### [2026-09-28] 검증누락 — Linux에서 캡션 끌어서 이동이 요청한 거리만큼 움직이는지 확인하지 못했다
+- 위치: SageQt/ui/ui/widgets/SageDialogCaptionBar.cpp (`startSystemMove`), tools/dialog-capture/capture.py
+- 설명: CI(Xvfb + openbox + pyautogui)에서 (150, 100)을 끌면 창이 (600, 340) 움직여 화면 끝으로 밀려난다 (실행 36372865888 · 36373636749, 두 번 같음). Windows · macOS는 같은 스크립트로 정확히 (150, 100) 움직였다. 앱 문제인지 가짜 창 관리자 · 가짜 입력 문제인지 가르지 못했다. Wayland는 CI 환경이 없어 재지 않았다
+- 위험도: 중 — Linux 사용자가 다이얼로그를 옮길 때 창이 튈 수 있다
+- 후속: 실제 Linux 데스크톱(X11 · Wayland 각각)에서 메시지 상자를 끌어 본다. 튀면 `startSystemMove`의 X11 경로를 조사한다
+
 ### [2026-09-27] 검증누락 — Windows CI의 Qt 새 설치가 간헐적으로 실패한다
 - 위치: .github/workflows/build.yml (Install Qt, aqtinstall 076e165 + py7zr 1.1.3)
 - 설명: 캐시가 없을 때 aqtinstall이 py7zr Bad7zFile로 실패한 적이 있다 (실행 36318817652 windows-x64-debug). 같은 조건의 release job은 성공했다. 캐시는 브랜치 범위라 새 브랜치의 첫 실행은 항상 새로 설치한다.

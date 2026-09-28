@@ -9,6 +9,8 @@ QFont SageFontCatalog::font(SageFontRole role)
     switch (role) {
     case SageFontRole::Body:
         return makeFont(SAGE_FONT_FAMILY_PRETENDARD, QFont::Normal, SAGE_CONTROL_FONT_POINT_SIZE);
+    case SageFontRole::BodyStrong:
+        return makeFont(SAGE_FONT_FAMILY_PRETENDARD, QFont::DemiBold, SAGE_CONTENT_FONT_POINT_SIZE);
     case SageFontRole::Title:
         return makeFont(SAGE_FONT_FAMILY_PRETENDARD, QFont::DemiBold, SAGE_TITLE_FONT_POINT_SIZE);
     case SageFontRole::Section:
