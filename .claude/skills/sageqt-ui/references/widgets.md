@@ -34,7 +34,7 @@
 | `SageEmptyState` | 커스텀 위젯 | `SageEmptyState` | — | T16 |
 | `SageListCtrl` | delegate | `QTableView` + model/proxy + `QHeaderView` + `SageResultTableDelegate` | — (model role) | T15 · T16 |
 | `SageSidebarTree` | delegate | `QTreeView` + `SageSidebarDelegate` | — | T11 |
-| (SageSDI의 패널 `OnEraseBkgnd` 면 칠하기) | 기본 위젯 + SageStyle | `SageSurface : QWidget` | `SageSurfaceVariant { Sidebar, Header }` | T11 · T12 |
+| (SageSDI의 패널 `OnEraseBkgnd` 면 칠하기) | 기본 위젯 + SageStyle | `SageSurface : QWidget` | `SageSurfaceVariant { Sidebar, Panel }` — `Panel`은 흰 면(헤더 · 탭 줄) | T11 · T12 · T13 |
 | `SageUiResources` | 공용 자원 | 앱 폰트 · 역할 폰트 · `QPalette` · `SageDesignDefine.h` | — | T08 |
 | `SageUiStyle` | 공용 자원 | `SageStyle` 요소 그리기 + `ui/style/` 공용 조각 | — | T08 |
 | `SageComboBox` | 옮기지 않음 | — | — | 사용처 0 |

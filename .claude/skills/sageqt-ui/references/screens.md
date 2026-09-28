@@ -34,7 +34,7 @@ SageSDI `SageHeaderPanel.cpp` · `SageBadge.cpp` · `SageSDIView.cpp`에서 옮�
 
 | 항목 | 규격 |
 |---|---|
-| 높이 · 하단선 | 줄 `SAGE_HEADER_HEIGHT` + 아래 1px `SAGE_COLOR_BORDER` (사이드바 제목 아래 선과 같은 높이). 면 `SAGE_COLOR_PANEL` — `SageSurface`(`Header`) |
+| 높이 · 하단선 | 줄 `SAGE_HEADER_HEIGHT` + 아래 1px `SAGE_COLOR_BORDER` (사이드바 제목 아래 선과 같은 높이). 면 `SAGE_COLOR_PANEL` — `SageSurface`(`Panel`) |
 | 좌우 여백 | `SAGE_CONTENT_PAD_X` |
 | 배치 | 왼쪽: 제목 → `SAGE_HEADER_TITLE_GAP` → 분류. 오른쪽: 사용자 라벨 → `SAGE_HEADER_GAP` → 역할 배지 → `SAGE_HEADER_GAP` → 로그인 · 로그아웃 버튼. 모두 세로 가운데 |
 | 제목 | *화면 제목* 폰트 · `SAGE_COLOR_TEXT`, 글은 현재 업무 핸들러의 `headerTitle()`. 폭은 레이아웃이 정한다 (글자 수로 계산하지 않는다) |
@@ -48,8 +48,11 @@ SageSDI `SageHeaderPanel.cpp` · `SageBadge.cpp` · `SageSDIView.cpp`에서 옮�
 
 | 항목 | 규격 |
 |---|---|
-| 탭 줄 | `QTabBar` — `style-scope.md` *재정의하는 표준 위젯 요소* |
-| 선택 탭 Bold | 선택 · 비선택 굵기가 달라 탭 글자 폭이 바뀐다 — 탭 폭이 흔들리지 않게 Bold 기준 폭으로 잡을지 T13에서 확인 |
+| 탭 줄 | 높이 `SAGE_TAB_HEIGHT`(아래 1px `SAGE_COLOR_BORDER` 포함), 면 `SAGE_COLOR_PANEL`(`SageSurface` `Panel`), 줄 전체 폭. 탭은 왼쪽 `SAGE_CONTENT_PAD_X`부터 (`SageWorkspacePanel.cpp` `LayoutTabRow` · `OnEraseBkgnd`) |
+| 탭 | `QTabBar` — 그리기는 `style-scope.md`. **모든 탭 같은 폭** = 가장 긴 라벨을 *본문 강조*로 잰 폭 + 좌우 `SAGE_TAB_PAD_X` (SageSDI `TCS_FIXEDWIDTH`, 여백은 사용자 결정 2026-09-28). 선택이 바뀌어도 폭이 흔들리지 않는다 |
+| 인디케이터 | 선택 탭 아래 `SAGE_TAB_INDICATOR_HEIGHT` `SAGE_COLOR_PRIMARY`. SageSDI는 줄 아래선 위에 겹쳐 그리지만, SageQt는 아래선이 별도 위젯이라 인디케이터가 아래선 바로 위에 온다 (1px 차이) |
+| 탭 전환 | 탭 = `QStackedWidget`의 패널 교체 — 입력 · 결과 · 실행 기록 패널 (`ui-composition.md`). 탭 목록은 핸들러의 `tabs()`(보이는 순서 → 의미 종류). 저장된 종류가 핸들러 탭에 없으면 입력 탭 |
+| 업무별 상태 | 업무를 바꿨다 돌아오면 선택 탭 · 입력 경로 · 저장 폴더를 되살린다 (결과 · 필터는 T14 · T15) |
 | 콘텐츠 여백 | `SAGE_CONTENT_PAD_X` · `SAGE_CONTENT_PAD_Y`, 공통 여백 `SAGE_MARGIN`, 행 간격 `SAGE_ROW_GAP` |
 
 ## 입력 패널 (T13)

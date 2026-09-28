@@ -11,7 +11,7 @@ public:
     enum class SageSurfaceVariant
     {
         Sidebar,
-        Header
+        Panel
     };
     Q_ENUM(SageSurfaceVariant)
 

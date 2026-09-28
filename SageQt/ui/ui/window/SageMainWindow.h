@@ -7,6 +7,7 @@ class SageAuthSession;
 class SageHeaderPanel;
 class SageSidebarPanel;
 class SageUserService;
+class SageWorkspacePanel;
 class SageWorkflowRegistry;
 
 class SageMainWindow : public QMainWindow
@@ -34,4 +35,5 @@ private:
     QFrame* m_sidebarDivider = nullptr;
     QWidget* m_contentArea = nullptr;
     SageHeaderPanel* m_headerPanel = nullptr;
+    SageWorkspacePanel* m_workspacePanel = nullptr;
 };

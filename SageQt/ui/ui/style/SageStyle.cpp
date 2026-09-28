@@ -11,11 +11,13 @@
 
 #include <QAbstractButton>
 #include <QBrush>
+#include <QFontMetrics>
 #include <QFrame>
 #include <QPainter>
 #include <QRect>
 #include <QStyleFactory>
 #include <QStyleOption>
+#include <QTabBar>
 #include <QWidget>
 #include <qdrawutil.h>
 
@@ -66,8 +68,11 @@ void SageStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* opti
     case PE_FrameLineEdit:
         drawLineEditFrame(option, painter, widget);
         return;
+    case PE_FrameTabBarBase:
+        return;
     case PE_FrameFocusRect:
-        if (qobject_cast<const QAbstractButton*>(widget) != nullptr) {
+        if (qobject_cast<const QAbstractButton*>(widget) != nullptr ||
+            qobject_cast<const QTabBar*>(widget) != nullptr) {
             return;
         }
         break;
@@ -88,6 +93,14 @@ void SageStyle::drawControl(ControlElement element, const QStyleOption* option, 
             QProxyStyle::drawControl(element, &labelOption, painter, widget);
             return;
         }
+    }
+    if (element == CE_TabBarTabShape) {
+        drawTabShape(option, painter);
+        return;
+    }
+    if (element == CE_TabBarTabLabel) {
+        drawTabLabel(option, painter);
+        return;
     }
     if (element == CE_ShapedFrame) {
         const QStyleOptionFrame* frameOption = qstyleoption_cast<const QStyleOptionFrame*>(option);
@@ -120,6 +133,12 @@ QSize SageStyle::sizeFromContents(ContentsType type, const QStyleOption* option,
     }
     if (type == CT_LineEdit) {
         size.setHeight(SAGE_EDIT_HEIGHT);
+    }
+    if (type == CT_TabBarTab) {
+        const QTabBar* tabBar = qobject_cast<const QTabBar*>(widget);
+        if (tabBar != nullptr) {
+            size = QSize(uniformTabWidth(*tabBar), SAGE_TAB_HEIGHT - SAGE_BORDER_THICKNESS);
+        }
     }
     return size;
 }
@@ -178,6 +197,42 @@ void SageStyle::drawToolButtonPanel(const QStyleOption* option, QPainter* painte
     painter->fillRect(option->rect, isPressed ? SAGE_COLOR_LIST_HEADER : SAGE_COLOR_PANEL);
 }
 
+void SageStyle::drawTabShape(const QStyleOption* option, QPainter* painter)
+{
+    if (!option->state.testFlag(State_Selected)) {
+        return;
+    }
+    const QRect& tabRect = option->rect;
+    painter->fillRect(QRect(tabRect.left(), tabRect.top() + tabRect.height() - SAGE_TAB_INDICATOR_HEIGHT,
+                            tabRect.width(), SAGE_TAB_INDICATOR_HEIGHT),
+                      SAGE_COLOR_PRIMARY);
+}
+
+void SageStyle::drawTabLabel(const QStyleOption* option, QPainter* painter)
+{
+    const QStyleOptionTab* tabOption = qstyleoption_cast<const QStyleOptionTab*>(option);
+    if (tabOption == nullptr) {
+        return;
+    }
+    const bool isSelected = option->state.testFlag(State_Selected);
+    const QRect textRect = option->rect.adjusted(0, 0, 0, -SAGE_TAB_INDICATOR_HEIGHT);
+    painter->save();
+    painter->setFont(SageFontCatalog::font(isSelected ? SageFontRole::BodyStrong : SageFontRole::Body));
+    painter->setPen(isSelected ? SAGE_COLOR_TEXT : SAGE_COLOR_SECONDARY_TEXT);
+    painter->drawText(textRect, Qt::AlignCenter, tabOption->text);
+    painter->restore();
+}
+
+int SageStyle::uniformTabWidth(const QTabBar& tabBar)
+{
+    const QFontMetrics metrics(SageFontCatalog::font(SageFontRole::BodyStrong));
+    int widestText = 0;
+    for (int index = 0; index < tabBar.count(); ++index) {
+        widestText = qMax(widestText, metrics.horizontalAdvance(tabBar.tabText(index)));
+    }
+    return widestText + SAGE_TAB_PAD_X + SAGE_TAB_PAD_X;
+}
+
 void SageStyle::drawLineEditPanel(const QStyleOption* option, QPainter* painter, const QWidget* widget)
 {
     const bool isEnabled = option->state.testFlag(State_Enabled);
@@ -211,7 +266,7 @@ void SageStyle::polishSurface(QWidget* widget)
         palette.setColor(QPalette::Text, SAGE_COLOR_SIDEBAR_TEXT);
         palette.setColor(QPalette::Mid, SAGE_COLOR_SIDEBAR_DIVIDER);
     }
-    if (surface->variant() == SageSurface::SageSurfaceVariant::Header) {
+    if (surface->variant() == SageSurface::SageSurfaceVariant::Panel) {
         palette.setColor(QPalette::Window, SAGE_COLOR_PANEL);
     }
     widget->setPalette(palette);

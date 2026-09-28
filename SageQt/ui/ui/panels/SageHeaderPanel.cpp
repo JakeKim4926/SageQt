@@ -60,7 +60,7 @@ void SageHeaderPanel::updateAuthState()
 
 void SageHeaderPanel::createWidgets()
 {
-    m_surface = new SageSurface(SageSurface::SageSurfaceVariant::Header, this);
+    m_surface = new SageSurface(SageSurface::SageSurfaceVariant::Panel, this);
     m_row = new QWidget(m_surface);
     m_row->setFixedHeight(SAGE_HEADER_HEIGHT);
 

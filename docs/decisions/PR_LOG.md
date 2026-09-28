@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-29] feature/workspace-tabs
+- **목적**: 작업 영역 탭과 업무별 선택 탭 보존 (sageqt-plan T13, 첫 번째 PR)
+- **변경 내용**: `SageWorkspacePanel`(핸들러 탭 → `QStackedWidget` 패널 교체, 업무별 선택 탭 저장 · 복원, 없는 업무는 입력 탭), 입력 · 결과 · 실행 기록 패널 자리, `SageStyle` 탭 그리기(같은 폭 · 좌우 16 · 인디케이터 — 사용자 결정), `SageSurface` `Header` → `Panel`, 창 연결. 테스트(탭 · 상태 · 그린 값). 스크린샷 스크립트의 로그인 버튼 위치에 탭 줄 반영
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-09-29)
+
 ## [2026-09-28] feature/login-dialog
 - **목적**: SageSDI 로그인 · 비밀번호 변경 다이얼로그와 강제 변경 흐름을 옮기고 헤더 · 사이드바 요청에 연결 (sageqt-plan T10)
 - **변경 내용**: `SageLoginDlg` · `SagePasswordChangeDlg`(서비스 호출은 QtConcurrent), `SageLineEdit` · `SageInlineMessage` · `FormLabel`, 입력칸 스타일(포커스 테두리 주 색 — 사용자 결정), 창 연결, 폰트 패밀리 상수 초기화 순서 버그 수정과 규칙, 조립 수준 로그인 흐름 테스트(실제 DB · PBKDF2), 스크린샷 워크플로에 로그인 창 확인. 규격을 SageSDI 코드로 확정. 스크린샷 `docs/screenshots/T10/`. T10 완료 처리

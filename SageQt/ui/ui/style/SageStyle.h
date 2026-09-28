@@ -9,6 +9,7 @@
 
 class QPainter;
 class QStyleOption;
+class QTabBar;
 class QWidget;
 
 class SageStyle : public QProxyStyle
@@ -36,6 +37,9 @@ private:
     static bool isPrimaryButton(const QWidget* widget);
     static void drawPushButtonPanel(const QStyleOption* option, QPainter* painter, const QWidget* widget);
     static void drawToolButtonPanel(const QStyleOption* option, QPainter* painter);
+    static void drawTabShape(const QStyleOption* option, QPainter* painter);
+    static void drawTabLabel(const QStyleOption* option, QPainter* painter);
+    static int uniformTabWidth(const QTabBar& tabBar);
     static void drawLineEditPanel(const QStyleOption* option, QPainter* painter, const QWidget* widget);
     static void drawLineEditFrame(const QStyleOption* option, QPainter* painter, const QWidget* widget);
     static QColor pushButtonTextColor(const QStyleOption* option, const QWidget* widget);

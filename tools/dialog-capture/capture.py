@@ -21,6 +21,7 @@ DRAG_OFFSET = (150, 100)
 DRAG_SECONDS = 1.0
 HEADER_ROW_HEIGHT = 56
 HEADER_TOTAL_HEIGHT = 57
+TAB_ROW_HEIGHT = 40
 CONTENT_PAD_X = 24
 LOGIN_BUTTON_HALF_WIDTH = 34
 
@@ -108,7 +109,7 @@ def main():
             if work_area is None:
                 return result
             login_x = (work_area[2] - (CONTENT_PAD_X + LOGIN_BUTTON_HALF_WIDTH) * scale) / scale
-            login_y = (work_area[1] - (HEADER_TOTAL_HEIGHT - HEADER_ROW_HEIGHT / 2) * scale) / scale
+            login_y = (work_area[1] - (TAB_ROW_HEIGHT + HEADER_TOTAL_HEIGHT - HEADER_ROW_HEIGHT / 2) * scale) / scale
             pyautogui.click(login_x, login_y)
             image, login_caption = wait_for_caption()
             image.save(out_dir / f'{prefix}-4-login.png')

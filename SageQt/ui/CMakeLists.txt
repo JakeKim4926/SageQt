@@ -13,6 +13,14 @@ qt_add_library(sage_ui STATIC
     ui/panels/SageHeaderPanel.h
     ui/panels/SageSidebarPanel.cpp
     ui/panels/SageSidebarPanel.h
+    ui/panels/SageWorkflowHistoryPanel.cpp
+    ui/panels/SageWorkflowHistoryPanel.h
+    ui/panels/SageWorkflowInputPanel.cpp
+    ui/panels/SageWorkflowInputPanel.h
+    ui/panels/SageWorkflowResultPanel.cpp
+    ui/panels/SageWorkflowResultPanel.h
+    ui/panels/SageWorkspacePanel.cpp
+    ui/panels/SageWorkspacePanel.h
     ui/style/SageDesignDefine.h
     ui/style/SageFontCatalog.cpp
     ui/style/SageFontCatalog.h
