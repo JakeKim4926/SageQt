@@ -1,4 +1,5 @@
 add_subdirectory(dialogs)
+add_subdirectory(models)
 add_subdirectory(panels)
 add_subdirectory(style)
 add_subdirectory(widgets)

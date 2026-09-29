@@ -60,8 +60,8 @@ SageSDI의 결과 표 패널(`SageResultTablePanel` — 입력 표와 결과 표
 
 ## 작업
 PR 2~3개: `feature/result-table-model` (model · proxy), `feature/result-table-panel` (패널 · delegate · 막대들)
-- [ ] 결과 행 model (열은 핸들러 정의, 정렬 · 체크는 role)
-- [ ] 필터 proxy (검색어 · 필터 기준)
+- [x] 결과 행 model (열은 핸들러 정의, 정렬 · 체크는 role)
+- [x] 필터 proxy (검색어 · 필터 기준)
 - [ ] delegate · 헤더 모드
 - [ ] 패널: 제목 · 검색 · 초기화 · 선택 막대 · 요약 · 합계
 - [ ] 업무별 상태 보존에 필터 · 선택 행 연결 (T13 자리)
@@ -78,4 +78,10 @@ PR 2~3개: `feature/result-table-model` (model · proxy), `feature/result-table-
 - 실행 기록 — T16
 
 ## 확인한 사실
-(진행 중 기록)
+- 사용자 결정 (2026-09-29): (1) 체크 상자 · 검색/필터 · 선택 막대 · 요약 · 합계 막대 · 입력 표를 **전부 옮긴다** — 샘플 업무(두 앱 모두 유일한 업무)는 제목 · 4열 · 행만 쓰므로 나머지는 테스트용 핸들러와 오프스크린 그림으로만 확인한다. (2) **필터가 바뀌면 체크를 모두 푼다** (SageSDI와 같게). (3) 헤더 · 체크 상자 · 스크롤바는 **SageSDI대로(hover · 포커스 표시 없음, 스크롤바 Fusion 기본) 먼저 만들고** 세 OS 스크린샷을 보고 바꿀지 정한다
+- 필터 (`RefreshRows`): 검색어는 앞뒤 공백을 자르고 소문자로 바꿔 **부분 일치**. 대상 열은 선택한 기준(`GetEffectiveCriteria` — 목록에 없으면 첫 기준 `GetDefaultCriteria`)의 필드, 기준이 없으면 `값`(`SAGE_RESULT_FIELD_VALUE`). SageQt는 `QString::contains(…, Qt::CaseInsensitive)` — SageSDI `MakeLower`(로캘 소문자)와 한글 · 영문 결과는 같다. 열이 없으면 행도 없다
+- 체크: SageSDI는 `RefreshRows`가 목록을 지우고 다시 넣어 **검색 · 기준 변경 · 행 설정마다 체크가 모두 풀린다**. 체크 수 · 행 번호 · 전체 선택은 목록(= 보이는 행)만 센다. 행 번호 = 원본 행의 `m_nSourceRowIndex`(0이면 뺀다), `","`로 잇는다(`SAGE_UI_ROW_NUM_FORMAT` `"%lu"` → `QString::number`). 복원(`RestoreCheckedRowNums`)은 `,`로 자르고 앞뒤 공백을 잘라 비교, **보이는 행에만** 체크한다. 샘플 결과 행은 `m_nSourceRowIndex`가 늘 0이다 (`SageWorkflowResultPresenter.cpp:37`)
+- SageQt 대응: 체크는 model(`Qt::CheckStateRole`, 첫 열), 보이는 행 기준 동작(체크 수 · 행 번호 · 복원 · 전체 선택 · 보이는 행 목록)은 proxy(`SageResultFilterProxyModel`). `setFilter`가 체크를 먼저 모두 푼다
+- 첫 열 정렬: 결과 표 패널은 늘 `SetFirstColumnAlign(SAGE_LIST_FIRST_COLUMN_CENTER)` — 첫 열은 열 정의와 상관없이 가운데. model의 `Qt::TextAlignmentRole`로 옮겼다
+- `SetColumns`는 목록 항목을 모두 지운다 (행은 다음 `SetRows` · `RefreshRows`까지 비어 보인다). SageQt `setColumns`는 행을 비운다
+- 업무를 바꿨다 돌아올 때(`RebuildResultTable`) SageSDI는 사용자 결과 표 업무(`UsesCustomResultTable`)만 행을 다시 채운다 — 샘플은 열만 다시 설정돼 표가 빈다. 업무가 샘플 하나라 실제로는 일어나지 않는다 (PR 2에서 확인)

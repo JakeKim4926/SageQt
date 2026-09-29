@@ -1,0 +1,3 @@
+qt_add_executable(SageResultTableModelTest SageResultTableModelTest.cpp)
+target_link_libraries(SageResultTableModelTest PRIVATE sage_ui Qt::Test)
+add_test(NAME SageResultTableModelTest COMMAND SageResultTableModelTest)

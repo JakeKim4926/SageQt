@@ -7,6 +7,10 @@ qt_add_library(sage_ui STATIC
     ui/dialogs/SageMessageBoxDlg.h
     ui/dialogs/SagePasswordChangeDlg.cpp
     ui/dialogs/SagePasswordChangeDlg.h
+    ui/models/SageResultFilterProxyModel.cpp
+    ui/models/SageResultFilterProxyModel.h
+    ui/models/SageResultTableModel.cpp
+    ui/models/SageResultTableModel.h
     ui/models/SageSidebarModel.cpp
     ui/models/SageSidebarModel.h
     ui/panels/SageHeaderPanel.cpp

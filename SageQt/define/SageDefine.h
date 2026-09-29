@@ -109,6 +109,7 @@ inline const QString SAGE_JSON_KEY_PASSED_FILES = QStringLiteral("passedFiles");
 inline const QString SAGE_JSON_KEY_FAILED_FILES = QStringLiteral("failedFiles");
 inline const QString SAGE_JSON_KEY_INPUT_PATH = QStringLiteral("inputPath");
 inline const QString SAGE_JSON_KEY_ROW_NUMS = QStringLiteral("rowNums");
+inline const QString SAGE_UI_ROW_NUM_SEPARATOR = QStringLiteral(",");
 inline const QString SAGE_JSON_KEY_FILE_PATH = QStringLiteral("filePath");
 inline const QString SAGE_JSON_TYPE_RESPONSE = QStringLiteral("response");
 

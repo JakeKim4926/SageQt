@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-29] feature/result-table-model
+- **목적**: 결과 표 model · 필터 proxy (sageqt-plan T15, 첫 번째 PR)
+- **변경 내용**: `SageResultTableModel`(핸들러 열 · 행, 첫 열 가운데, 첫 열 체크), `SageResultFilterProxyModel`(검색어 부분 일치 · 대소문자 무시, 필터 변경 시 체크 해제, 보이는 행 기준 체크 수 · 행 번호 · 복원 · 전체 선택). 테스트 12건. T15 결정 3건 · 확인한 사실 기록
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-09-29)
+
 ## [2026-09-29] feature/status-card
 - **목적**: 상태 카드 · 시간 기반 진행 표시 · 폴더 열기 (sageqt-plan T14, 두 번째 PR)
 - **변경 내용**: `SageStatusCard`(대기 · 처리 중 · 완료 · 실패, 진행 막대 `QProgressBar` + `SageStyle`), 입력 패널 진행 타이머(300ms · 3% · 95%), 작업 영역 결과 문구 · 사유 · 저장 경로, 「폴더 열기」(파일이면 든 폴더 — 사용자 결정), 경로 말줄임(파일 이름 유지). 테스트(카드 상태 · 픽셀 · 진행 · 결과 · 폴더 열기). CLAUDE.md에 C 드라이브 사용 금지 규칙. 스크린샷 `docs/screenshots/T14/`. T14 완료 처리
