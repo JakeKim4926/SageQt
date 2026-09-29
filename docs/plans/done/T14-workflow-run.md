@@ -105,7 +105,7 @@ PR 1~2개: `feature/workflow-controller`, `feature/status-card`
 - PR 없이 두 브랜치로 `develop`에 squash merge: `feature/workflow-controller`(실행 흐름), `feature/status-card`(상태 카드 · 진행 표시 · 폴더 열기)
 - core `SageWorkflowRunner`(payload 선택 키, 핸들러 없음 · 예외 → 오류 응답), ui `SageWorkflowController`(`QtConcurrent::run` + `QFutureWatcher`), `SageStatusCard`(4 상태, 진행 막대 `QProgressBar` + `SageStyle`), 입력 카드 실행 버튼 · 진행 타이머, 작업 영역 실행 · 결과 · 폴더 열기
 - 완료 기준 확인: 3-OS CI 통과 / payload 테스트(`SageWorkflowRunnerTest`) / 실행 중 UI가 멈추지 않음(핸들러가 막혀 있는 동안 클릭이 돌아온다) · 재실행 거절(`SageWorkflowControllerTest`, 작업 영역 테스트) / `delete` · `PostMessage` · 창 핸들 0개, `new`는 부모를 받는 `QObject`뿐 (규약 1)
-- 세 OS에서 샘플 업무 실행 → 결과 탭 · 완료 안내는 `SageWorkspacePanelTest`가 세 OS CI에서 확인한다
+- 세 OS에서 샘플 업무 실행 → 결과 탭 · 완료 안내는 **세 OS CI에서 `SageWorkspacePanelTest`로만 확인했다. 사람이 앱을 직접 실행해 확인하지는 않았다.** CI 스크린샷에는 대기 카드만 있고, 처리 중 · 완료 · 실패 카드는 Windows 오프스크린으로만 그려 봤다
 - 스크린샷 `docs/screenshots/T14/`: 세 OS 작업 영역(대기 카드, 실행 36534805326) + 오프스크린 카드 4 상태(Windows)
 - 교훈
   - Qt 모듈 헤더(`<QtConcurrent>`)는 clazy `no-module-include`에 걸린다 — 클래스 헤더(`<QtConcurrentRun>`)를 쓴다

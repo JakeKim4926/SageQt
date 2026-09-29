@@ -43,7 +43,7 @@ SageSDI는 Windows 전용 MFC 앱이다. 목표는 macOS에서 쓰는 것이고,
 | 숨은 단축키 | 메뉴는 `SetMenu(NULL)`로 숨겼지만 `CFrameWnd`가 `IDR_MAINFRAME` 단축키를 로드한다. Ctrl+O · Ctrl+S가 MFC 문서 열기 · 저장 창을 띄운다 (의도하지 않은 동작) | T06 (옮기지 않음) |
 | 키보드 처리 | 다이얼로그 Enter · Tab, `SageEdit`의 Ctrl+A, 툴팁 중계, 검색창 Enter를 직접 구현 — Qt가 기본으로 한다 | T10 · T15 |
 | 파일 드롭 | View · 프레임 · 입력 패널 · 결과 표 패널이 드롭을 받고, View가 모아 입력 경로로 넘긴다 | T13 |
-| 진행률 | 실제 진행이 아니라 300ms마다 +3%, 최대 95%, 완료 시 100%인 시간 기반 표시 | T14 |
+| 진행률 | 실제 진행이 아니라 300ms마다 +3%, 최대 95%인 시간 기반 표시. 100으로 올리지 않고, 끝나면 막대가 사라지고 결과 카드(완료 · 실패)로 바뀐다 (SageSDI 코드 확인, T14) | T14 |
 | 폰트 이름 | `"Pretendard SemiBold"` · `"Gmarket Sans TTF Bold"` 같은 GDI식 패밀리 이름 → 다른 OS · 폰트 엔진에서 다르게 잡힐 수 있다. 크기는 0.1pt 단위 | T02 |
 | JSON 처리 | 문자열 검색식이라 중첩(`payload` · `error`)을 무시한다 → `QJsonDocument`로 옮길 때 값이 빌 수 있다 | T03 |
 | `PRAGMA foreign_keys` | 연결 단위 설정 → 작업마다 연결을 여는 구조에서는 매번 실행해야 한다 | T04 |
