@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-29] feature/workflow-controller
+- **목적**: 업무 실행 흐름 — 실행 버튼 → 백그라운드 실행 → 결과 (sageqt-plan T14, 첫 번째 PR)
+- **변경 내용**: core `SageWorkflowRunner`(payload 선택 키 규칙, 핸들러 없음 · 예외 → 오류 응답), ui `SageWorkflowController`(QtConcurrent + QFutureWatcher, 실행 중 재시작 거절, 결과 상태 보존/복원), 입력 카드 실행 버튼, 작업 영역 실행 흐름(입력 · 저장 폴더 검증, 결과 탭 전환, 생성 완료 안내, 실행 중 드롭 무시, 입력 표 업무 자동 불러오기). `SAGE_REQUEST_UNKNOWN` 값 변경 · `START_FAILED` 미이관. 테스트(payload · 오류 응답 · 컨트롤러 · 작업 영역 실행). 작업 파일 위치를 D 드라이브로 옮김
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-09-29)
+
 ## [2026-09-29] feature/input-panel
 - **목적**: 입력 패널(입력 카드 · 파일/폴더 선택)과 창 어디든 파일 드롭 (sageqt-plan T13, 두 번째 PR)
 - **변경 내용**: `SageWorkflowInputPanel`(카드 · 경로 칸 · 파일/폴더 창), 핸들러 `inputFileFilter()`(사용자 결정), `SageFileDropFilter`, 업무별 입력 경로 · 저장 폴더 보존, `SageStyle` 읽기 전용 입력칸 · 섹션 제목 · 탭 hover(사용자 결정), 콘텐츠 여백 수정. 테스트(입력 패널 · 경로 보존 · 드롭 세 곳 · 스타일). 규격을 SageSDI 코드로 확정. 스크린샷 `docs/screenshots/T13/`. T13 완료 처리

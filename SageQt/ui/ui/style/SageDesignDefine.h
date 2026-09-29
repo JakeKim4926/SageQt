@@ -84,6 +84,7 @@ inline constexpr int SAGE_CARD_PADDING = 16;
 inline constexpr int SAGE_CARD_ROW_GAP = 12;
 inline constexpr int SAGE_FORM_LABEL_WIDTH = 64;
 inline constexpr int SAGE_BUTTON_WIDTH = 120;
+inline constexpr int SAGE_CARD_ACTION_BUTTON_HEIGHT = 34;
 inline constexpr int SAGE_EDIT_TEXT_LEFT_PAD = 10;
 inline constexpr int SAGE_CO_COMPANY_EDIT_MIN_WIDTH = 80;
 inline constexpr int SAGE_HEADER_GAP = 12;

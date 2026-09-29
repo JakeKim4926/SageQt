@@ -63,11 +63,11 @@ SageSDI의 실행 흐름 — 실행 버튼 → 백그라운드에서 핸들러 �
 
 ## 작업
 PR 1~2개: `feature/workflow-controller`, `feature/status-card`
-- [ ] 컨트롤러: 시작 · 백그라운드 작업 · 결과 전달 · 결과 상태 보존
-- [ ] payload 생성 (선택적 키 규칙)
+- [x] 컨트롤러: 시작 · 백그라운드 작업 · 결과 전달 · 결과 상태 보존
+- [x] payload 생성 (선택적 키 규칙)
 - [ ] 상태 카드 · 진행 표시 (결정에 따라)
 - [ ] 완료 안내 · 오류 안내
-- [ ] 테스트: payload 키 규칙, 핸들러 없음 · 예외 → 오류 응답
+- [x] 테스트: payload 키 규칙, 핸들러 없음 · 예외 → 오류 응답
 - [ ] 세 OS에서 샘플 업무 실행 → 결과 탭 (결과 표는 T15 전이면 응답 확인만)
 
 ## 완료 기준
@@ -81,4 +81,12 @@ PR 1~2개: `feature/workflow-controller`, `feature/status-card`
 - 실제 진행률 — 결정에 따라 별도 주제
 
 ## 확인한 사실
-(진행 중 기록)
+- `Finish(…, bKeepResult)`: 실행 중 해제 · 마지막 업무 · 성공 여부는 늘 바꾸고, `bKeepResult`면 작업 종류 · 응답을 그대로 둔다. 작업 영역은 입력 표 업무의 생성(Generate)일 때 `bKeepResult`를 켠다 (`DisplayResponse`)
+- `CaptureResult` · `RestoreResult`는 업무 · 작업 종류 · 성공 여부 · 응답 · 실행 입력 경로를 통째로 복사한다. SageQt는 `resultState()` 하나(값 복사 = Capture)와 `restoreResult` · `clearResult`로 옮겼다. 결과 상태는 `SageWorkspaceState::m_result`에 업무별로 보존된다
+- 로그인 확인은 실행 시점에 없다 — 사이드바에서만 막는다. SageQt도 실행 시점에 확인하지 않는다
+- 실행 중에 다른 업무로 바꾸는 것을 SageSDI는 막지 않는다 (결과는 끝난 뒤 그때 보이는 업무 화면에 적용된다). 업무가 샘플 하나뿐이라 그대로 옮겼다
+- 입력 경로 · 저장 폴더는 앞뒤 공백을 잘라 검증한다. 저장 폴더는 생성(Generate)에만 요구한다
+- 결과 탭 선택: 입력 표 업무면 입력 탭, 아니면 문서 결과 탭. 완료 안내는 생성 성공일 때만
+- 실행 버튼은 폼 두 번째 열(입력칸 열) 왼쪽, 입력칸 두 줄 아래 `SAGE_CARD_ROW_GAP` 간격 (`LayoutActionSection`). 입력 초기화 버튼은 입력 표 업무에만 보이므로 T15로 넘긴다
+- **옮기지 않은 것**: `SAGE_UI_WORKFLOW_START_FAILED` — `QtConcurrent::run`은 시작 시점에 실패를 돌려주지 않는다 (스레드 풀 대기열에 넣는다). `SAGE_REQUEST_UNKNOWN` 값은 `"mfc-unknown"` → `"sageqt-unknown"`
+- 결과 표 채우기(T15) · 실행 기록 추가(T16) · 상태 카드(PR 2)는 `onRunFinished`에 아직 없다

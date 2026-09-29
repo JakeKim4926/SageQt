@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SageDefine.h"
+
 #include <QString>
 #include <QWidget>
 
@@ -21,10 +23,15 @@ public:
     QString outputFolder() const;
     void setOutputFolder(const QString& outputFolder);
     void applyHandler(const ISageWorkflowHandler& handler);
+    void setRunningState(bool running);
+
+signals:
+    void runRequested(SageTaskType taskType);
 
 private slots:
     void onSelectInputClicked();
     void onSelectOutputClicked();
+    void onRunClicked();
 
 private:
     void createWidgets();
@@ -43,6 +50,8 @@ private:
     SageLineEdit* m_outputFolderEdit = nullptr;
     SageButton* m_selectInputButton = nullptr;
     SageButton* m_selectOutputButton = nullptr;
+    SageButton* m_runButton = nullptr;
     QString m_inputDialogTitle;
     QString m_inputFileFilter;
+    bool m_autoLoadOnInput = false;
 };

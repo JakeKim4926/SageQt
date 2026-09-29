@@ -3,11 +3,17 @@
 #include "core/workflow/ISageWorkflowHandler.h"
 #include "core/workflow/handlers/SageSampleWorkflowHandler.h"
 
+#include <QJsonObject>
 #include <QString>
+
+#include <functional>
+#include <utility>
 
 class SageTestWorkflowHandler final : public ISageWorkflowHandler
 {
 public:
+    using SageRunTask = std::function<QJsonObject(SageTaskType, const QJsonObject&)>;
+
     SageTestWorkflowHandler(SageWorkflowType workflowType, const QString& label, const QString& category,
                             bool isLoginRequired)
         : m_workflowType(workflowType)
@@ -15,6 +21,15 @@ public:
         , m_category(category)
         , m_isLoginRequired(isLoginRequired)
     {
+    }
+
+    void setRunTask(SageRunTask runTask)
+    {
+        m_runTask = std::move(runTask);
+    }
+    void setHasInputTable(bool hasInputTable)
+    {
+        m_hasInputTable = hasInputTable;
     }
 
     SageWorkflowType workflowType() const override
@@ -86,7 +101,7 @@ public:
     }
     bool hasInputTable() const override
     {
-        return m_sample.hasInputTable();
+        return m_hasInputTable;
     }
     std::optional<QString> generateCompletedMessage() const override
     {
@@ -102,6 +117,9 @@ public:
     }
     QJsonObject runTask(SageTaskType taskType, const QJsonObject& payload) const override
     {
+        if (m_runTask) {
+            return m_runTask(taskType, payload);
+        }
         return m_sample.runTask(taskType, payload);
     }
     bool buildResultRows(SageTaskType taskType, const QJsonObject& response,
@@ -115,5 +133,7 @@ private:
     QString m_label;
     QString m_category;
     bool m_isLoginRequired;
+    bool m_hasInputTable = false;
+    SageRunTask m_runTask;
     SageSampleWorkflowHandler m_sample;
 };

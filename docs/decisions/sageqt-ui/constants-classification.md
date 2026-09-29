@@ -335,7 +335,7 @@
 | 323 | 333 | `SAGE_UI_WORKFLOW_EXCEPTION` | `L"작업 처리 중 예기치 못한 오류가 발생했습니다."` | UI 문자열 | 1 — SageWorkflowController.cpp | SageDefine.h (T14) |  |
 | 324 | 334 | `SAGE_UI_WORKFLOW_ALREADY_RUNNING` | `L"이미 처리 중입니다."` | UI 문자열 | 1 — SageWorkflowController.cpp | SageDefine.h (T14) |  |
 | 325 | 335 | `SAGE_UI_WORKFLOW_NOT_FOUND` | `L"등록된 업무가 없습니다."` | UI 문자열 | 1 — SageWorkflowController.cpp | SageDefine.h (T14) |  |
-| 326 | 336 | `SAGE_UI_WORKFLOW_START_FAILED` | `L"작업을 시작할 수 없습니다."` | UI 문자열 | 1 — SageWorkflowController.cpp | SageDefine.h (T14) |  |
+| 326 | 336 | `SAGE_UI_WORKFLOW_START_FAILED` | `L"작업을 시작할 수 없습니다."` | UI 문자열 | 1 — SageWorkflowController.cpp | 옮기지 않음 (T14) | `QtConcurrent::run`은 시작 실패를 돌려주지 않는다 |
 | 327 | 337 | `SAGE_ERROR_CODE_WORKFLOW_EXCEPTION` | `L"SNX_SAGE_WORKFLOW_001"` | 업무 | 1 — SageWorkflowController.cpp | SageDefine.h (T14) |  |
 | 328 | 338 | `SAGE_ERROR_CODE_WORKFLOW_NOT_FOUND` | `L"SNX_SAGE_WORKFLOW_002"` | 업무 | 1 — SageWorkflowController.cpp | SageDefine.h (T14) |  |
 | 329 | 339 | `SAGE_UI_EXCEL_FILTER` | `L"Excel Files (*.xls;*.xlsx)\|*.xls;*.xlsx\|All Files (*.*)\|*.*\|\|"` | UI 문자열 | 1 — SageWorkflowInputPanel.cpp | 옮기지 않음 — 기타: MFC CFileDialog 필터 형식("\|…\|\|"). T13에서 Qt 형식("… (*.xls *.xlsx);;…")으로 새로 정의 필요 |  |
@@ -405,7 +405,7 @@
 | 393 | 405 | `SAGE_UI_HISTORY_EMPTY_DESC` | `L"문서를 생성하면 여기에 쌓입니다"` | UI 문자열 | 1 — SageWorkflowHistoryPanel.cpp | SageDefine.h (T16) |  |
 | 394 | 406 | `SAGE_UI_HISTORY_FILTER_EMPTY_TITLE` | `L"조건에 맞는 기록이 없습니다"` | UI 문자열 | 1 — SageWorkflowHistoryPanel.cpp | SageDefine.h (T16) |  |
 | 395 | 407 | `SAGE_UI_HISTORY_FILTER_EMPTY_DESC` | `L"다른 항목을 선택해 보세요"` | UI 문자열 | 1 — SageWorkflowHistoryPanel.cpp | SageDefine.h (T16) |  |
-| 396 | 408 | `SAGE_REQUEST_UNKNOWN` | `L"mfc-unknown"` | 업무 | 1 — SageWorkflowController.cpp | SageDefine.h (T14) | "mfc-" 접두. SageQt는 sample 요청 ID에서 mfc- 를 뺐음 (T03) → 값 재검토 |
+| 396 | 408 | `SAGE_REQUEST_UNKNOWN` | `L"mfc-unknown"` | 업무 | 1 — SageWorkflowController.cpp | SageDefine.h (T14) | 값 `"sageqt-unknown"`으로 바꿈 (T14) |
 | 397 | 410 | `ID_SAGE_LOGIN_BTN` | `41021` | 컨트롤 ID | 1 — SageHeaderPanel.cpp | 옮기지 않음 — 컨트롤 ID |  |
 | 398 | 411 | `ID_SAGE_LOGOUT_BTN` | `41022` | 컨트롤 ID | 1 — SageHeaderPanel.cpp | 옮기지 않음 — 컨트롤 ID |  |
 | 399 | 412 | `ID_SAGE_USER_LABEL` | `41023` | 컨트롤 ID | 1 — SageHeaderPanel.cpp | 옮기지 않음 — 컨트롤 ID |  |

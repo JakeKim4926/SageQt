@@ -13,3 +13,7 @@ add_test(NAME SageWorkflowRegistryTest COMMAND SageWorkflowRegistryTest)
 qt_add_executable(SageSampleWorkflowHandlerTest handlers/SageSampleWorkflowHandlerTest.cpp)
 target_link_libraries(SageSampleWorkflowHandlerTest PRIVATE sage_core Qt::Test)
 add_test(NAME SageSampleWorkflowHandlerTest COMMAND SageSampleWorkflowHandlerTest)
+
+qt_add_executable(SageWorkflowRunnerTest SageWorkflowRunnerTest.cpp SageTestWorkflowHandler.h)
+target_link_libraries(SageWorkflowRunnerTest PRIVATE sage_core Qt::Test)
+add_test(NAME SageWorkflowRunnerTest COMMAND SageWorkflowRunnerTest)

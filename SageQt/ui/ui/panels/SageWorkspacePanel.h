@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SageDefine.h"
+#include "core/workflow/SageWorkflowRunResult.h"
 #include "core/workflow/SageWorkflowTab.h"
 
 #include <QHash>
@@ -18,6 +19,7 @@ class SageSurface;
 class SageWorkflowHistoryPanel;
 class SageWorkflowInputPanel;
 class SageWorkflowRegistry;
+class SageWorkflowController;
 class SageWorkflowResultPanel;
 
 struct SageWorkspaceState
@@ -25,6 +27,7 @@ struct SageWorkspaceState
     SageWorkflowTabKind m_tabKind = SageWorkflowTabKind::Input;
     QString m_inputPath;
     QString m_outputFolder;
+    SageWorkflowResultState m_result;
 };
 
 class SageWorkspacePanel : public QWidget
@@ -35,6 +38,7 @@ public:
     explicit SageWorkspacePanel(const SageWorkflowRegistry& registry, QWidget* parent = nullptr);
 
     SageWorkflowTabKind selectedTabKind() const;
+    bool isRunning() const;
 
 public slots:
     void showWorkflow(SageWorkflowType workflowType);
@@ -42,6 +46,8 @@ public slots:
 
 private slots:
     void onTabChanged(int visualIndex);
+    void onRunRequested(SageTaskType taskType);
+    void onRunFinished(const SageWorkflowRunResult& result);
 
 private:
     void createWidgets();
@@ -51,6 +57,9 @@ private:
     void rebuildTabs();
     void selectTabKind(SageWorkflowTabKind tabKind);
     QWidget* panelFor(SageWorkflowTabKind tabKind) const;
+    bool validateInputPath(QString& outInputPath);
+    bool validateOutputFolder(QString& outOutputFolder);
+    void setRunningState(bool running);
 
 private:
     const SageWorkflowRegistry& m_registry;
@@ -63,6 +72,7 @@ private:
     SageWorkflowInputPanel* m_inputPanel = nullptr;
     SageWorkflowResultPanel* m_resultPanel = nullptr;
     SageWorkflowHistoryPanel* m_historyPanel = nullptr;
+    SageWorkflowController* m_controller = nullptr;
     QList<SageWorkflowTab> m_tabs;
     SageWorkflowTabKind m_selectedTabKind = SageWorkflowTabKind::Input;
     std::optional<SageWorkflowType> m_currentWorkflow;

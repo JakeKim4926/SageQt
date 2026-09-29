@@ -1,0 +1,6 @@
+qt_add_executable(SageWorkflowControllerTest SageWorkflowControllerTest.cpp
+    ${CMAKE_SOURCE_DIR}/tests/core/workflow/SageTestWorkflowHandler.h)
+target_include_directories(SageWorkflowControllerTest PRIVATE ${CMAKE_SOURCE_DIR}/tests/core/workflow)
+target_link_libraries(SageWorkflowControllerTest PRIVATE sage_ui Qt::Test)
+add_test(NAME SageWorkflowControllerTest COMMAND SageWorkflowControllerTest)
+set_tests_properties(SageWorkflowControllerTest PROPERTIES ENVIRONMENT QT_QPA_PLATFORM=offscreen)

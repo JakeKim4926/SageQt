@@ -51,6 +51,8 @@ qt_add_library(sage_ui STATIC
     ui/window/SageFileDropFilter.h
     ui/window/SageMainWindow.cpp
     ui/window/SageMainWindow.h
+    ui/workflow/SageWorkflowController.cpp
+    ui/workflow/SageWorkflowController.h
 )
 
 target_include_directories(sage_ui

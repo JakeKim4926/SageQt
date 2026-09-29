@@ -47,6 +47,15 @@ void SageWorkflowInputPanel::applyHandler(const ISageWorkflowHandler& handler)
     m_inputLabel->setText(handler.inputSectionLabel());
     m_inputDialogTitle = handler.inputDialogTitle();
     m_inputFileFilter = handler.inputFileFilter();
+    m_autoLoadOnInput = handler.hasInputTable();
+    m_runButton->setText(handler.actionButtonLabel());
+}
+
+void SageWorkflowInputPanel::setRunningState(bool running)
+{
+    m_selectInputButton->setEnabled(!running);
+    m_selectOutputButton->setEnabled(!running);
+    m_runButton->setEnabled(!running);
 }
 
 void SageWorkflowInputPanel::onSelectInputClicked()
@@ -54,6 +63,9 @@ void SageWorkflowInputPanel::onSelectInputClicked()
     const QString selectedPath = QFileDialog::getOpenFileName(this, m_inputDialogTitle, QString(), m_inputFileFilter);
     if (!selectedPath.isEmpty()) {
         setInputPath(selectedPath);
+        if (m_autoLoadOnInput) {
+            emit runRequested(SageTaskType::Load);
+        }
     }
 }
 
@@ -63,6 +75,11 @@ void SageWorkflowInputPanel::onSelectOutputClicked()
     if (!selectedFolder.isEmpty()) {
         setOutputFolder(selectedFolder);
     }
+}
+
+void SageWorkflowInputPanel::onRunClicked()
+{
+    emit runRequested(SageTaskType::Generate);
 }
 
 void SageWorkflowInputPanel::createWidgets()
@@ -92,6 +109,10 @@ void SageWorkflowInputPanel::createWidgets()
     m_selectInputButton->setMinimumWidth(SAGE_BUTTON_WIDTH);
     m_selectOutputButton = new SageButton(SAGE_UI_OUTPUT_BUTTON, m_formArea);
     m_selectOutputButton->setMinimumWidth(SAGE_BUTTON_WIDTH);
+    m_runButton = new SageButton(QString(), m_formArea);
+    m_runButton->setVariant(SageButton::SageButtonVariant::Primary);
+    m_runButton->setMinimumWidth(SAGE_BUTTON_WIDTH);
+    m_runButton->setFixedHeight(SAGE_CARD_ACTION_BUTTON_HEIGHT);
 }
 
 void SageWorkflowInputPanel::createLayout()
@@ -118,6 +139,7 @@ void SageWorkflowInputPanel::createLayout()
     formLayout->addWidget(m_outputLabel, 1, 0);
     formLayout->addWidget(m_outputFolderEdit, 1, 1);
     formLayout->addWidget(m_selectOutputButton, 1, 2);
+    formLayout->addWidget(m_runButton, 2, 1, Qt::AlignLeft);
     formLayout->setColumnStretch(1, 1);
 }
 
@@ -125,6 +147,7 @@ void SageWorkflowInputPanel::connectSignals()
 {
     connect(m_selectInputButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onSelectInputClicked);
     connect(m_selectOutputButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onSelectOutputClicked);
+    connect(m_runButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onRunClicked);
 }
 
 SageLineEdit* SageWorkflowInputPanel::createPathEdit()

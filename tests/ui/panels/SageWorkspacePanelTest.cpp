@@ -1,6 +1,7 @@
 #include "ui/panels/SageWorkspacePanel.h"
 
 #include "SageDefine.h"
+#include "SageTestModalDriver.h"
 #include "SageTestWorkflowHandler.h"
 #include "core/workflow/SageWorkflowRegistry.h"
 #include "ui/panels/SageWorkflowHistoryPanel.h"
@@ -8,17 +9,25 @@
 #include "ui/panels/SageWorkflowResultPanel.h"
 #include "ui/style/SageFontRegistry.h"
 #include "ui/style/SageStyle.h"
+#include "ui/widgets/SageButton.h"
 
 #include <QApplication>
 #include <QColor>
+#include <QDialog>
 #include <QImage>
+#include <QJsonObject>
+#include <QLabel>
+#include <QList>
 #include <QObject>
 #include <QPoint>
 #include <QRect>
+#include <QSemaphore>
 #include <QStackedWidget>
 #include <QString>
+#include <QStringList>
 #include <QTabBar>
 #include <QTest>
+#include <QThreadPool>
 
 #include <memory>
 
@@ -29,6 +38,7 @@ class SageWorkspacePanelTest : public QObject
 private slots:
     void initTestCase();
     void init();
+    void cleanup();
     void tabsFollowHandler();
     void tabChangeSwitchesPanel();
     void tabIsRestoredPerWorkflow();
@@ -37,18 +47,29 @@ private slots:
     void pathsAreRestoredPerWorkflow();
     void droppedPathSelectsInputTab();
     void hoveredTabTextTurnsBodyColor();
+    void runWithoutInputShowsWarning();
+    void generateWithoutOutputShowsWarning();
+    void generateRunsInBackgroundAndShowsResult();
+    void droppedPathLoadsInputTableWorkflow();
 
 private:
+    void registerGatedHandler(bool hasInputTable);
     static QTabBar* tabs(SageWorkspacePanel& panel);
+    static SageButton* runButton(SageWorkspacePanel& panel);
+    static SageTestModalDriver::SageModalHandler collectMessages(QStringList& outMessages);
     static QStackedWidget* stack(SageWorkspacePanel& panel);
     static QColor darkestColor(const QImage& image, const QRect& area);
 
 private:
     std::unique_ptr<SageWorkflowRegistry> m_registry;
+    QSemaphore m_gate;
+    int m_runCount = 0;
+    SageTaskType m_lastTaskType = SageTaskType::Generate;
 };
 
 static const SageWorkflowType SAGE_TEST_WORKFLOW = static_cast<SageWorkflowType>(2);
 static const SageWorkflowType SAGE_UNKNOWN_WORKFLOW = static_cast<SageWorkflowType>(99);
+static const SageWorkflowType SAGE_GATED_WORKFLOW = static_cast<SageWorkflowType>(3);
 
 void SageWorkspacePanelTest::initTestCase()
 {
@@ -63,6 +84,50 @@ void SageWorkspacePanelTest::init()
     m_registry = std::make_unique<SageWorkflowRegistry>();
     m_registry->registerHandler(std::make_unique<SageTestWorkflowHandler>(
         SAGE_TEST_WORKFLOW, QStringLiteral("테스트 업무"), QStringLiteral("샘플"), false));
+    m_runCount = 0;
+}
+
+void SageWorkspacePanelTest::cleanup()
+{
+    m_gate.release();
+    QThreadPool::globalInstance()->waitForDone();
+    m_gate.acquire(m_gate.available());
+}
+
+void SageWorkspacePanelTest::registerGatedHandler(bool hasInputTable)
+{
+    std::unique_ptr<SageTestWorkflowHandler> handler = std::make_unique<SageTestWorkflowHandler>(
+        SAGE_GATED_WORKFLOW, QStringLiteral("대기 업무"), QStringLiteral("샘플"), false);
+    handler->setHasInputTable(hasInputTable);
+    handler->setRunTask([this](SageTaskType taskType, const QJsonObject& payload) {
+        m_gate.acquire();
+        ++m_runCount;
+        m_lastTaskType = taskType;
+        return SageSampleWorkflowHandler().runTask(taskType, payload);
+    });
+    m_registry->registerHandler(std::move(handler));
+}
+
+SageButton* SageWorkspacePanelTest::runButton(SageWorkspacePanel& panel)
+{
+    const QList<SageButton*> buttons = panel.findChildren<SageButton*>();
+    for (SageButton* button : buttons) {
+        if (button->text() == SAGE_UI_SAMPLE_ACTION_BUTTON) {
+            return button;
+        }
+    }
+    return nullptr;
+}
+
+SageTestModalDriver::SageModalHandler SageWorkspacePanelTest::collectMessages(QStringList& outMessages)
+{
+    return [&outMessages](QDialog& dialog) {
+        const QList<QLabel*> labels = dialog.findChildren<QLabel*>();
+        for (const QLabel* label : labels) {
+            outMessages.append(label->text());
+        }
+        dialog.accept();
+    };
 }
 
 QTabBar* SageWorkspacePanelTest::tabs(SageWorkspacePanel& panel)
@@ -225,6 +290,81 @@ QColor SageWorkspacePanelTest::darkestColor(const QImage& image, const QRect& ar
         }
     }
     return darkest;
+}
+
+void SageWorkspacePanelTest::runWithoutInputShowsWarning()
+{
+    SageWorkspacePanel panel(*m_registry);
+    panel.showWorkflow(SageWorkflowType::Sample);
+    QStringList messages;
+    const SageTestModalDriver driver(collectMessages(messages));
+
+    runButton(panel)->click();
+
+    QVERIFY(messages.contains(SAGE_UI_INPUT_REQUIRED));
+    QVERIFY(!panel.isRunning());
+}
+
+void SageWorkspacePanelTest::generateWithoutOutputShowsWarning()
+{
+    SageWorkspacePanel panel(*m_registry);
+    panel.showWorkflow(SageWorkflowType::Sample);
+    panel.findChild<SageWorkflowInputPanel*>()->setInputPath(QStringLiteral("C:/work/in.xlsx"));
+    QStringList messages;
+    const SageTestModalDriver driver(collectMessages(messages));
+
+    runButton(panel)->click();
+
+    QVERIFY(messages.contains(SAGE_UI_OUTPUT_REQUIRED));
+    QVERIFY(!messages.contains(SAGE_UI_INPUT_REQUIRED));
+    QVERIFY(!panel.isRunning());
+}
+
+void SageWorkspacePanelTest::generateRunsInBackgroundAndShowsResult()
+{
+    registerGatedHandler(false);
+    SageWorkspacePanel panel(*m_registry);
+    SageWorkflowInputPanel* inputPanel = panel.findChild<SageWorkflowInputPanel*>();
+    panel.showWorkflow(SAGE_GATED_WORKFLOW);
+    inputPanel->setInputPath(QStringLiteral("C:/work/in.xlsx"));
+    inputPanel->setOutputFolder(QStringLiteral("C:/work/out"));
+    QStringList messages;
+    const SageTestModalDriver driver(collectMessages(messages));
+
+    runButton(panel)->click();
+
+    QVERIFY(panel.isRunning());
+    QVERIFY(!runButton(panel)->isEnabled());
+    panel.applyDroppedPaths({QStringLiteral("C:/work/other.xlsx")});
+    QCOMPARE(inputPanel->inputPath(), QStringLiteral("C:/work/in.xlsx"));
+
+    m_gate.release();
+    QTRY_VERIFY(!panel.isRunning());
+    QCOMPARE(m_runCount, 1);
+    QCOMPARE(m_lastTaskType, SageTaskType::Generate);
+    QVERIFY(messages.contains(SAGE_UI_SAMPLE_COMPLETED));
+    QCOMPARE(panel.selectedTabKind(), SageWorkflowTabKind::DocumentResult);
+    QVERIFY(runButton(panel)->isEnabled());
+}
+
+void SageWorkspacePanelTest::droppedPathLoadsInputTableWorkflow()
+{
+    registerGatedHandler(true);
+    SageWorkspacePanel panel(*m_registry);
+    panel.showWorkflow(SAGE_GATED_WORKFLOW);
+    tabs(panel)->setCurrentIndex(2);
+    QStringList messages;
+    const SageTestModalDriver driver(collectMessages(messages));
+
+    panel.applyDroppedPaths({QStringLiteral("C:/work/in.xlsx")});
+
+    QVERIFY(panel.isRunning());
+    m_gate.release();
+    QTRY_VERIFY(!panel.isRunning());
+    QCOMPARE(m_runCount, 1);
+    QCOMPARE(m_lastTaskType, SageTaskType::Load);
+    QVERIFY(messages.isEmpty());
+    QCOMPARE(panel.selectedTabKind(), SageWorkflowTabKind::Input);
 }
 
 QTEST_MAIN(SageWorkspacePanelTest)
