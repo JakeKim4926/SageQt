@@ -67,11 +67,11 @@ SageSDI의 작업 영역(업무별 탭 · 업무 전환 시 상태 보존)과 �
 
 ## 작업
 PR 2개: `feature/workspace-tabs` (탭 · 업무별 상태), `feature/input-panel` (입력 · 폴더 · 드롭)
-- [ ] 작업 영역: 핸들러 탭 → 패널, 의미 ↔ 시각 인덱스
-- [ ] 업무별 상태 저장 · 복원 (결과 · 필터 부분은 T14 · T15에서 채운다 — 자리만 비우지 말고 해당 주제에서 추가)
-- [ ] 입력 패널: 파일 · 폴더 선택, 검증 메시지
-- [ ] 파일 드롭: 창 어디든 → 입력 경로
-- [ ] 세 OS 확인 (파일 선택 · 폴더 선택 · 드롭), 스크린샷
+- [x] 작업 영역: 핸들러 탭 → 패널, 의미 ↔ 시각 인덱스
+- [x] 업무별 상태 저장 · 복원 (결과 · 필터 부분은 T14 · T15에서 채운다 — 자리만 비우지 말고 해당 주제에서 추가)
+- [x] 입력 패널: 파일 · 폴더 선택, 검증 메시지
+- [x] 파일 드롭: 창 어디든 → 입력 경로
+- [x] 세 OS 확인 (파일 선택 · 폴더 선택 · 드롭), 스크린샷
 
 ## 완료 기준
 - 3-OS CI 통과
@@ -84,4 +84,21 @@ PR 2개: `feature/workspace-tabs` (탭 · 업무별 상태), `feature/input-pane
 - 결과 표 · 입력 표 — T15
 
 ## 확인한 사실
-(진행 중 기록)
+- 사용자 결정 (2026-09-28 · 29): 입력 파일 필터는 핸들러가 정한다(`inputFileFilter()`, 샘플 = 모든 파일). 탭은 모두 같은 폭(가장 긴 라벨 *본문 강조* + 좌우 `SAGE_TAB_PAD_X` 16). 탭 hover 때 비선택 탭 글자를 본문색으로, 포커스 표시 없음
+- SageSDI 코드 대조 (2026-09-29): 탭은 `TCS_FIXEDWIDTH` · 선택 `SAGE_FONT_CONTENT_SEMIBOLD` · 인디케이터 2px(`SageTabCtrl.cpp`). 탭 줄 40 흰 면 + 아래선, 콘텐츠 여백 24 · 20 (`SageWorkspacePanel.cpp`). 입력 카드: 제목 38(목록 헤더 면, `SageSectionLabel.cpp`) · 안 여백 16 · 라벨-입력칸-버튼 사이와 줄 사이 모두 `SAGE_CARD_ROW_GAP` 12 · 버튼 폭 120. 읽기 전용 경로 칸은 `CTLCOLOR_STATIC`이라 면이 앱 배경색, 글자 여백 10. 드롭은 여러 파일 중 첫 파일만(`ApplyDroppedInputPaths`), 실행 중이면 무시 · 입력 표 업무면 불러오기 실행(T14). 자동 불러오기 = `UsesInputTable()`(`:326`)
+- 인디케이터: SageSDI는 줄 아래선 위에 겹쳐 그리고, SageQt는 아래선이 별도 위젯이라 바로 위에 온다 (1px 차이, `screens.md`)
+- Qt 함정 셋을 재서 고쳤다: (1) `QStackedWidget`에 준 contentsMargins가 적용되지 않아 카드가 가장자리에 붙었다 → 여백 컨테이너로 감쌈 (CI 실제 화면에서 발견). (2) 자식의 배경 역할은 부모를 물려받아 섹션 제목이 흰색이 됐다 → polish에서 `Window`로 지정. (3) Fusion은 `QTabBar`에 `WA_Hover`를 켜지 않아 hover가 그려지지 않았다 → polish에서 켬 (테스트로 발견)
+- 창 어디든 드롭: 창에 `SageFileDropFilter`(이벤트 필터)를 달고 `acceptDrops`를 켰다. 드롭 이벤트는 받는 위젯이 없으면 부모로 올라간다 — 경로 칸 · 결과 영역 · 사이드바 세 곳에 보낸 드롭이 모두 입력 경로가 됐다 (`SageMainWindowTest`). 경로 칸은 읽기 전용 + 드롭 끔. **실제 OS 끌어 놓기(탐색기 · Finder)는 CI에서 재현할 수 없어 확인하지 않았다** — Qt 이벤트로만 확인 (`DEBT_LOG.md`)
+- 파일 · 폴더 선택 창(`QFileDialog`)은 CI에서 띄워 조작할 수 없어 확인하지 않았다 — macOS 시트 여부 포함 (`DEBT_LOG.md`)
+- 스크린샷 스크립트의 로그인 버튼 위치가 탭 줄 때문에 40px 어긋나 로그인 창 확인이 빠졌다 → 스크립트 보정
+- 세 OS 스크린샷 (`docs/screenshots/T13/`, 실행 36506234242): 탭 줄 · 입력 카드 · 여백
+- CI 흔들림: develop의 macOS 스크린샷 job이 아티팩트 업로드 `ETIMEDOUT`으로 한 번 실패해 재실행 (앱 무관)
+- 입력 경로 · 저장 폴더 검증 메시지(`SAGE_UI_INPUT_REQUIRED` · `SAGE_UI_OUTPUT_REQUIRED`)는 실행 요청에서만 쓰여 T14로 넘겼다
+
+## 결과
+- PR 없이 두 브랜치로 `develop`에 squash merge: `feature/workspace-tabs`(탭 · 선택 탭 보존), `feature/input-panel`(입력 카드 · 파일/폴더 선택 · 드롭 · 경로 보존 · 탭 hover)
+- `SageWorkspacePanel`(탭 → `QStackedWidget`, 업무별 상태), `SageWorkflowInputPanel`(카드 · 파일/폴더 창), 결과 · 실행 기록 패널 자리, `SageFileDropFilter`, `SageStyle` 탭 · 읽기 전용 입력칸 · 섹션 제목, 핸들러 `inputFileFilter()`
+- 테스트: `SageWorkspacePanelTest`(10), `SageWorkflowInputPanelTest`(4), 드롭 세 곳(`SageMainWindowTest`), 입력칸 · 탭 스타일. 로컬 23/23
+- 교훈
+  - 규격 테스트에 "위치(여백)"를 넣지 않으면 색만 맞고 배치가 틀린 화면이 통과한다 — 실제 화면 스크린샷이 잡았다
+  - 스타일로 hover를 그릴 때는 위젯이 hover 이벤트를 받는지(`WA_Hover`)까지 확인한다

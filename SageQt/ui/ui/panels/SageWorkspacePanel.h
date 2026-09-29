@@ -5,6 +5,8 @@
 
 #include <QHash>
 #include <QList>
+#include <QString>
+#include <QStringList>
 #include <QWidget>
 
 #include <optional>
@@ -21,6 +23,8 @@ class SageWorkflowResultPanel;
 struct SageWorkspaceState
 {
     SageWorkflowTabKind m_tabKind = SageWorkflowTabKind::Input;
+    QString m_inputPath;
+    QString m_outputFolder;
 };
 
 class SageWorkspacePanel : public QWidget
@@ -34,6 +38,7 @@ public:
 
 public slots:
     void showWorkflow(SageWorkflowType workflowType);
+    void applyDroppedPaths(const QStringList& paths);
 
 private slots:
     void onTabChanged(int visualIndex);
@@ -53,6 +58,7 @@ private:
     QWidget* m_tabStrip = nullptr;
     QTabBar* m_taskTabs = nullptr;
     QFrame* m_tabRowLine = nullptr;
+    QWidget* m_contentArea = nullptr;
     QStackedWidget* m_panelStack = nullptr;
     SageWorkflowInputPanel* m_inputPanel = nullptr;
     SageWorkflowResultPanel* m_resultPanel = nullptr;

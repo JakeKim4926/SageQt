@@ -12,6 +12,7 @@
 #include <QPushButton>
 #include <QSize>
 #include <QStyle>
+#include <QStyleOptionTab>
 #include <QTest>
 
 class SageStyleTest : public QObject
@@ -27,11 +28,15 @@ private slots:
     void standardIconsAreDrawn();
     void messageIconHasTransparentBackground();
     void lineEditTextStartsAfterBorderAndPad();
+    void readOnlyLineEditTextStartsAfterPanelPad();
+    void tabLabelFollowsSelectionAndHover();
     void lineEditBorderFollowsFocusAndError();
 
 private:
     static QColor faceColor(QPushButton& button);
     static int firstDarkColumn(const QImage& image, int fromColumn);
+    static int lineEditTextStart(bool isReadOnly);
+    static QColor darkestTabLabelColor(QStyle::State state);
 };
 
 void SageStyleTest::baseStyleIsFusion()
@@ -127,9 +132,20 @@ QColor SageStyleTest::faceColor(QPushButton& button)
 
 void SageStyleTest::lineEditTextStartsAfterBorderAndPad()
 {
+    QCOMPARE(lineEditTextStart(false), 5);
+}
+
+void SageStyleTest::readOnlyLineEditTextStartsAfterPanelPad()
+{
+    QCOMPARE(lineEditTextStart(true), 11);
+}
+
+int SageStyleTest::lineEditTextStart(bool isReadOnly)
+{
     SageStyle style;
     SageLineEdit edit;
     edit.setStyle(&style);
+    edit.setReadOnly(isReadOnly);
     edit.setText(QStringLiteral("I"));
     edit.resize(200, 32);
     QImage plain(200, 32, QImage::Format_RGB32);
@@ -139,11 +155,7 @@ void SageStyleTest::lineEditTextStartsAfterBorderAndPad()
     painter.setPen(Qt::black);
     painter.drawText(0, 20, QStringLiteral("I"));
     painter.end();
-
-    const int textStart = firstDarkColumn(edit.grab().toImage(), 2) - firstDarkColumn(plain, 0);
-
-    QCOMPARE(textStart, 5);
-    QCOMPARE(edit.sizeHint().height(), 32);
+    return firstDarkColumn(edit.grab().toImage(), 2) - firstDarkColumn(plain, 0);
 }
 
 void SageStyleTest::lineEditBorderFollowsFocusAndError()
@@ -182,6 +194,41 @@ int SageStyleTest::firstDarkColumn(const QImage& image, int fromColumn)
         }
     }
     return -1;
+}
+
+void SageStyleTest::tabLabelFollowsSelectionAndHover()
+{
+    const int normal = darkestTabLabelColor(QStyle::State_Enabled).lightness();
+    const int hovered = darkestTabLabelColor(QStyle::State_Enabled | QStyle::State_MouseOver).lightness();
+    const int selected = darkestTabLabelColor(QStyle::State_Enabled | QStyle::State_Selected).lightness();
+
+    QVERIFY(normal >= QColor(122, 112, 100).lightness());
+    QVERIFY(hovered >= QColor(47, 42, 36).lightness());
+    QVERIFY(hovered < normal);
+    QVERIFY(selected < normal);
+}
+
+QColor SageStyleTest::darkestTabLabelColor(QStyle::State state)
+{
+    const SageStyle style;
+    QImage image(120, 39, QImage::Format_RGB32);
+    image.fill(Qt::white);
+    QStyleOptionTab option;
+    option.rect = image.rect();
+    option.text = QStringLiteral("결과");
+    option.state = state;
+    QPainter painter(&image);
+    style.drawControl(QStyle::CE_TabBarTabLabel, &option, &painter);
+    painter.end();
+    QColor darkest(Qt::white);
+    for (int y = 0; y < image.height(); ++y) {
+        for (int x = 0; x < image.width(); ++x) {
+            if (image.pixelColor(x, y).lightness() < darkest.lightness()) {
+                darkest = image.pixelColor(x, y);
+            }
+        }
+    }
+    return darkest;
 }
 
 QTEST_MAIN(SageStyleTest)

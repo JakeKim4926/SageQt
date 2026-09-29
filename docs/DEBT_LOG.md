@@ -5,6 +5,12 @@
 
 ## 열린 항목
 
+### [2026-09-29] 검증누락 — 실제 OS 파일 끌어 놓기와 파일 · 폴더 선택 창을 사람이 확인하지 않았다
+- 위치: SageQt/ui/ui/window/SageFileDropFilter.cpp, SageQt/ui/ui/panels/SageWorkflowInputPanel.cpp
+- 설명: 드롭은 Qt 드래그 이벤트를 위젯에 보내는 테스트로만 확인했다 (탐색기 · Finder · 파일 관리자에서 실제로 끌어 놓지 않았다). `QFileDialog` 파일 · 폴더 선택 창은 CI에서 띄워 조작할 수 없어 확인하지 않았다 (macOS 시트 여부 포함)
+- 위험도: 중 — 입력 경로를 넣는 두 경로라 동작하지 않으면 업무를 시작할 수 없다
+- 후속: 세 OS 실제 화면에서 창의 세 곳에 파일을 끌어 놓고, 파일 · 폴더 선택 창을 한 번씩 띄운다 (Mac mini 준비 뒤 macOS)
+
 ### [2026-09-28] 임시구현 — design-values.md 생성 스크립트와 입력 분류표가 저장소 밖(임시 폴더)에 있다
 - 위치: .claude/skills/sageqt-ui/references/design-values.md (생성물), 생성 스크립트 gen_design_values.py · t07-constants.md (T07 세션의 임시 폴더)
 - 설명: T07부터 design-values.md를 스크립트로 생성해 왔는데, 스크립트와 입력 분류표가 세션 임시 폴더에만 있다. 임시 폴더가 지워지면 표를 다시 생성할 수 없고, 손으로 고치면 생성 규칙과 어긋난다

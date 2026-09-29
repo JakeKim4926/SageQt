@@ -3,6 +3,7 @@
 #include <QMainWindow>
 
 class QFrame;
+class SageFileDropFilter;
 class SageAuthSession;
 class SageHeaderPanel;
 class SageSidebarPanel;
@@ -36,4 +37,5 @@ private:
     QWidget* m_contentArea = nullptr;
     SageHeaderPanel* m_headerPanel = nullptr;
     SageWorkspacePanel* m_workspacePanel = nullptr;
+    SageFileDropFilter* m_fileDropFilter = nullptr;
 };

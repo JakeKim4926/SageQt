@@ -6,12 +6,14 @@
 SageSDI의 실행 흐름 — 실행 버튼 → 백그라운드에서 핸들러 실행 → 결과 표시 — 과 상태 카드 · 진행 표시를 옮긴다. MFC 워커 스레드 + `PostMessage`를 `QtConcurrent::run` + `QFutureWatcher`로 바꾼다.
 
 ## 시작 전에
-1. 선행 주제: T13
+1. 선행 주제: 없음 (T13 완료 — 작업 영역 탭 · 입력 카드 · 드롭이 있다)
 2. 스킬 로드: `sageqt-ui`, `coding-design`, `coding-rules`, `git-workflow`
    - 읽을 reference: `coding-design/references/threads-and-db.md` (결과 전달 구조 · 종료 대기), `coding-rules/references/ownership-and-threads.md` (스레드 금지 사항 · 람다 connect 규약 4), `coding-design/references/ui-composition.md` (컨트롤러는 위젯 API를 부르지 않는다)
 3. 결정 대기 — 사용자에게 확정받는다
    - **진행률 방식**: SageSDI의 진행률은 실제 진행이 아니라 **시간 기반 표시**다 (아래). 권장 — 이관할 때는 그대로 옮긴다 (패널의 `QTimer`). 실제 진행률은 핸들러 인터페이스를 바꿔야 하는 별도 기능이다. 이관과 섞으면 동작이 바뀐 원인을 가려낼 수 없다
 4. 재확인할 사실
+   - **T13에서 넘긴 것** — 실행 줄(실행 `Primary` · 입력 초기화 `Ghost`, 높이 `SAGE_CARD_ACTION_BUTTON_HEIGHT`)을 입력 카드 아래쪽에 넣는다 (`sageqt-ui/references/screens.md` *입력 패널*). 입력 경로 · 저장 폴더 검증 메시지(`SAGE_UI_INPUT_REQUIRED` · `SAGE_UI_OUTPUT_REQUIRED`). 드롭 · 파일 선택 뒤 입력 표 업무면 불러오기 자동 실행(`hasInputTable()`), 실행 중 드롭 무시
+   - **T09 · T10 · T13에서 미룬 사용자 확인** — 캡션 닫기 버튼 흰 사각형 · 96 DPI 1:1 크기를 SageSDI와 대조, 실제 OS에서 파일 끌어 놓기 · 파일/폴더 선택 창 (`DEBT_LOG.md`)
    - `SageWorkflowController::Finish` · `CaptureResult` · `RestoreResult`의 나머지 본문 (`:103-`)
    - 로그인이 필요한 업무를 로그인 없이 실행할 때의 처리 위치 (사이드바에서 막히는지, 실행 시점에도 확인하는지)
    - 상태 카드(`drawing/SageStatusCard`)의 상태 종류와 "폴더 열기" 동작 (`SAGE_UI_STATUS_CARD_OPEN_FOLDER`, `SAGE_UI_OUTPUT_PATH_MISSING`)

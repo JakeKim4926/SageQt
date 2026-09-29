@@ -31,8 +31,7 @@ description: >
 
 | ID | 단계 | 주제 | 선행 | 결정 대기 | 상태 |
 |---|---|---|---|---|---|
-| [T13](references/T13-workspace-input.md) | UI 이관 | 작업 영역 탭 · 입력 패널 | — | — | 대기 |
-| [T14](references/T14-workflow-run.md) | UI 이관 | 실행 흐름 · 진행 표시 | T13 | 진행률 방식 | 대기 |
+| [T14](references/T14-workflow-run.md) | UI 이관 | 실행 흐름 · 진행 표시 | — | 진행률 방식 | 대기 |
 | [T15](references/T15-result-table.md) | UI 이관 | 결과 표 | T14 | — | 대기 |
 | [T16](references/T16-history-statusbar.md) | UI 이관 | 실행 기록 · 상태 표시줄 | T15 | — | 대기 |
 | [T17](references/T17-app-metadata.md) | 배포 | 버전 · 아이콘 · 폰트 라이선스 | T16 | 제품 버전 | 대기 |

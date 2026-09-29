@@ -87,6 +87,11 @@ public:
         return {};
     }
 
+    QString inputFileFilter() const override
+    {
+        return {};
+    }
+
     bool hasInputTable() const override
     {
         return false;

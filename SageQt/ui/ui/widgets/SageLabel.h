@@ -14,6 +14,7 @@ public:
         Title,
         SecondaryCaption,
         MutedCaption,
+        Section,
         FormLabel,
         SidebarLogo
     };

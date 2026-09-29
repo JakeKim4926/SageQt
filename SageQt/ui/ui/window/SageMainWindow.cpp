@@ -7,6 +7,7 @@
 #include "ui/panels/SageSidebarPanel.h"
 #include "ui/panels/SageWorkspacePanel.h"
 #include "ui/style/SageDesignDefine.h"
+#include "ui/window/SageFileDropFilter.h"
 
 #include <QFrame>
 #include <QHBoxLayout>
@@ -50,6 +51,9 @@ void SageMainWindow::createWidgets(const SageWorkflowRegistry& registry, SageAut
     m_contentArea = new QWidget(m_centralWidget);
     m_headerPanel = new SageHeaderPanel(registry, authSession, m_contentArea);
     m_workspacePanel = new SageWorkspacePanel(registry, m_contentArea);
+    m_fileDropFilter = new SageFileDropFilter(this);
+    setAcceptDrops(true);
+    installEventFilter(m_fileDropFilter);
     setCentralWidget(m_centralWidget);
 }
 
@@ -73,6 +77,8 @@ void SageMainWindow::connectSignals()
 {
     connect(m_sidebarPanel, &SageSidebarPanel::workflowSelected, m_headerPanel, &SageHeaderPanel::showWorkflow);
     connect(m_sidebarPanel, &SageSidebarPanel::workflowSelected, m_workspacePanel, &SageWorkspacePanel::showWorkflow);
+    connect(m_fileDropFilter, &SageFileDropFilter::filesDropped, m_workspacePanel,
+            &SageWorkspacePanel::applyDroppedPaths);
     connect(m_headerPanel, &SageHeaderPanel::loginRequested, this, &SageMainWindow::openLoginDialog);
     connect(m_sidebarPanel, &SageSidebarPanel::passwordChangeRequested, this,
             &SageMainWindow::openPasswordChangeDialog);

@@ -114,11 +114,17 @@ inline const QString SAGE_UI_TAB_INPUT = QStringLiteral("입력");
 inline const QString SAGE_UI_TAB_RESULT = QStringLiteral("결과");
 inline const QString SAGE_UI_TAB_HISTORY = QStringLiteral("실행 기록");
 inline const QString SAGE_UI_SECTION_INPUT = QStringLiteral("입력 파일");
+inline const QString SAGE_UI_SECTION_OUTPUT = QStringLiteral("저장 위치");
+inline const QString SAGE_UI_INPUT_CARD_TITLE = QStringLiteral("입력 · 저장 위치");
+inline const QString SAGE_UI_INPUT_BUTTON = QStringLiteral("파일 선택");
+inline const QString SAGE_UI_OUTPUT_BUTTON = QStringLiteral("폴더 선택");
+inline const QString SAGE_UI_SELECT_OUTPUT_TITLE = QStringLiteral("저장 폴더 선택");
 
 inline const QString SAGE_UI_SAMPLE_NAME = QStringLiteral("샘플 업무");
 inline const QString SAGE_UI_SAMPLE_CATEGORY = QStringLiteral("샘플");
 inline const QString SAGE_UI_SAMPLE_ACTION_BUTTON = QStringLiteral("실행");
 inline const QString SAGE_UI_SAMPLE_INPUT_DIALOG_TITLE = QStringLiteral("샘플 입력 파일 선택");
+inline const QString SAGE_UI_SAMPLE_INPUT_FILTER = QStringLiteral("모든 파일 (*)");
 inline const QString SAGE_UI_SAMPLE_COMPLETED = QStringLiteral("샘플 업무가 완료되었습니다.");
 inline const QString SAGE_UI_SAMPLE_STATUS_DONE = QStringLiteral("완료");
 inline const QString SAGE_REQUEST_SAMPLE_RUN = QStringLiteral("sample-run");

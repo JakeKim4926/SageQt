@@ -48,6 +48,9 @@ QPalette SageStyle::standardPalette() const
 void SageStyle::polish(QWidget* widget)
 {
     QProxyStyle::polish(widget);
+    if (qobject_cast<QTabBar*>(widget) != nullptr) {
+        widget->setAttribute(Qt::WA_Hover);
+    }
     polishSurface(widget);
     polishLabel(widget);
 }
@@ -146,7 +149,8 @@ QSize SageStyle::sizeFromContents(ContentsType type, const QStyleOption* option,
 QRect SageStyle::subElementRect(SubElement element, const QStyleOption* option, const QWidget* widget) const
 {
     if (element == SE_LineEditContents) {
-        const int horizontalInset = SAGE_EDIT_BORDER_WIDTH + SAGE_DLG_EDIT_TEXT_PAD_X - SAGE_QT_LINE_EDIT_TEXT_MARGIN;
+        const int textPad = option->state.testFlag(State_ReadOnly) ? SAGE_EDIT_TEXT_LEFT_PAD : SAGE_DLG_EDIT_TEXT_PAD_X;
+        const int horizontalInset = SAGE_EDIT_BORDER_WIDTH + textPad - SAGE_QT_LINE_EDIT_TEXT_MARGIN;
         return option->rect.adjusted(horizontalInset, SAGE_EDIT_BORDER_WIDTH, -horizontalInset,
                                      -SAGE_EDIT_BORDER_WIDTH);
     }
@@ -218,7 +222,8 @@ void SageStyle::drawTabLabel(const QStyleOption* option, QPainter* painter)
     const QRect textRect = option->rect.adjusted(0, 0, 0, -SAGE_TAB_INDICATOR_HEIGHT);
     painter->save();
     painter->setFont(SageFontCatalog::font(isSelected ? SageFontRole::BodyStrong : SageFontRole::Body));
-    painter->setPen(isSelected ? SAGE_COLOR_TEXT : SAGE_COLOR_SECONDARY_TEXT);
+    const bool isHovered = option->state.testFlag(State_MouseOver);
+    painter->setPen(isSelected || isHovered ? SAGE_COLOR_TEXT : SAGE_COLOR_SECONDARY_TEXT);
     painter->drawText(textRect, Qt::AlignCenter, tabOption->text);
     painter->restore();
 }
@@ -236,7 +241,9 @@ int SageStyle::uniformTabWidth(const QTabBar& tabBar)
 void SageStyle::drawLineEditPanel(const QStyleOption* option, QPainter* painter, const QWidget* widget)
 {
     const bool isEnabled = option->state.testFlag(State_Enabled);
-    painter->fillRect(option->rect, isEnabled ? SAGE_COLOR_PANEL : SAGE_COLOR_LIST_HEADER);
+    const bool isReadOnly = option->state.testFlag(State_ReadOnly);
+    const QColor face = !isEnabled ? SAGE_COLOR_LIST_HEADER : isReadOnly ? SAGE_COLOR_APP_BACKGROUND : SAGE_COLOR_PANEL;
+    painter->fillRect(option->rect, face);
     const QStyleOptionFrame* frameOption = qstyleoption_cast<const QStyleOptionFrame*>(option);
     if (frameOption != nullptr && frameOption->lineWidth > 0) {
         drawLineEditFrame(option, painter, widget);
@@ -291,6 +298,15 @@ void SageStyle::polishLabel(QWidget* widget)
         widget->setFont(SageFontCatalog::font(SageFontRole::Caption));
         setTextColor(widget, SAGE_COLOR_TEXT_MUTED);
         return;
+    case SageLabel::SageLabelVariant::Section: {
+        widget->setFont(SageFontCatalog::font(SageFontRole::Section));
+        QPalette palette = widget->palette();
+        palette.setColor(QPalette::Window, SAGE_COLOR_LIST_HEADER);
+        widget->setPalette(palette);
+        widget->setBackgroundRole(QPalette::Window);
+        widget->setAutoFillBackground(true);
+        return;
+    }
     case SageLabel::SageLabelVariant::FormLabel:
         widget->setFont(SageFontCatalog::font(SageFontRole::Body));
         setTextColor(widget, SAGE_COLOR_TEXT_MUTED);

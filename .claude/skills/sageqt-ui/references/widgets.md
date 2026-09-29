@@ -16,7 +16,7 @@
 |---|---|---|---|---|
 | `SageButton` | 기본 위젯 + SageStyle | `SageButton : QPushButton` (아이콘 단독은 `QToolButton`) | `SageButtonVariant { Secondary, Primary, Ghost }` (`Danger`는 호출 0곳 — `style-scope.md`) | T08 · T09 · T10 · T12 ~ T16 |
 | `SageEdit` | 기본 위젯 + SageStyle | `SageLineEdit : QLineEdit` | `SageLineEditVariant { Normal, Error }` — 색만 바꾸므로 `setVariant` + `update()` | T10 · T13 |
-| `SageLabel` | 기본 위젯 + SageStyle | `SageLabel : QLabel` | `SageLabelVariant { Title, Section, SecondaryCaption, MutedCaption, FormLabel, Hint, SidebarLogo }` — 값은 쓰는 주제에서 추가 (T11: `SidebarLogo`, T12: `Title` · `SecondaryCaption` · `MutedCaption`, T10: `FormLabel`) | T10 ~ T13 · T15 |
+| `SageLabel` | 기본 위젯 + SageStyle | `SageLabel : QLabel` | `SageLabelVariant { Title, Section, SecondaryCaption, MutedCaption, FormLabel, Hint, SidebarLogo }` — 값은 쓰는 주제에서 추가 (T11: `SidebarLogo`, T12: `Title` · `SecondaryCaption` · `MutedCaption`, T10: `FormLabel`, T13: `Section`) | T10 ~ T13 · T15 |
 | `SageSectionLabel` | 기본 위젯 + SageStyle | `SageLabel` (`Section`) | 위 enum의 `Section` | T13 · T15 |
 | `SageTabCtrl` | 기본 위젯 + SageStyle | `QTabBar` + `QStackedWidget` | — | T13 |
 | `SageHeaderCtrl` | 기본 위젯 + SageStyle | `QHeaderView` | — | T15 · T16 |

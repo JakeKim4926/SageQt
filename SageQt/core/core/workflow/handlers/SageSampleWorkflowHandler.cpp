@@ -81,6 +81,11 @@ QString SageSampleWorkflowHandler::inputDialogTitle() const
     return SAGE_UI_SAMPLE_INPUT_DIALOG_TITLE;
 }
 
+QString SageSampleWorkflowHandler::inputFileFilter() const
+{
+    return SAGE_UI_SAMPLE_INPUT_FILTER;
+}
+
 bool SageSampleWorkflowHandler::hasInputTable() const
 {
     return false;

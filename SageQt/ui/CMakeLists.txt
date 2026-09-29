@@ -47,6 +47,8 @@ qt_add_library(sage_ui STATIC
     ui/widgets/SageSidebarDelegate.h
     ui/widgets/SageSurface.cpp
     ui/widgets/SageSurface.h
+    ui/window/SageFileDropFilter.cpp
+    ui/window/SageFileDropFilter.h
     ui/window/SageMainWindow.cpp
     ui/window/SageMainWindow.h
 )

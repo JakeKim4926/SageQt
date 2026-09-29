@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-29] feature/input-panel
+- **목적**: 입력 패널(입력 카드 · 파일/폴더 선택)과 창 어디든 파일 드롭 (sageqt-plan T13, 두 번째 PR)
+- **변경 내용**: `SageWorkflowInputPanel`(카드 · 경로 칸 · 파일/폴더 창), 핸들러 `inputFileFilter()`(사용자 결정), `SageFileDropFilter`, 업무별 입력 경로 · 저장 폴더 보존, `SageStyle` 읽기 전용 입력칸 · 섹션 제목 · 탭 hover(사용자 결정), 콘텐츠 여백 수정. 테스트(입력 패널 · 경로 보존 · 드롭 세 곳 · 스타일). 규격을 SageSDI 코드로 확정. 스크린샷 `docs/screenshots/T13/`. T13 완료 처리
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-09-29)
+
 ## [2026-09-29] feature/workspace-tabs
 - **목적**: 작업 영역 탭과 업무별 선택 탭 보존 (sageqt-plan T13, 첫 번째 PR)
 - **변경 내용**: `SageWorkspacePanel`(핸들러 탭 → `QStackedWidget` 패널 교체, 업무별 선택 탭 저장 · 복원, 없는 업무는 입력 탭), 입력 · 결과 · 실행 기록 패널 자리, `SageStyle` 탭 그리기(같은 폭 · 좌우 16 · 인디케이터 — 사용자 결정), `SageSurface` `Header` → `Panel`, 창 연결. 테스트(탭 · 상태 · 그린 값). 스크린샷 스크립트의 로그인 버튼 위치에 탭 줄 반영

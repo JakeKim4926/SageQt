@@ -27,6 +27,7 @@ public:
     QList<SageWorkflowFilterCriteria> filterCriteria() const override;
 
     QString inputDialogTitle() const override;
+    QString inputFileFilter() const override;
     bool hasInputTable() const override;
     std::optional<QString> generateCompletedMessage() const override;
 

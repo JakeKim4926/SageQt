@@ -38,6 +38,7 @@ public:
     virtual QList<SageWorkflowFilterCriteria> filterCriteria() const = 0;
 
     virtual QString inputDialogTitle() const = 0;
+    virtual QString inputFileFilter() const = 0;
     virtual bool hasInputTable() const = 0;
     virtual std::optional<QString> generateCompletedMessage() const = 0;
 

@@ -26,7 +26,7 @@
 | `Sidebar` | `SAGE_COLOR_SIDEBAR` | `SAGE_COLOR_SIDEBAR_TEXT` | `SAGE_COLOR_SIDEBAR_DIVIDER` |
 | `Panel` | `SAGE_COLOR_PANEL` | 앱 팔레트 그대로 | 앱 팔레트 그대로 |
 
-`SageLabel`의 변형은 polish에서 폰트와 글자색(`WindowText`)을 받는다 — `Title`(화면 제목 · 팔레트 그대로), `SecondaryCaption`(캡션 · `SAGE_COLOR_SECONDARY_TEXT`), `MutedCaption`(캡션 · `SAGE_COLOR_TEXT_MUTED`), `FormLabel`(본문 · `SAGE_COLOR_TEXT_MUTED`), `SidebarLogo`(로고 · 면 팔레트 그대로).
+`SageLabel`의 변형은 polish에서 폰트와 글자색(`WindowText`)을 받는다 — `Title`(화면 제목 · 팔레트 그대로), `SecondaryCaption`(캡션 · `SAGE_COLOR_SECONDARY_TEXT`), `MutedCaption`(캡션 · `SAGE_COLOR_TEXT_MUTED`), `Section`(섹션 제목 · 면 `SAGE_COLOR_LIST_HEADER` 채움), `FormLabel`(본문 · `SAGE_COLOR_TEXT_MUTED`), `SidebarLogo`(로고 · 면 팔레트 그대로).
 
 ## 재정의하는 표준 위젯 요소
 
@@ -34,9 +34,9 @@
 |---|---|---|---|
 | `QPushButton` | `PE_PanelButtonCommand` · `CE_PushButtonLabel` | 높이 `SAGE_BUTTON_HEIGHT`, 테두리 `SAGE_BORDER_THICKNESS`, 글자 Regular. 면 · 테두리 · 글자색은 변형 · 상태별 (아래) | `SageButtonVariant` |
 | `QToolButton` (아이콘 단독) | `PE_PanelButtonTool` | 정사각 — 크기는 쓰는 곳의 상수 (캡션 닫기 `SAGE_DLG_CAPTION_BTN_SIZE`). SageSDI 문서의 `SAGE_ICON_BUTTON_SIZE`(32)는 코드에 없다. 아이콘 `SAGE_ICON_SIZE` · 선 `SAGE_ICON_STROKE`, 툴팁 필수. 모양은 `Ghost` 버튼과 같다 (SageSDI 캡션 닫기는 `SAGE_BUTTON_GHOST` — `SageDialogCaptionBar.cpp:27`) | — |
-| `QLineEdit` | `PE_PanelLineEdit` · `PE_FrameLineEdit` · `SE_LineEditContents` · `CT_LineEdit` | 높이 `SAGE_EDIT_HEIGHT`. 보통: 면 `SAGE_COLOR_PANEL` · 테두리 `SAGE_EDIT_BORDER_WIDTH` `SAGE_COLOR_BORDER` · 글자 `SAGE_COLOR_TEXT`. 비활성: 면 `SAGE_COLOR_LIST_HEADER` · 글자 `SAGE_COLOR_TEXT_PLACEHOLDER` (`SageEdit.cpp` `CtlColor`). **키보드 포커스: 테두리 `SAGE_COLOR_PRIMARY`** (SageSDI에는 없다 — 사용자 결정 2026-09-28). 오류 테두리가 포커스보다 우선한다. hover는 그리지 않는다. 글자 좌우 여백 `SAGE_DLG_EDIT_TEXT_PAD_X`(다이얼로그, SageSDI 리터럴 4 — `SageLoginDlg.cpp:139`), 세로는 가운데. 패널 입력칸의 `SAGE_EDIT_TEXT_LEFT_PAD`(10)는 T13에서 | `SageLineEditVariant` (`Normal` · `Error` — 오류 테두리 `SAGE_COLOR_ERROR`) |
+| `QLineEdit` | `PE_PanelLineEdit` · `PE_FrameLineEdit` · `SE_LineEditContents` · `CT_LineEdit` | 높이 `SAGE_EDIT_HEIGHT`. 보통: 면 `SAGE_COLOR_PANEL` · 테두리 `SAGE_EDIT_BORDER_WIDTH` `SAGE_COLOR_BORDER` · 글자 `SAGE_COLOR_TEXT`. 비활성: 면 `SAGE_COLOR_LIST_HEADER` · 글자 `SAGE_COLOR_TEXT_PLACEHOLDER` (`SageEdit.cpp` `CtlColor`). **키보드 포커스: 테두리 `SAGE_COLOR_PRIMARY`** (SageSDI에는 없다 — 사용자 결정 2026-09-28). 오류 테두리가 포커스보다 우선한다. hover는 그리지 않는다. 글자 좌우 여백 `SAGE_DLG_EDIT_TEXT_PAD_X`(다이얼로그, SageSDI 리터럴 4 — `SageLoginDlg.cpp:139`), 세로는 가운데. **읽기 전용**(경로 칸): 면 `SAGE_COLOR_APP_BACKGROUND` · 글자 왼쪽 여백 `SAGE_EDIT_TEXT_LEFT_PAD` (T13, `SageWorkflowInputPanel.cpp`) | `SageLineEditVariant` (`Normal` · `Error` — 오류 테두리 `SAGE_COLOR_ERROR`) |
 | `QComboBox` | `CC_ComboBox` | 높이 `SAGE_EDIT_HEIGHT`, 필드 여백 `SAGE_COMBO_FIELD_INSET`, 화살표 `SAGE_ICON_ARROW_HALF_WIDTH` · `SAGE_ICON_ARROW_HALF_HEIGHT` | — |
-| `QTabBar` | `CT_TabBarTab` · `CE_TabBarTabShape` · `CE_TabBarTabLabel` · `PE_FrameTabBarBase` | 탭 면은 칠하지 않는다(줄 면이 보인다). 선택 탭: *본문 강조* · `SAGE_COLOR_TEXT` · 아래 인디케이터 `SAGE_TAB_INDICATOR_HEIGHT` `SAGE_COLOR_PRIMARY`. 비선택: 본문 · `SAGE_COLOR_SECONDARY_TEXT`. 글자는 인디케이터를 뺀 높이에서 가운데 (`SageTabCtrl.cpp`). 탭 폭 · 줄은 `screens.md` *탭 줄*. 기본 선(`PE_FrameTabBarBase`)은 그리지 않는다 — 줄 아래선이 대신한다 | — |
+| `QTabBar` | `CT_TabBarTab` · `CE_TabBarTabShape` · `CE_TabBarTabLabel` · `PE_FrameTabBarBase` | 탭 면은 칠하지 않는다(줄 면이 보인다). 선택 탭: *본문 강조* · `SAGE_COLOR_TEXT` · 아래 인디케이터 `SAGE_TAB_INDICATOR_HEIGHT` `SAGE_COLOR_PRIMARY`. 비선택: 본문 · `SAGE_COLOR_SECONDARY_TEXT`, **마우스를 올리면 `SAGE_COLOR_TEXT`** (SageSDI에는 없다 — 사용자 결정 2026-09-29). 키보드 포커스 표시는 없다. 글자는 인디케이터를 뺀 높이에서 가운데 (`SageTabCtrl.cpp`). 탭 폭 · 줄은 `screens.md` *탭 줄*. 기본 선(`PE_FrameTabBarBase`)은 그리지 않는다 — 줄 아래선이 대신한다 | — |
 | `QHeaderView` | `CE_HeaderSection` · `CE_HeaderLabel` | 높이 `SAGE_LIST_HEADER_HEIGHT`, 면 `SAGE_COLOR_LIST_HEADER`, 글자 `SAGE_COLOR_TEXT_MUTED`, 세로 구분선 없음, 항상 가운데 | — |
 | `QProgressBar` (상태 카드) | `CE_ProgressBarGroove` · `CE_ProgressBarContents` | 높이 `SAGE_STATUS_CARD_PROGRESS_HEIGHT`, 트랙 `SAGE_COLOR_LIST_GRID`, 채움 `SAGE_COLOR_PRIMARY` | — |
 | `QFrame` (패널 경계 `Box`) | `CE_ShapedFrame` | 1px `SAGE_COLOR_BORDER` | — |
@@ -70,9 +70,8 @@ SageSDI에 규격이 없다. 추측으로 채우지 않는다 (SKILL.md *값 출
 
 | 항목 | 상태 |
 |---|---|
-| hover · focus — 콤보 · 탭(T13 스크린샷으로 결정 대기) · 헤더 (입력칸은 T10에서 결정 — 위 표) | SageSDI는 hover가 없고, 포커스 표시는 확인형 메시지 상자(옮기지 않음)에만 있다. 버튼(`QPushButton` · `QToolButton`)은 **둘 다 그리지 않는다**로 정했다 (*버튼 변형*, 사용자 결정 2026-09-28) |
+| hover · focus — 콤보 · 헤더 (입력칸 T10 · 탭 T13에서 결정 — 위 표) | SageSDI는 hover가 없고, 포커스 표시는 확인형 메시지 상자(옮기지 않음)에만 있다. 버튼(`QPushButton` · `QToolButton`)은 **둘 다 그리지 않는다**로 정했다 (*버튼 변형*, 사용자 결정 2026-09-28) |
 | disabled — 콤보 · 탭 · 헤더 | 그 위젯의 주제에서 SageSDI 코드를 먼저 본다. 입력칸은 코드에 있었다 (위 표) |
-| 읽기 전용 입력칸 면 (입력 경로 · 저장 위치) | 규격 없음 |
 | 버튼 · 입력칸 · 카드 반경 | 규격 없음. **주의**: SageSDI `RoundRect`는 타원 폭 · 높이를 받는다 — SageBadge는 반지름 상수를 그대로, 다른 곳은 `RADIUS * 2`를 넘긴다. Qt `drawRoundedRect`는 반지름을 받으므로 상수를 그대로 쓰면 배지 모서리가 두 배로 둥글어진다 |
 | 표 행 상태 색 (성공 · 실패 행 면 · 배지) | 실패 행 `#FDF6F4`만 문서에 있다. 코드(`SetRowStyle`)에서 확인 |
 | 검색 박스 면 · 필 바 선택 상태 | 규격 없음 (T15 · T16) |

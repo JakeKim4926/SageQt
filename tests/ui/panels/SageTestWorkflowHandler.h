@@ -80,6 +80,10 @@ public:
     {
         return m_sample.inputDialogTitle();
     }
+    QString inputFileFilter() const override
+    {
+        return m_sample.inputFileFilter();
+    }
     bool hasInputTable() const override
     {
         return m_sample.hasInputTable();

@@ -45,7 +45,20 @@ void SageWorkspacePanel::showWorkflow(SageWorkflowType workflowType)
     m_currentWorkflow = workflowType;
     m_tabs = handler->tabs();
     rebuildTabs();
-    selectTabKind(m_states.value(workflowType).m_tabKind);
+    const SageWorkspaceState state = m_states.value(workflowType);
+    selectTabKind(state.m_tabKind);
+    m_inputPanel->applyHandler(*handler);
+    m_inputPanel->setInputPath(state.m_inputPath);
+    m_inputPanel->setOutputFolder(state.m_outputFolder);
+}
+
+void SageWorkspacePanel::applyDroppedPaths(const QStringList& paths)
+{
+    if (paths.isEmpty() || !m_currentWorkflow.has_value()) {
+        return;
+    }
+    m_inputPanel->setInputPath(paths.constFirst());
+    selectTabKind(SageWorkflowTabKind::Input);
 }
 
 void SageWorkspacePanel::onTabChanged(int visualIndex)
@@ -69,7 +82,8 @@ void SageWorkspacePanel::createWidgets()
     m_tabRowLine->setFrameShape(QFrame::HLine);
     m_tabRowLine->setFixedHeight(SAGE_BORDER_THICKNESS);
 
-    m_panelStack = new QStackedWidget(this);
+    m_contentArea = new QWidget(this);
+    m_panelStack = new QStackedWidget(m_contentArea);
     m_inputPanel = new SageWorkflowInputPanel(m_panelStack);
     m_resultPanel = new SageWorkflowResultPanel(m_panelStack);
     m_historyPanel = new SageWorkflowHistoryPanel(m_panelStack);
@@ -84,7 +98,7 @@ void SageWorkspacePanel::createLayout()
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(m_tabRow);
-    layout->addWidget(m_panelStack);
+    layout->addWidget(m_contentArea);
 
     QVBoxLayout* tabRowLayout = new QVBoxLayout(m_tabRow);
     tabRowLayout->setContentsMargins(0, 0, 0, 0);
@@ -97,7 +111,9 @@ void SageWorkspacePanel::createLayout()
     tabStripLayout->addWidget(m_taskTabs);
     tabStripLayout->addStretch();
 
-    m_panelStack->setContentsMargins(SAGE_CONTENT_PAD_X, SAGE_CONTENT_PAD_Y, SAGE_CONTENT_PAD_X, SAGE_CONTENT_PAD_Y);
+    QVBoxLayout* contentLayout = new QVBoxLayout(m_contentArea);
+    contentLayout->setContentsMargins(SAGE_CONTENT_PAD_X, SAGE_CONTENT_PAD_Y, SAGE_CONTENT_PAD_X, SAGE_CONTENT_PAD_Y);
+    contentLayout->addWidget(m_panelStack);
 }
 
 void SageWorkspacePanel::connectSignals()
@@ -110,7 +126,10 @@ void SageWorkspacePanel::saveCurrentState()
     if (!m_currentWorkflow.has_value()) {
         return;
     }
-    m_states[*m_currentWorkflow].m_tabKind = m_selectedTabKind;
+    SageWorkspaceState& state = m_states[*m_currentWorkflow];
+    state.m_tabKind = m_selectedTabKind;
+    state.m_inputPath = m_inputPanel->inputPath();
+    state.m_outputFolder = m_inputPanel->outputFolder();
 }
 
 void SageWorkspacePanel::rebuildTabs()

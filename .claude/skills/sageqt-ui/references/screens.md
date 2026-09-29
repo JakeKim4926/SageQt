@@ -59,10 +59,19 @@ SageSDI `SageHeaderPanel.cpp` · `SageBadge.cpp` · `SageSDIView.cpp`에서 옮�
 
 | 항목 | 규격 |
 |---|---|
-| 폼 라벨 | 한 폼의 라벨 열은 가장 긴 라벨 폭으로 맞춘다. `SAGE_FORM_LABEL_WIDTH`는 최소값 |
-| 라벨과 입력칸 사이 | SageSDI 문서의 `SAGE_LABEL_EDIT_GAP`(4)은 코드에 상수가 없다 — T13에서 코드의 실제 배치를 확인 |
-| 입력칸 · 버튼 | 높이 `SAGE_EDIT_HEIGHT` · `SAGE_BUTTON_HEIGHT` 고정. 버튼 폭 `SAGE_BUTTON_WIDTH` · `SAGE_INPUT_RESET_WIDTH`는 최소값 |
-| 버튼 사이 | `SAGE_ACTION_GAP` |
+SageSDI `SageWorkflowInputPanel.cpp` · `SageSectionLabel.cpp`에서 옮긴다 (2026-09-29 코드 확인).
+
+| 항목 | 규격 |
+|---|---|
+| 입력 카드 | 면 `SAGE_COLOR_PANEL`, 테두리 1px `SAGE_COLOR_BORDER`, 콘텐츠 영역 맨 위 전체 폭 |
+| 카드 제목 | `SAGE_UI_INPUT_CARD_TITLE`, 높이 `SAGE_CARD_HEADER_HEIGHT`(아래 1px `SAGE_COLOR_BORDER` 포함), 면 `SAGE_COLOR_LIST_HEADER`, *섹션 제목* 폰트 · `SAGE_COLOR_TEXT`, 왼쪽 `SAGE_CARD_PADDING` — `SageLabel` `Section` |
+| 폼 줄 | 카드 안 여백 `SAGE_CARD_PADDING`. 줄 = 라벨 · 입력칸 · 버튼, 사이 `SAGE_CARD_ROW_GAP` (라벨과 입력칸 사이도 같다 — 문서의 `SAGE_LABEL_EDIT_GAP`은 코드에 없다). 줄 사이 `SAGE_CARD_ROW_GAP` |
+| 폼 라벨 | 입력 파일 = 핸들러의 `inputSectionLabel()`, 저장 위치 = `SAGE_UI_SECTION_OUTPUT`. `SageLabel` `FormLabel`. 라벨 열은 가장 긴 라벨 폭, `SAGE_FORM_LABEL_WIDTH`는 최소값 |
+| 경로 입력칸 | 읽기 전용 `SageLineEdit` — 면 `SAGE_COLOR_APP_BACKGROUND`(읽기 전용 Edit은 SageSDI에서 `CTLCOLOR_STATIC`으로 칠해진다), 테두리 `SAGE_COLOR_BORDER`, 글자 왼쪽 여백 `SAGE_EDIT_TEXT_LEFT_PAD`. 최소 폭 `SAGE_CO_COMPANY_EDIT_MIN_WIDTH`. 드롭을 받지 않는다 (창이 받는다) |
+| 버튼 | 「파일 선택」 · 「폴더 선택」 `Secondary`, 폭 `SAGE_BUTTON_WIDTH`는 최소값 |
+| 파일 선택 창 | 제목 = 핸들러의 `inputDialogTitle()`, 필터 = 핸들러의 `inputFileFilter()` (사용자 결정 2026-09-28). 폴더 선택 창 제목 `SAGE_UI_SELECT_OUTPUT_TITLE` |
+| 실행 줄 (T14) | 실행 버튼 `Primary` · 입력 초기화 `Ghost`, 높이 `SAGE_CARD_ACTION_BUTTON_HEIGHT`, 사이 `SAGE_ACTION_GAP`, 폭 `SAGE_BUTTON_WIDTH` · `SAGE_INPUT_RESET_WIDTH`는 최소값 — T14에서 카드 아래쪽에 넣는다 |
+| 파일 드롭 | 창 어디에 떨어뜨려도 첫 번째 파일이 입력 경로가 되고 입력 탭으로 간다 (`SageWorkspacePanel.cpp` `ApplyDroppedInputPaths`). 실행 중 무시 · 입력 표 업무의 자동 불러오기는 T14 |
 
 ## 실행 · 상태 카드 (T14)
 
