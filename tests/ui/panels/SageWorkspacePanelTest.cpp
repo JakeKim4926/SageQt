@@ -10,10 +10,13 @@
 #include "ui/style/SageFontRegistry.h"
 #include "ui/style/SageStyle.h"
 #include "ui/widgets/SageButton.h"
+#include "ui/widgets/SageStatusCard.h"
 
 #include <QApplication>
 #include <QColor>
+#include <QDesktopServices>
 #include <QDialog>
+#include <QDir>
 #include <QImage>
 #include <QJsonObject>
 #include <QLabel>
@@ -26,10 +29,34 @@
 #include <QString>
 #include <QStringList>
 #include <QTabBar>
+#include <QTemporaryDir>
 #include <QTest>
 #include <QThreadPool>
+#include <QTimer>
+#include <QUrl>
 
 #include <memory>
+#include <stdexcept>
+
+class SageTestUrlRecorder : public QObject
+{
+    Q_OBJECT
+
+public:
+    QList<QUrl> urls() const
+    {
+        return m_urls;
+    }
+
+public slots:
+    void openUrl(const QUrl& url)
+    {
+        m_urls.append(url);
+    }
+
+private:
+    QList<QUrl> m_urls;
+};
 
 class SageWorkspacePanelTest : public QObject
 {
@@ -51,11 +78,16 @@ private slots:
     void generateWithoutOutputShowsWarning();
     void generateRunsInBackgroundAndShowsResult();
     void droppedPathLoadsInputTableWorkflow();
+    void runningCardAdvancesProgressUpToLimit();
+    void completedRunShowsResultAndOpensFolder();
+    void failedRunShowsReason();
 
 private:
     void registerGatedHandler(bool hasInputTable);
     static QTabBar* tabs(SageWorkspacePanel& panel);
     static SageButton* runButton(SageWorkspacePanel& panel);
+    static SageButton* openFolderButton(SageWorkspacePanel& panel);
+    static void startGatedGenerate(SageWorkspacePanel& panel, const QString& outputFolder);
     static SageTestModalDriver::SageModalHandler collectMessages(QStringList& outMessages);
     static QStackedWidget* stack(SageWorkspacePanel& panel);
     static QColor darkestColor(const QImage& image, const QRect& area);
@@ -117,6 +149,20 @@ SageButton* SageWorkspacePanelTest::runButton(SageWorkspacePanel& panel)
         }
     }
     return nullptr;
+}
+
+SageButton* SageWorkspacePanelTest::openFolderButton(SageWorkspacePanel& panel)
+{
+    return panel.findChild<SageStatusCard*>()->findChild<SageButton*>();
+}
+
+void SageWorkspacePanelTest::startGatedGenerate(SageWorkspacePanel& panel, const QString& outputFolder)
+{
+    SageWorkflowInputPanel* inputPanel = panel.findChild<SageWorkflowInputPanel*>();
+    panel.showWorkflow(SAGE_GATED_WORKFLOW);
+    inputPanel->setInputPath(QStringLiteral("C:/work/in.xlsx"));
+    inputPanel->setOutputFolder(outputFolder);
+    runButton(panel)->click();
 }
 
 SageTestModalDriver::SageModalHandler SageWorkspacePanelTest::collectMessages(QStringList& outMessages)
@@ -365,6 +411,83 @@ void SageWorkspacePanelTest::droppedPathLoadsInputTableWorkflow()
     QCOMPARE(m_lastTaskType, SageTaskType::Load);
     QVERIFY(messages.isEmpty());
     QCOMPARE(panel.selectedTabKind(), SageWorkflowTabKind::Input);
+}
+
+void SageWorkspacePanelTest::runningCardAdvancesProgressUpToLimit()
+{
+    registerGatedHandler(false);
+    SageWorkspacePanel panel(*m_registry);
+    QStringList messages;
+    const SageTestModalDriver driver(collectMessages(messages));
+    startGatedGenerate(panel, QStringLiteral("C:/work/out"));
+
+    SageStatusCard* card = panel.findChild<SageStatusCard*>();
+    QTimer* progressTimer = panel.findChild<SageWorkflowInputPanel*>()->findChild<QTimer*>();
+    QCOMPARE(card->variant(), SageStatusCard::SageStatusCardVariant::Running);
+    QCOMPARE(card->message(), SAGE_UI_STATUS_CARD_RUNNING);
+    QVERIFY(progressTimer->isActive());
+    QCOMPARE(progressTimer->interval(), 300);
+    QMetaObject::invokeMethod(progressTimer, "timeout");
+    QCOMPARE(card->progressPercent(), 3);
+    for (int tick = 0; tick < 40; ++tick) {
+        QMetaObject::invokeMethod(progressTimer, "timeout");
+    }
+    QCOMPARE(card->progressPercent(), 95);
+
+    m_gate.release();
+    QTRY_VERIFY(!panel.isRunning());
+    QVERIFY(!progressTimer->isActive());
+}
+
+void SageWorkspacePanelTest::completedRunShowsResultAndOpensFolder()
+{
+    registerGatedHandler(false);
+    QTemporaryDir outputDirectory;
+    QVERIFY(outputDirectory.isValid());
+    SageTestUrlRecorder recorder;
+    QDesktopServices::setUrlHandler(QStringLiteral("file"), &recorder, "openUrl");
+    SageWorkspacePanel panel(*m_registry);
+    QStringList messages;
+    const SageTestModalDriver driver(collectMessages(messages));
+    startGatedGenerate(panel, outputDirectory.path());
+    m_gate.release();
+    QTRY_VERIFY(!panel.isRunning());
+
+    SageStatusCard* card = panel.findChild<SageStatusCard*>();
+    QCOMPARE(card->variant(), SageStatusCard::SageStatusCardVariant::Completed);
+    QVERIFY(card->message().startsWith(SAGE_UI_SAMPLE_ACTION_BUTTON + QStringLiteral("이 완료되었습니다 · ")));
+    QCOMPARE(card->detail(), QDir::toNativeSeparators(outputDirectory.path()));
+
+    openFolderButton(panel)->click();
+    QCOMPARE(recorder.urls().size(), 1);
+    QCOMPARE(recorder.urls().constFirst(), QUrl::fromLocalFile(outputDirectory.path()));
+
+    QVERIFY(outputDirectory.remove());
+    openFolderButton(panel)->click();
+    QCOMPARE(recorder.urls().size(), 1);
+    QVERIFY(messages.contains(SAGE_UI_OUTPUT_PATH_MISSING));
+    QDesktopServices::unsetUrlHandler(QStringLiteral("file"));
+}
+
+void SageWorkspacePanelTest::failedRunShowsReason()
+{
+    std::unique_ptr<SageTestWorkflowHandler> handler = std::make_unique<SageTestWorkflowHandler>(
+        SAGE_GATED_WORKFLOW, QStringLiteral("실패 업무"), QStringLiteral("샘플"), false);
+    handler->setRunTask(
+        [](SageTaskType, const QJsonObject&) -> QJsonObject { throw std::runtime_error("handler failure"); });
+    m_registry->registerHandler(std::move(handler));
+    SageWorkspacePanel panel(*m_registry);
+    QStringList messages;
+    const SageTestModalDriver driver(collectMessages(messages));
+    startGatedGenerate(panel, QStringLiteral("C:/work/out"));
+    QTRY_VERIFY(!panel.isRunning());
+
+    SageStatusCard* card = panel.findChild<SageStatusCard*>();
+    QCOMPARE(card->variant(), SageStatusCard::SageStatusCardVariant::Failed);
+    QCOMPARE(card->message(), SAGE_UI_STATUS_CARD_FAILED_FORMAT.arg(SAGE_UI_SAMPLE_ACTION_BUTTON));
+    QCOMPARE(card->detail(), SAGE_UI_WORKFLOW_EXCEPTION);
+    QVERIFY(openFolderButton(panel)->isHidden());
+    QVERIFY(!messages.contains(SAGE_UI_SAMPLE_COMPLETED));
 }
 
 QTEST_MAIN(SageWorkspacePanelTest)

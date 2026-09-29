@@ -109,6 +109,7 @@ inline const QString SAGE_JSON_KEY_PASSED_FILES = QStringLiteral("passedFiles");
 inline const QString SAGE_JSON_KEY_FAILED_FILES = QStringLiteral("failedFiles");
 inline const QString SAGE_JSON_KEY_INPUT_PATH = QStringLiteral("inputPath");
 inline const QString SAGE_JSON_KEY_ROW_NUMS = QStringLiteral("rowNums");
+inline const QString SAGE_JSON_KEY_FILE_PATH = QStringLiteral("filePath");
 inline const QString SAGE_JSON_TYPE_RESPONSE = QStringLiteral("response");
 
 inline const QString SAGE_UI_TAB_INPUT = QStringLiteral("입력");
@@ -137,6 +138,21 @@ inline const QString SAGE_UI_WORKFLOW_ALREADY_RUNNING = QStringLiteral("이미 �
 inline const QString SAGE_UI_WORKFLOW_NOT_FOUND = QStringLiteral("등록된 업무가 없습니다.");
 inline const QString SAGE_UI_INPUT_REQUIRED = QStringLiteral("파일을 선택하세요.");
 inline const QString SAGE_UI_OUTPUT_REQUIRED = QStringLiteral("저장 위치 폴더를 지정하세요.");
+inline const QString SAGE_UI_PROGRESS_FORMAT = QStringLiteral("%1%");
+inline const QString SAGE_UI_STATUS_CARD_IDLE = QStringLiteral("대기 중 — 입력 파일을 선택한 뒤 생성하세요");
+inline const QString SAGE_UI_STATUS_CARD_RUNNING = QStringLiteral("처리 중 — 엑셀 데이터를 읽는 중입니다");
+inline const QString SAGE_UI_STATUS_CARD_COMPLETED_FORMAT = QStringLiteral("%1이 완료되었습니다 · %2건");
+inline const QString SAGE_UI_STATUS_CARD_FAILED_FORMAT = QStringLiteral("%1에 실패했습니다");
+inline const QString SAGE_UI_STATUS_CARD_LOAD_COMPLETED_FORMAT = QStringLiteral("불러오기가 완료되었습니다 · %1건");
+inline const QString SAGE_UI_STATUS_CARD_LOAD_FAILED = QStringLiteral("불러오기에 실패했습니다");
+inline const QString SAGE_UI_OUTPUT_PATH_MISSING =
+    QStringLiteral("저장한 파일을 찾을 수 없습니다. 옮겨졌거나 삭제되었습니다.");
+inline const QString SAGE_UI_STATUS_CARD_OPEN_FOLDER = QStringLiteral("폴더 열기");
+
+inline constexpr int SAGE_PROGRESS_TIMER_MS = 300;
+inline constexpr int SAGE_PROGRESS_STEP = 3;
+inline constexpr int SAGE_PROGRESS_RUNNING_MAX = 95;
+inline constexpr int SAGE_PROGRESS_COMPLETE = 100;
 inline constexpr int SAGE_SAMPLE_TOTAL_FILES = 1;
 inline constexpr int SAGE_SAMPLE_PASSED_FILES = 1;
 inline constexpr int SAGE_SAMPLE_FAILED_FILES = 0;

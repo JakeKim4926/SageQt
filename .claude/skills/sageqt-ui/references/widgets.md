@@ -57,7 +57,7 @@
 | 모서리 반경 | `RoundRect`는 타원 폭 · 높이 — 배지는 상수 그대로, 나머지는 `RADIUS * 2` | `drawRoundedRect`는 반지름 — 배지만 절반으로 |
 | 흐린 글자색 | 셀 문자열 비교로 정한다 (`"—"`, `"미리보기 (저장 없음)"`) | model role로 — 문자열 비교를 옮기지 않는다 (T15) |
 | 요약 바 폭 부족 | 넘치는 항목부터 말없이 버린다, 배지는 첫 항목에만 | 동작을 그대로 옮길지 T15에서 확인 |
-| 경로 말줄임 | `DT_PATH_ELLIPSIS` | `Qt::ElideMiddle`은 결과가 다르다 — T14에서 비교 |
+| 경로 말줄임 | `DT_PATH_ELLIPSIS` — 마지막 `\` 뒤(파일 이름)를 최대한 남긴다 | 파일 이름을 통째로 남기고 앞 폴더 부분만 `Qt::ElideMiddle` (`SageStatusCard::elidedPath`, T14). 파일 이름만으로 넘치면 전체 가운데 줄임 |
 | 메시지 본문 | 200px(`SAGE_MSGBOX_MAX_TEXT_HEIGHT`)에서 자르고 말줄임 | 최대값으로 옮기고 말줄임은 하지 않는다 (T09, 사용자 결정) |
 | 검색창 Enter · 자식 알림 | 부모 `PreTranslateMessage` · `OnCommand`가 중계 | 위젯이 의미 있는 signal을 낸다 — 중계 금지 (`ui-composition.md`) |
 | Ctrl+A 전체 선택 | `SageHandleEditSelectAll` | `QLineEdit` 기본 (macOS Cmd+A) — 옮기지 않는다 |

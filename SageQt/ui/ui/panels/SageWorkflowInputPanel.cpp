@@ -6,12 +6,14 @@
 #include "ui/widgets/SageButton.h"
 #include "ui/widgets/SageLabel.h"
 #include "ui/widgets/SageLineEdit.h"
+#include "ui/widgets/SageStatusCard.h"
 
 #include <QDir>
 #include <QFileDialog>
 #include <QFrame>
 #include <QGridLayout>
 #include <QPalette>
+#include <QTimer>
 #include <QVBoxLayout>
 
 SageWorkflowInputPanel::SageWorkflowInputPanel(QWidget* parent)
@@ -53,9 +55,23 @@ void SageWorkflowInputPanel::applyHandler(const ISageWorkflowHandler& handler)
 
 void SageWorkflowInputPanel::setRunningState(bool running)
 {
+    m_running = running;
     m_selectInputButton->setEnabled(!running);
     m_selectOutputButton->setEnabled(!running);
     m_runButton->setEnabled(!running);
+    if (running) {
+        m_statusCard->setRunning(SAGE_UI_STATUS_CARD_RUNNING);
+        m_progressPercent = 0;
+        m_statusCard->setProgressPercent(m_progressPercent);
+        m_progressTimer->start();
+        return;
+    }
+    m_progressTimer->stop();
+}
+
+void SageWorkflowInputPanel::setStatusResult(bool success, const QString& message, const QString& detail)
+{
+    m_statusCard->setResult(success, message, detail);
 }
 
 void SageWorkflowInputPanel::onSelectInputClicked()
@@ -80,6 +96,15 @@ void SageWorkflowInputPanel::onSelectOutputClicked()
 void SageWorkflowInputPanel::onRunClicked()
 {
     emit runRequested(SageTaskType::Generate);
+}
+
+void SageWorkflowInputPanel::onProgressTimer()
+{
+    if (!m_running || m_progressPercent >= SAGE_PROGRESS_RUNNING_MAX) {
+        return;
+    }
+    m_progressPercent = qMin(m_progressPercent + SAGE_PROGRESS_STEP, SAGE_PROGRESS_RUNNING_MAX);
+    m_statusCard->setProgressPercent(m_progressPercent);
 }
 
 void SageWorkflowInputPanel::createWidgets()
@@ -113,13 +138,20 @@ void SageWorkflowInputPanel::createWidgets()
     m_runButton->setVariant(SageButton::SageButtonVariant::Primary);
     m_runButton->setMinimumWidth(SAGE_BUTTON_WIDTH);
     m_runButton->setFixedHeight(SAGE_CARD_ACTION_BUTTON_HEIGHT);
+
+    m_statusCard = new SageStatusCard(this);
+    m_statusCard->setIdle(SAGE_UI_STATUS_CARD_IDLE);
+    m_progressTimer = new QTimer(this);
+    m_progressTimer->setInterval(SAGE_PROGRESS_TIMER_MS);
 }
 
 void SageWorkflowInputPanel::createLayout()
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(SAGE_CARD_GAP);
     layout->addWidget(m_inputCard);
+    layout->addWidget(m_statusCard);
     layout->addStretch();
 
     QVBoxLayout* cardLayout = new QVBoxLayout(m_inputCard);
@@ -148,6 +180,9 @@ void SageWorkflowInputPanel::connectSignals()
     connect(m_selectInputButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onSelectInputClicked);
     connect(m_selectOutputButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onSelectOutputClicked);
     connect(m_runButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onRunClicked);
+    connect(m_progressTimer, &QTimer::timeout, this, &SageWorkflowInputPanel::onProgressTimer);
+    connect(m_statusCard, &SageStatusCard::openFolderRequested, this,
+            &SageWorkflowInputPanel::openOutputFolderRequested);
 }
 
 SageLineEdit* SageWorkflowInputPanel::createPathEdit()

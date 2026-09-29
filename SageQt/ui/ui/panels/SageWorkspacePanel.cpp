@@ -11,12 +11,16 @@
 #include "ui/widgets/SageSurface.h"
 #include "ui/workflow/SageWorkflowController.h"
 
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QList>
 #include <QSignalBlocker>
 #include <QStackedWidget>
 #include <QTabBar>
+#include <QUrl>
 #include <QVBoxLayout>
 
 #include <optional>
@@ -135,7 +139,23 @@ void SageWorkspacePanel::onRunFinished(const SageWorkflowRunResult& result)
             completedDialog.exec();
         }
     }
+    applyStatusCardResult(handler, result.m_taskType, result.m_response, success, static_cast<int>(rows.size()));
     setRunningState(false);
+}
+
+void SageWorkspacePanel::onOpenOutputFolder()
+{
+    if (m_lastOutputPath.isEmpty()) {
+        return;
+    }
+    const QFileInfo outputInfo(m_lastOutputPath);
+    if (!outputInfo.exists()) {
+        SageMessageBoxDlg missingDialog(SageMessageIcon::Warning, SAGE_UI_OUTPUT_PATH_MISSING, this);
+        missingDialog.exec();
+        return;
+    }
+    const QString folder = outputInfo.isDir() ? outputInfo.absoluteFilePath() : outputInfo.absolutePath();
+    QDesktopServices::openUrl(QUrl::fromLocalFile(folder));
 }
 
 void SageWorkspacePanel::createWidgets()
@@ -191,6 +211,8 @@ void SageWorkspacePanel::connectSignals()
     connect(m_taskTabs, &QTabBar::currentChanged, this, &SageWorkspacePanel::onTabChanged);
     connect(m_inputPanel, &SageWorkflowInputPanel::runRequested, this, &SageWorkspacePanel::onRunRequested);
     connect(m_controller, &SageWorkflowController::runFinished, this, &SageWorkspacePanel::onRunFinished);
+    connect(m_inputPanel, &SageWorkflowInputPanel::openOutputFolderRequested, this,
+            &SageWorkspacePanel::onOpenOutputFolder);
 }
 
 void SageWorkspacePanel::saveCurrentState()
@@ -273,4 +295,36 @@ bool SageWorkspacePanel::validateOutputFolder(QString& outOutputFolder)
 void SageWorkspacePanel::setRunningState(bool running)
 {
     m_inputPanel->setRunningState(running);
+}
+
+void SageWorkspacePanel::applyStatusCardResult(const ISageWorkflowHandler* handler, SageTaskType taskType,
+                                               const QJsonObject& response, bool success, int resultCount)
+{
+    if (handler == nullptr) {
+        return;
+    }
+    m_lastOutputPath.clear();
+    if (!success) {
+        const QString message = taskType == SageTaskType::Load
+                                    ? SAGE_UI_STATUS_CARD_LOAD_FAILED
+                                    : SAGE_UI_STATUS_CARD_FAILED_FORMAT.arg(handler->actionButtonLabel());
+        const QJsonObject error = response.value(SAGE_JSON_KEY_ERROR).toObject();
+        QString detail = error.value(SAGE_JSON_KEY_MESSAGE).toString();
+        if (detail.isEmpty()) {
+            detail = error.value(SAGE_JSON_KEY_CODE).toString();
+        }
+        m_inputPanel->setStatusResult(false, message, detail);
+        return;
+    }
+    const QString message =
+        taskType == SageTaskType::Load
+            ? SAGE_UI_STATUS_CARD_LOAD_COMPLETED_FORMAT.arg(resultCount)
+            : SAGE_UI_STATUS_CARD_COMPLETED_FORMAT.arg(handler->actionButtonLabel()).arg(resultCount);
+    const QJsonObject payload = response.value(SAGE_JSON_KEY_PAYLOAD).toObject();
+    QString outputPath = payload.value(SAGE_JSON_KEY_FILE_PATH).toString();
+    if (outputPath.isEmpty()) {
+        outputPath = payload.value(SAGE_JSON_KEY_OUTPUT_FOLDER).toString();
+    }
+    m_lastOutputPath = outputPath;
+    m_inputPanel->setStatusResult(true, message, QDir::toNativeSeparators(outputPath));
 }

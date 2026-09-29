@@ -105,6 +105,10 @@ void SageStyle::drawControl(ControlElement element, const QStyleOption* option, 
         drawTabLabel(option, painter);
         return;
     }
+    if (element == CE_ProgressBar) {
+        drawProgressBar(option, painter);
+        return;
+    }
     if (element == CE_ShapedFrame) {
         const QStyleOptionFrame* frameOption = qstyleoption_cast<const QStyleOptionFrame*>(option);
         if (frameOption != nullptr && frameOption->frameShape == QFrame::Box) {
@@ -257,6 +261,24 @@ void SageStyle::drawLineEditFrame(const QStyleOption* option, QPainter* painter,
     const bool hasFocus = option->state.testFlag(State_HasFocus);
     const QColor border = isError ? SAGE_COLOR_ERROR : hasFocus ? SAGE_COLOR_PRIMARY : SAGE_COLOR_BORDER;
     qDrawPlainRect(painter, option->rect, border, SAGE_EDIT_BORDER_WIDTH);
+}
+
+void SageStyle::drawProgressBar(const QStyleOption* option, QPainter* painter)
+{
+    painter->fillRect(option->rect, SAGE_COLOR_LIST_GRID);
+    const QStyleOptionProgressBar* barOption = qstyleoption_cast<const QStyleOptionProgressBar*>(option);
+    if (barOption == nullptr || barOption->maximum <= barOption->minimum) {
+        return;
+    }
+    const qint64 range = static_cast<qint64>(barOption->maximum) - barOption->minimum;
+    const qint64 progress = static_cast<qint64>(barOption->progress) - barOption->minimum;
+    const int fillWidth = static_cast<int>((option->rect.width() * progress + range / 2) / range);
+    if (fillWidth <= 0) {
+        return;
+    }
+    QRect fill = option->rect;
+    fill.setWidth(fillWidth);
+    painter->fillRect(fill, SAGE_COLOR_PRIMARY);
 }
 
 void SageStyle::polishSurface(QWidget* widget)

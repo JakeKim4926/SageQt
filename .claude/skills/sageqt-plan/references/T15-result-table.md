@@ -6,11 +6,12 @@
 SageSDI의 결과 표 패널(`SageResultTablePanel` — 입력 표와 결과 표에 같은 클래스를 두 인스턴스로 쓴다)을 Qt Model/View로 옮긴다. SageSDI에서 패널 하나가 들고 있던 행 · 보이는 행 · 검색어 · 필터 기준 · 체크 상태를 model · proxy · header · delegate로 나눈다.
 
 ## 시작 전에
-1. 선행 주제: T14
+1. 선행 주제: 없음 (T14 완료 — 실행 흐름 · 상태 카드 · 진행 표시가 있다)
 2. 스킬 로드: `sageqt-ui`, `coding-design`, `coding-rules`, `git-workflow`
    - 읽을 reference: **`coding-design/references/model-view.md`** (책임 분담표 — 이 주제의 기준), `ui-composition.md` (한 위젯이 두 탭 역할 금지 → 인스턴스 둘), `style.md`, `coding-rules/references/api-shape.md` (컨테이너 · `std::as_const`)
 3. 결정 — `sageqt-ui`의 표 규격을 따른다
 4. 재확인할 사실 — 착수 시 원문을 읽는다
+   - **T14에서 넘긴 것** — 입력 초기화 버튼(`Ghost`, 폭 `SAGE_INPUT_RESET_WIDTH` 72 최소값, 실행 버튼 옆 `SAGE_ACTION_GAP` 8, 입력 표 업무만)과 `ResetInput`(입력 경로 비움 · 상태 카드 대기 · 필터 · 행 · 결과 상태 초기화). 입력 패널 빈 상태 안내 `SAGE_UI_EMPTY_STATE_HINT`(입력 표가 없고 실행 중이 아닐 때, `UpdateInputTableVisibility`). 입력 표 업무 생성의 상태 카드 건수 = 체크한 행 수(`GetCheckedRowCount`) — 지금은 결과 행 수. 실행 요청의 선택 행 번호(`BuildSelectedRowNums`) · `validateSelectedRows`
    - **T08에서 미룬 판정** — T08은 사용자가 화면을 볼 수 없어 규격 없는 상태를 정하지 않았다. 헤더 · 체크 상자 · 스크롤바의 hover · focus · disabled 규격과 스크롤바를 Fusion 기본으로 둘지를 세 OS 스크린샷으로 사용자와 정한다 (`sageqt-ui/references/style-scope.md` *미정*)
    - 검색 · 필터 기준 적용 방식 (`SageResultTablePanel.cpp`의 `RefreshRows` · `GetEffectiveCriteria` · `GetDefaultCriteria`): 필터 기준이 없을 때 어느 열을 검색하는지, 대소문자 · 부분 일치
    - 행 강조 범위(`nHighlightStart` · `nHighlightCount`)의 의미

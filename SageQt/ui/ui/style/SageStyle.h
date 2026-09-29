@@ -42,6 +42,7 @@ private:
     static int uniformTabWidth(const QTabBar& tabBar);
     static void drawLineEditPanel(const QStyleOption* option, QPainter* painter, const QWidget* widget);
     static void drawLineEditFrame(const QStyleOption* option, QPainter* painter, const QWidget* widget);
+    static void drawProgressBar(const QStyleOption* option, QPainter* painter);
     static QColor pushButtonTextColor(const QStyleOption* option, const QWidget* widget);
     static void polishSurface(QWidget* widget);
     static void polishLabel(QWidget* widget);

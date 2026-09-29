@@ -5,6 +5,7 @@
 #include "core/workflow/SageWorkflowTab.h"
 
 #include <QHash>
+#include <QJsonObject>
 #include <QList>
 #include <QString>
 #include <QStringList>
@@ -12,6 +13,7 @@
 
 #include <optional>
 
+class ISageWorkflowHandler;
 class QFrame;
 class QStackedWidget;
 class QTabBar;
@@ -48,6 +50,7 @@ private slots:
     void onTabChanged(int visualIndex);
     void onRunRequested(SageTaskType taskType);
     void onRunFinished(const SageWorkflowRunResult& result);
+    void onOpenOutputFolder();
 
 private:
     void createWidgets();
@@ -60,6 +63,8 @@ private:
     bool validateInputPath(QString& outInputPath);
     bool validateOutputFolder(QString& outOutputFolder);
     void setRunningState(bool running);
+    void applyStatusCardResult(const ISageWorkflowHandler* handler, SageTaskType taskType, const QJsonObject& response,
+                               bool success, int resultCount);
 
 private:
     const SageWorkflowRegistry& m_registry;
@@ -77,4 +82,5 @@ private:
     SageWorkflowTabKind m_selectedTabKind = SageWorkflowTabKind::Input;
     std::optional<SageWorkflowType> m_currentWorkflow;
     QHash<SageWorkflowType, SageWorkspaceState> m_states;
+    QString m_lastOutputPath;
 };

@@ -19,6 +19,10 @@ SageQt는 Windows 전용 MFC 앱 SageSDI를 대체하는 **단일 Qt 코드베�
 
 **Always respond in Korean, even when I write to you in English.** This applies to all explanations, summaries, and discussion. (Code, identifiers, file paths, and commit messages stay as-is.)
 
+## 0-1. Never Use Drive C
+
+**Do not write anything to drive C.** Scratch scripts, logs, temp files, downloads, and archives go under `D:\ClaudeWork\SageQt\` (`scratch\`, `logs\`, `tmp\`, `shots\`, `archive\`). Set `TEMP` and `TMP` to `D:\ClaudeWork\SageQt\tmp` before builds and tests. Redirect command output to files under `D:\ClaudeWork\SageQt\logs\` instead of the default temp location. Paths that the tool or the app fix on C (Claude Code's own session data, the app's `AppDataLocation`) are the only exceptions.
+
 
 ## 1. Think Before Coding
 

@@ -1,5 +1,6 @@
 add_subdirectory(dialogs)
 add_subdirectory(panels)
 add_subdirectory(style)
+add_subdirectory(widgets)
 add_subdirectory(window)
 add_subdirectory(workflow)

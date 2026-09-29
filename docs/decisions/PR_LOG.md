@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-09-29] feature/status-card
+- **목적**: 상태 카드 · 시간 기반 진행 표시 · 폴더 열기 (sageqt-plan T14, 두 번째 PR)
+- **변경 내용**: `SageStatusCard`(대기 · 처리 중 · 완료 · 실패, 진행 막대 `QProgressBar` + `SageStyle`), 입력 패널 진행 타이머(300ms · 3% · 95%), 작업 영역 결과 문구 · 사유 · 저장 경로, 「폴더 열기」(파일이면 든 폴더 — 사용자 결정), 경로 말줄임(파일 이름 유지). 테스트(카드 상태 · 픽셀 · 진행 · 결과 · 폴더 열기). CLAUDE.md에 C 드라이브 사용 금지 규칙. 스크린샷 `docs/screenshots/T14/`. T14 완료 처리
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-09-29)
+
 ## [2026-09-29] feature/workflow-controller
 - **목적**: 업무 실행 흐름 — 실행 버튼 → 백그라운드 실행 → 결과 (sageqt-plan T14, 첫 번째 PR)
 - **변경 내용**: core `SageWorkflowRunner`(payload 선택 키 규칙, 핸들러 없음 · 예외 → 오류 응답), ui `SageWorkflowController`(QtConcurrent + QFutureWatcher, 실행 중 재시작 거절, 결과 상태 보존/복원), 입력 카드 실행 버튼, 작업 영역 실행 흐름(입력 · 저장 폴더 검증, 결과 탭 전환, 생성 완료 안내, 실행 중 드롭 무시, 입력 표 업무 자동 불러오기). `SAGE_REQUEST_UNKNOWN` 값 변경 · `START_FAILED` 미이관. 테스트(payload · 오류 응답 · 컨트롤러 · 작업 영역 실행). 작업 파일 위치를 D 드라이브로 옮김

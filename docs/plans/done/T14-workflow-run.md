@@ -65,10 +65,10 @@ SageSDI의 실행 흐름 — 실행 버튼 → 백그라운드에서 핸들러 �
 PR 1~2개: `feature/workflow-controller`, `feature/status-card`
 - [x] 컨트롤러: 시작 · 백그라운드 작업 · 결과 전달 · 결과 상태 보존
 - [x] payload 생성 (선택적 키 규칙)
-- [ ] 상태 카드 · 진행 표시 (결정에 따라)
-- [ ] 완료 안내 · 오류 안내
+- [x] 상태 카드 · 진행 표시 (결정에 따라)
+- [x] 완료 안내 · 오류 안내
 - [x] 테스트: payload 키 규칙, 핸들러 없음 · 예외 → 오류 응답
-- [ ] 세 OS에서 샘플 업무 실행 → 결과 탭 (결과 표는 T15 전이면 응답 확인만)
+- [x] 세 OS에서 샘플 업무 실행 → 결과 탭 (결과 표는 T15 전이면 응답 확인만)
 
 ## 완료 기준
 - 3-OS CI 통과
@@ -89,4 +89,24 @@ PR 1~2개: `feature/workflow-controller`, `feature/status-card`
 - 결과 탭 선택: 입력 표 업무면 입력 탭, 아니면 문서 결과 탭. 완료 안내는 생성 성공일 때만
 - 실행 버튼은 폼 두 번째 열(입력칸 열) 왼쪽, 입력칸 두 줄 아래 `SAGE_CARD_ROW_GAP` 간격 (`LayoutActionSection`). 입력 초기화 버튼은 입력 표 업무에만 보이므로 T15로 넘긴다
 - **옮기지 않은 것**: `SAGE_UI_WORKFLOW_START_FAILED` — `QtConcurrent::run`은 시작 시점에 실패를 돌려주지 않는다 (스레드 풀 대기열에 넣는다). `SAGE_REQUEST_UNKNOWN` 값은 `"mfc-unknown"` → `"sageqt-unknown"`
-- 결과 표 채우기(T15) · 실행 기록 추가(T16) · 상태 카드(PR 2)는 `onRunFinished`에 아직 없다
+- 결과 표 채우기(T15) · 실행 기록 추가(T16)는 `onRunFinished`에 아직 없다
+- 사용자 결정 (2026-09-29): 진행률은 SageSDI처럼 시간 기반. 「폴더 열기」는 저장 경로가 파일이면 그 파일이 든 폴더를 연다 — SageSDI의 `explorer.exe /select,"경로"`(파일 선택된 탐색기)는 Windows 전용이라 `QDesktopServices::openUrl`(폴더)로 바꿨다. 경로가 없으면 `SAGE_UI_OUTPUT_PATH_MISSING` 경고
+- 진행률: `SAGE_PROGRESS_COMPLETE`(100)는 SageSDI에서 진행 막대 채움 비율의 분모로만 쓰인다 (`SageStatusCard.cpp:202`). 끝날 때 100으로 올리는 코드는 없다 — 결과 상태로 바뀌며 막대가 사라진다. 이 파일 위의 "완료: 100" 설명은 코드와 다르다. SageQt는 `QProgressBar` 범위 최대값으로 쓴다
+- 타이머: 실행 중이고 95 미만이면 +3, 95를 넘으면 95로 자른다 (`SageWorkflowInputPanel.cpp:372-383`). 실행이 끝나면 타이머만 멈춘다
+- 상태 카드 결과 문구는 SageSDI의 `JsonExtractString`(JSON 문자열에서 키를 처음 찾는 곳의 값)으로 읽는다. SageQt는 응답 구조로 읽는다: 실패 사유 = `error.message`, 없으면 `error.code` / 저장 경로 = `payload.filePath`, 없으면 `payload.outputFolder`. 응답에 그 키가 다른 곳에 없어서 결과는 같다
+- 결과 건수 = 결과 행 수. 입력 표 업무의 생성은 입력 표에서 체크한 행 수(`GetCheckedRowCount`)를 쓴다 — 입력 표가 T15라 지금은 결과 행 수 (T15로 넘김)
+- 상태 카드는 업무를 바꿔도 그대로 남는다 (`RestoreWorkflowState`가 상태 카드를 건드리지 않는다). 입력 초기화(`ResetInput`)에서만 대기로 돌아간다 — T15
+- 저장 경로 말줄임: `DT_PATH_ELLIPSIS`는 마지막 `\` 뒤(파일 이름)를 최대한 남긴다 (Microsoft `DrawText` 문서). SageQt는 파일 이름을 통째로 남기고 앞 폴더 부분만 가운데를 줄인다(`Qt::ElideMiddle`). 파일 이름만으로도 넘치면 전체를 가운데 줄임 — 이 경우의 Windows 동작은 재지 않았다
+- 완료 안내 창이 떠 있는 동안 SageSDI는 상태 카드를 아직 "처리 중"으로 둔다 (`DisplayResponse`에서 안내 창 뒤에 상태 카드를 바꾼다). 순서를 그대로 옮겼다
+- 입력 패널의 빈 상태 안내(`SAGE_UI_EMPTY_STATE_HINT`)는 입력 표 자리에 뜬다 (`UpdateInputTableVisibility`, 입력 표가 없고 실행 중이 아닐 때) — T15로 넘김. 상태 표시줄 문구(`NotifyStatus`)는 T16
+- 스크린샷에 없는 처리 중 · 완료 · 실패 카드는 오프스크린으로 그려 확인했다 (색 · 막대 · 버튼 위치는 `SageStatusCardTest`가 픽셀로 고정)
+
+## 결과
+- PR 없이 두 브랜치로 `develop`에 squash merge: `feature/workflow-controller`(실행 흐름), `feature/status-card`(상태 카드 · 진행 표시 · 폴더 열기)
+- core `SageWorkflowRunner`(payload 선택 키, 핸들러 없음 · 예외 → 오류 응답), ui `SageWorkflowController`(`QtConcurrent::run` + `QFutureWatcher`), `SageStatusCard`(4 상태, 진행 막대 `QProgressBar` + `SageStyle`), 입력 카드 실행 버튼 · 진행 타이머, 작업 영역 실행 · 결과 · 폴더 열기
+- 완료 기준 확인: 3-OS CI 통과 / payload 테스트(`SageWorkflowRunnerTest`) / 실행 중 UI가 멈추지 않음(핸들러가 막혀 있는 동안 클릭이 돌아온다) · 재실행 거절(`SageWorkflowControllerTest`, 작업 영역 테스트) / `delete` · `PostMessage` · 창 핸들 0개, `new`는 부모를 받는 `QObject`뿐 (규약 1)
+- 세 OS에서 샘플 업무 실행 → 결과 탭 · 완료 안내는 `SageWorkspacePanelTest`가 세 OS CI에서 확인한다
+- 스크린샷 `docs/screenshots/T14/`: 세 OS 작업 영역(대기 카드, 실행 36534805326) + 오프스크린 카드 4 상태(Windows)
+- 교훈
+  - Qt 모듈 헤더(`<QtConcurrent>`)는 clazy `no-module-include`에 걸린다 — 클래스 헤더(`<QtConcurrentRun>`)를 쓴다
+  - 오프스크린 `grab()`은 레이아웃 요청이 처리되기 전 배치를 그릴 수 있다 — 상태를 바꾼 직후 그림을 볼 때는 이벤트를 먼저 돌린다
