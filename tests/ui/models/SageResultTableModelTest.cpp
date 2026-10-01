@@ -12,6 +12,12 @@
 #include <QString>
 #include <QTest>
 
+namespace {
+constexpr int SAGE_TEST_CRITERIA_FIELD = 1;
+constexpr int SAGE_TEST_CRITERIA_VALUE = 2;
+constexpr int SAGE_TEST_CRITERIA_STATUS = 3;
+}
+
 class SageResultTableModelTest : public QObject
 {
     Q_OBJECT
@@ -29,11 +35,20 @@ private slots:
     void checkedRowNumsSkipZeroIndexAndUseSourceIndex();
     void restoreChecksOnlyVisibleRows();
     void setAllRowsCheckedTouchesVisibleRowsOnly();
+    void unknownCriteriaFallsBackToFirstOrValue();
 
 private:
     static QList<SageResultRow> sampleRows();
     static SageWorkflowResultStyle checkboxStyle();
+    static QList<SageWorkflowFilterCriteria> testCriteria();
 };
+
+QList<SageWorkflowFilterCriteria> SageResultTableModelTest::testCriteria()
+{
+    return {{SAGE_TEST_CRITERIA_FIELD, QStringLiteral("항목"), SageResultField::Field},
+            {SAGE_TEST_CRITERIA_VALUE, QStringLiteral("값"), SageResultField::Value},
+            {SAGE_TEST_CRITERIA_STATUS, QStringLiteral("상태"), SageResultField::Status}};
+}
 
 QList<SageResultRow> SageResultTableModelTest::sampleRows()
 {
@@ -126,19 +141,20 @@ void SageResultTableModelTest::filtersByFieldIgnoringCase()
 {
     SageResultTableModel model;
     SageResultFilterProxyModel proxy(model);
+    proxy.setFilterCriteria(testCriteria());
     QAbstractItemModelTester tester(&proxy);
     model.setColumns(SageWorkflowResultTable::genericColumns(), {});
     model.setRows(sampleRows());
 
-    proxy.setFilter(QStringLiteral("  Apple "), SageResultField::Value);
+    proxy.setFilter(QStringLiteral("  Apple "), SAGE_TEST_CRITERIA_VALUE);
     QCOMPARE(proxy.rowCount(), 2);
     QCOMPARE(proxy.index(0, 0).data().toString(), QStringLiteral("Alpha"));
     QCOMPARE(proxy.index(1, 0).data().toString(), QStringLiteral("Gamma"));
 
-    proxy.setFilter(QStringLiteral("apple"), SageResultField::Field);
+    proxy.setFilter(QStringLiteral("apple"), SAGE_TEST_CRITERIA_FIELD);
     QCOMPARE(proxy.rowCount(), 0);
 
-    proxy.setFilter(QStringLiteral("FAIL"), SageResultField::Status);
+    proxy.setFilter(QStringLiteral("FAIL"), SAGE_TEST_CRITERIA_STATUS);
     QCOMPARE(proxy.rowCount(), 1);
     QCOMPARE(proxy.index(0, 0).data().toString(), QStringLiteral("Beta"));
 }
@@ -147,10 +163,11 @@ void SageResultTableModelTest::emptyKeywordShowsAllRows()
 {
     SageResultTableModel model;
     SageResultFilterProxyModel proxy(model);
+    proxy.setFilterCriteria(testCriteria());
     model.setColumns(SageWorkflowResultTable::genericColumns(), {});
     model.setRows(sampleRows());
 
-    proxy.setFilter(QStringLiteral("   "), SageResultField::Value);
+    proxy.setFilter(QStringLiteral("   "), SAGE_TEST_CRITERIA_VALUE);
     QCOMPARE(proxy.rowCount(), 3);
 }
 
@@ -158,12 +175,13 @@ void SageResultTableModelTest::filterChangeClearsChecks()
 {
     SageResultTableModel model;
     SageResultFilterProxyModel proxy(model);
+    proxy.setFilterCriteria(testCriteria());
     model.setColumns(SageWorkflowResultTable::genericColumns(), checkboxStyle());
     model.setRows(sampleRows());
     proxy.setAllRowsChecked(true);
     QCOMPARE(proxy.checkedRowCount(), 3);
 
-    proxy.setFilter(QString(), SageResultField::Value);
+    proxy.setFilter(QString(), SAGE_TEST_CRITERIA_VALUE);
 
     QCOMPARE(proxy.checkedRowCount(), 0);
     for (int row = 0; row < model.rowCount(); ++row) {
@@ -175,9 +193,10 @@ void SageResultTableModelTest::visibleRowsFollowFilter()
 {
     SageResultTableModel model;
     SageResultFilterProxyModel proxy(model);
+    proxy.setFilterCriteria(testCriteria());
     model.setColumns(SageWorkflowResultTable::genericColumns(), {});
     model.setRows(sampleRows());
-    proxy.setFilter(QStringLiteral("success"), SageResultField::Status);
+    proxy.setFilter(QStringLiteral("success"), SAGE_TEST_CRITERIA_STATUS);
 
     const QList<SageResultRow> rows = proxy.visibleRows();
     QCOMPARE(rows.size(), 2);
@@ -189,6 +208,7 @@ void SageResultTableModelTest::checkedRowNumsSkipZeroIndexAndUseSourceIndex()
 {
     SageResultTableModel model;
     SageResultFilterProxyModel proxy(model);
+    proxy.setFilterCriteria(testCriteria());
     model.setColumns(SageWorkflowResultTable::genericColumns(), checkboxStyle());
     model.setRows(sampleRows());
     proxy.setAllRowsChecked(true);
@@ -196,7 +216,7 @@ void SageResultTableModelTest::checkedRowNumsSkipZeroIndexAndUseSourceIndex()
     QCOMPARE(proxy.checkedRowCount(), 3);
     QCOMPARE(proxy.checkedRowNums(), QStringLiteral("3,7"));
 
-    proxy.setFilter(QStringLiteral("gamma"), SageResultField::Field);
+    proxy.setFilter(QStringLiteral("gamma"), SAGE_TEST_CRITERIA_FIELD);
     proxy.setRowChecked(0, true);
     QCOMPARE(proxy.checkedRowNums(), QStringLiteral("7"));
 }
@@ -205,16 +225,17 @@ void SageResultTableModelTest::restoreChecksOnlyVisibleRows()
 {
     SageResultTableModel model;
     SageResultFilterProxyModel proxy(model);
+    proxy.setFilterCriteria(testCriteria());
     model.setColumns(SageWorkflowResultTable::genericColumns(), checkboxStyle());
     model.setRows(sampleRows());
-    proxy.setFilter(QStringLiteral("gamma"), SageResultField::Field);
+    proxy.setFilter(QStringLiteral("gamma"), SAGE_TEST_CRITERIA_FIELD);
 
     proxy.restoreCheckedRowNums(QStringLiteral(" 3 ,, 7,9"));
 
     QCOMPARE(proxy.checkedRowNums(), QStringLiteral("7"));
     QCOMPARE(model.index(0, 0).data(Qt::CheckStateRole).value<Qt::CheckState>(), Qt::Unchecked);
 
-    proxy.setFilter(QString(), SageResultField::Field);
+    proxy.setFilter(QString(), SAGE_TEST_CRITERIA_FIELD);
     proxy.restoreCheckedRowNums(QStringLiteral("3,7"));
     QCOMPARE(proxy.checkedRowNums(), QStringLiteral("3,7"));
     QVERIFY(!proxy.isRowChecked(1));
@@ -224,9 +245,10 @@ void SageResultTableModelTest::setAllRowsCheckedTouchesVisibleRowsOnly()
 {
     SageResultTableModel model;
     SageResultFilterProxyModel proxy(model);
+    proxy.setFilterCriteria(testCriteria());
     model.setColumns(SageWorkflowResultTable::genericColumns(), checkboxStyle());
     model.setRows(sampleRows());
-    proxy.setFilter(QStringLiteral("a"), SageResultField::Status);
+    proxy.setFilter(QStringLiteral("a"), SAGE_TEST_CRITERIA_STATUS);
 
     proxy.setAllRowsChecked(true);
 
@@ -234,6 +256,25 @@ void SageResultTableModelTest::setAllRowsCheckedTouchesVisibleRowsOnly()
     QCOMPARE(proxy.checkedRowCount(), 1);
     QCOMPARE(model.index(0, 0).data(Qt::CheckStateRole).value<Qt::CheckState>(), Qt::Unchecked);
     QCOMPARE(model.index(1, 0).data(Qt::CheckStateRole).value<Qt::CheckState>(), Qt::Checked);
+}
+
+void SageResultTableModelTest::unknownCriteriaFallsBackToFirstOrValue()
+{
+    SageResultTableModel model;
+    SageResultFilterProxyModel proxy(model);
+    model.setColumns(SageWorkflowResultTable::genericColumns(), {});
+    model.setRows(sampleRows());
+
+    proxy.setFilter(QStringLiteral("banana"), SAGE_FILTER_CRITERIA_NONE);
+    QCOMPARE(proxy.effectiveCriteria(), SAGE_FILTER_CRITERIA_NONE);
+    QCOMPARE(proxy.rowCount(), 1);
+
+    proxy.setFilterCriteria(testCriteria());
+    proxy.setFilter(QStringLiteral("beta"), 99);
+    QCOMPARE(proxy.criteria(), 99);
+    QCOMPARE(proxy.effectiveCriteria(), SAGE_TEST_CRITERIA_FIELD);
+    QCOMPARE(proxy.rowCount(), 1);
+    QCOMPARE(proxy.keyword(), QStringLiteral("beta"));
 }
 
 QTEST_GUILESS_MAIN(SageResultTableModelTest)

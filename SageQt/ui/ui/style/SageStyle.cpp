@@ -11,15 +11,20 @@
 
 #include <QAbstractButton>
 #include <QBrush>
+#include <QComboBox>
 #include <QFontMetrics>
 #include <QFrame>
 #include <QPainter>
+#include <QPointF>
+#include <QPolygonF>
 #include <QRect>
 #include <QStyleFactory>
 #include <QStyleOption>
 #include <QTabBar>
 #include <QWidget>
 #include <qdrawutil.h>
+
+#include <iterator>
 
 SageStyle::SageStyle()
     : QProxyStyle(QStyleFactory::create(SAGE_STYLE_BASE_NAME))
@@ -73,6 +78,9 @@ void SageStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* opti
         return;
     case PE_FrameTabBarBase:
         return;
+    case PE_IndicatorCheckBox:
+        drawCheckIndicator(option, painter);
+        return;
     case PE_FrameFocusRect:
         if (qobject_cast<const QAbstractButton*>(widget) != nullptr ||
             qobject_cast<const QTabBar*>(widget) != nullptr) {
@@ -90,6 +98,10 @@ void SageStyle::drawControl(ControlElement element, const QStyleOption* option, 
 {
     if (element == CE_PushButtonLabel) {
         const QStyleOptionButton* buttonOption = qstyleoption_cast<const QStyleOptionButton*>(option);
+        if (buttonOption != nullptr && !buttonOption->icon.isNull()) {
+            drawPushButtonIconLabel(*buttonOption, painter, pushButtonTextColor(option, widget));
+            return;
+        }
         if (buttonOption != nullptr) {
             QStyleOptionButton labelOption(*buttonOption);
             labelOption.palette.setColor(QPalette::ButtonText, pushButtonTextColor(option, widget));
@@ -104,6 +116,20 @@ void SageStyle::drawControl(ControlElement element, const QStyleOption* option, 
     if (element == CE_TabBarTabLabel) {
         drawTabLabel(option, painter);
         return;
+    }
+    if (element == CE_MenuItem && qobject_cast<const QComboBox*>(widget) != nullptr) {
+        drawComboMenuItem(option, painter, widget);
+        return;
+    }
+    if (element == CE_ComboBoxLabel) {
+        const QStyleOptionComboBox* comboOption = qstyleoption_cast<const QStyleOptionComboBox*>(option);
+        if (comboOption != nullptr) {
+            QRect textRect = option->rect;
+            textRect.setRight(subControlRect(CC_ComboBox, comboOption, SC_ComboBoxArrow, widget).left() - 1);
+            painter->setPen(SAGE_COLOR_TEXT);
+            painter->drawText(textRect, Qt::AlignCenter, comboOption->currentText);
+            return;
+        }
     }
     if (element == CE_HeaderSection || element == CE_HeaderEmptyArea) {
         painter->fillRect(option->rect, SAGE_COLOR_LIST_HEADER);
@@ -152,6 +178,9 @@ QSize SageStyle::sizeFromContents(ContentsType type, const QStyleOption* option,
     if (type == CT_HeaderSection) {
         size.setHeight(SAGE_LIST_HEADER_HEIGHT);
     }
+    if (type == CT_MenuItem && qobject_cast<const QComboBox*>(widget) != nullptr) {
+        size.setHeight(SAGE_EDIT_HEIGHT - SAGE_EDIT_BORDER_WIDTH * 2 - SAGE_COMBO_FIELD_INSET);
+    }
     if (type == CT_TabBarTab) {
         const QTabBar* tabBar = qobject_cast<const QTabBar*>(widget);
         if (tabBar != nullptr) {
@@ -177,6 +206,8 @@ QIcon SageStyle::standardIcon(StandardPixmap standardIcon, const QStyleOption* o
     switch (standardIcon) {
     case SP_TitleBarCloseButton:
         return QIcon(new SageIconEngine(SageIconGlyph::Close));
+    case SP_BrowserReload:
+        return QIcon(new SageIconEngine(SageIconGlyph::Reset));
     case SP_MessageBoxInformation:
         return QIcon(new SageIconEngine(SageIconGlyph::Info));
     case SP_MessageBoxWarning:
@@ -186,6 +217,102 @@ QIcon SageStyle::standardIcon(StandardPixmap standardIcon, const QStyleOption* o
     default:
         return QProxyStyle::standardIcon(standardIcon, option, widget);
     }
+}
+
+void SageStyle::drawComplexControl(ComplexControl control, const QStyleOptionComplex* option, QPainter* painter,
+                                   const QWidget* widget) const
+{
+    if (control == CC_ComboBox) {
+        drawComboBox(option, painter, *this, widget);
+        return;
+    }
+    QProxyStyle::drawComplexControl(control, option, painter, widget);
+}
+
+int SageStyle::pixelMetric(PixelMetric metric, const QStyleOption* option, const QWidget* widget) const
+{
+    if (metric == PM_IndicatorWidth || metric == PM_IndicatorHeight) {
+        return SAGE_LIST_CHECK_BOX_SIZE;
+    }
+    if (metric == PM_CheckBoxLabelSpacing) {
+        return SAGE_SELECTION_CHECK_GLYPH_WIDTH - SAGE_LIST_CHECK_BOX_SIZE;
+    }
+    return QProxyStyle::pixelMetric(metric, option, widget);
+}
+
+bool SageStyle::isGhostButton(const QWidget* widget)
+{
+    const SageButton* button = qobject_cast<const SageButton*>(widget);
+    return button != nullptr && button->variant() == SageButton::SageButtonVariant::Ghost;
+}
+
+void SageStyle::drawPushButtonIconLabel(const QStyleOptionButton& option, QPainter* painter, const QColor& textColor)
+{
+    const QFontMetrics metrics(option.fontMetrics);
+    const int groupWidth = SAGE_ICON_SIZE + SAGE_ICON_TEXT_GAP + metrics.horizontalAdvance(option.text);
+    const int groupLeft = option.rect.left() + (option.rect.width() - groupWidth) / 2;
+    const QRect iconRect(groupLeft, option.rect.top() + (option.rect.height() - SAGE_ICON_SIZE) / 2, SAGE_ICON_SIZE,
+                         SAGE_ICON_SIZE);
+    const bool isEnabled = option.state.testFlag(State_Enabled);
+    option.icon.paint(painter, iconRect, Qt::AlignCenter, isEnabled ? QIcon::Normal : QIcon::Disabled);
+    const QRect textRect(iconRect.right() + 1 + SAGE_ICON_TEXT_GAP, option.rect.top(),
+                         option.rect.right() - iconRect.right() - SAGE_ICON_TEXT_GAP, option.rect.height());
+    painter->setPen(textColor);
+    painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, option.text);
+}
+
+void SageStyle::drawCheckIndicator(const QStyleOption* option, QPainter* painter)
+{
+    QRect box(0, 0, SAGE_LIST_CHECK_BOX_SIZE, SAGE_LIST_CHECK_BOX_SIZE);
+    box.moveCenter(option->rect.center());
+    if (!option->state.testFlag(State_On)) {
+        const QBrush face(SAGE_COLOR_PANEL);
+        qDrawPlainRect(painter, box, SAGE_COLOR_BUTTON_BORDER, SAGE_BORDER_THICKNESS, &face);
+        return;
+    }
+    painter->fillRect(box, SAGE_COLOR_PRIMARY);
+    const int inset = SAGE_LIST_CHECK_MARK_THICKNESS * 2;
+    const QPointF points[] = {
+        QPointF(box.left() + inset, box.top() + box.height() / 2),
+        QPointF(box.left() + box.width() / 2, box.top() + box.height() - inset),
+        QPointF(box.left() + box.width() - inset, box.top() + inset),
+    };
+    painter->save();
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setPen(QPen(SAGE_COLOR_PANEL, SAGE_LIST_CHECK_MARK_THICKNESS));
+    painter->drawPolyline(points, std::size(points));
+    painter->restore();
+}
+
+void SageStyle::drawComboBox(const QStyleOptionComplex* option, QPainter* painter, const QStyle& style,
+                             const QWidget* widget)
+{
+    painter->fillRect(option->rect, SAGE_COLOR_APP_BACKGROUND);
+    const QPointF center = QRectF(style.subControlRect(CC_ComboBox, option, SC_ComboBoxArrow, widget)).center();
+    const QPolygonF arrow({
+        center + QPointF(-SAGE_ICON_ARROW_HALF_WIDTH, -SAGE_ICON_ARROW_HALF_HEIGHT),
+        center + QPointF(SAGE_ICON_ARROW_HALF_WIDTH, -SAGE_ICON_ARROW_HALF_HEIGHT),
+        center + QPointF(0, SAGE_ICON_ARROW_TIP),
+    });
+    painter->save();
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(SAGE_COLOR_PRIMARY);
+    painter->drawPolygon(arrow);
+    painter->restore();
+}
+
+void SageStyle::drawComboMenuItem(const QStyleOption* option, QPainter* painter, const QWidget* widget)
+{
+    const QStyleOptionMenuItem* itemOption = qstyleoption_cast<const QStyleOptionMenuItem*>(option);
+    if (itemOption == nullptr) {
+        return;
+    }
+    const bool isSelected = option->state.testFlag(State_Selected);
+    painter->fillRect(option->rect, isSelected ? SAGE_COLOR_PRIMARY : SAGE_COLOR_PANEL);
+    painter->setFont(widget->font());
+    painter->setPen(isSelected ? SAGE_COLOR_PANEL : SAGE_COLOR_TEXT);
+    painter->drawText(option->rect, Qt::AlignCenter, itemOption->text);
 }
 
 bool SageStyle::isPrimaryButton(const QWidget* widget)
@@ -202,6 +329,12 @@ void SageStyle::drawPushButtonPanel(const QStyleOption* option, QPainter* painte
     if (isPrimaryButton(widget)) {
         const QColor face = !isEnabled ? SAGE_COLOR_BORDER : isPressed ? SAGE_COLOR_PRIMARY_PRESS : SAGE_COLOR_PRIMARY;
         painter->fillRect(option->rect, face);
+        return;
+    }
+
+    if (isGhostButton(widget)) {
+        painter->fillRect(option->rect,
+                          isEnabled && isPressed ? SAGE_COLOR_LIST_HEADER : option->palette.color(QPalette::Window));
         return;
     }
 
@@ -374,6 +507,9 @@ void SageStyle::setTextColor(QWidget* widget, const QColor& color)
 
 QColor SageStyle::pushButtonTextColor(const QStyleOption* option, const QWidget* widget)
 {
+    if (isGhostButton(widget)) {
+        return option->state.testFlag(State_Enabled) ? SAGE_COLOR_TEXT_MUTED : SAGE_COLOR_BORDER;
+    }
     if (!option->state.testFlag(State_Enabled)) {
         return SAGE_COLOR_SECONDARY_TEXT;
     }

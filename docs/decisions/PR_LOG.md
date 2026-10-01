@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-10-01] feature/result-table-controls
+- **목적**: 결과 표 패널 안 컨트롤 (sageqt-plan T15, 세 번째 PR)
+- **변경 내용**: `SageSearchBox`(기준 콤보 · 검색어 · 돋보기), `SageSelectionBar` + `SageSelectionCountLabel`, `SageSummaryBar`, `SageTableTotalBar`, 표 패널 띠 · 검색 영역 · 합계 막대 · `filterChanged` · `selectionChanged`, proxy가 필터 기준 보관, `SageStyle` Ghost · 아이콘 버튼 · 체크 상자 · 기준 콤보. 사용자 결정 2건(선택 해제 면 · 전체 선택 체크 상자). 테스트 18 + model 13
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-10-01)
+
 ## [2026-10-01] feature/result-table-panel
 - **목적**: 결과 표 패널 · 그리기 · 결과 탭 연결 (sageqt-plan T15, 두 번째 PR)
 - **변경 내용**: `SageResultTablePanel`(제목 + `QTableView`), `SageResultTableDelegate`(교대 행 · 선택 면 + 막대 · 가로선 · 체크 상자 · 강조 열 · 빈 값 흐림 · 마우스를 올린 행 `#F8F1E6`), `SageStyle` 헤더, 열 폭(SageSDI 규칙 — 좁으면 가로 스크롤, `model-view.md` 예외), 업무를 고를 때 열 설정 · 실행 결과로 행 채우기. 캡처 스크립트 결과 탭 단계. 사용자 결정 3건(hover 색 · 가로 스크롤 · 헤더/스크롤바 그대로). 스크린샷 `docs/screenshots/T15/`

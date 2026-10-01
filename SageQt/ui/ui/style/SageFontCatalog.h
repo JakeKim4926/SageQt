@@ -11,6 +11,7 @@ enum class SageFontRole
     Section,
     List,
     ListBold,
+    ListStrong,
     Caption,
     Summary,
     Logo

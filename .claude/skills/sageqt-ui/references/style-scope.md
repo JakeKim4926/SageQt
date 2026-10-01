@@ -55,7 +55,8 @@ SageSDI `SageButton.cpp:68-93`의 그리기를 옮긴다. 글자는 모두 Regul
 | `Ghost` | 놓인 면 `SAGE_COLOR_PANEL` / `SAGE_COLOR_LIST_HEADER` / 놓인 면 | 없음 | `SAGE_COLOR_TEXT_MUTED` / `SAGE_COLOR_BORDER` | 초기화 · 선택 해제, 캡션 닫기(`QToolButton`) |
 
 - SageSDI의 `Danger`는 메시지 상자 확인형(예 · 아니오)에서만 쓰였고, 확인형은 호출 0곳이라 옮기지 않는다 (2026-09-28). 확인형의 포커스 링(`SAGE_FOCUS_RING_WIDTH` · `SAGE_COLOR_FOCUS_RING_*`)도 같은 이유로 옮기지 않는다
-- `Ghost`의 "놓인 면"은 SageSDI `SetSurfaceColor` 값이다. 부르지 않으면 `SAGE_COLOR_PANEL`이라 캡션(`SAGE_COLOR_LIST_HEADER`) 위 닫기 버튼은 흰 사각형이 된다 (`SageDialogCaptionBar.cpp` — `SetSurfaceColor` 호출 없음)
+- `QPushButton` `Ghost`의 면은 **놓인 면(팔레트 `Window`)**을 칠한다 — SageSDI는 `SetSurfaceColor` 값이고, 부르지 않은 「선택 해제」는 흰 사각형이었다. 배경과 같게 하기로 정했다 (T15 사용자 결정 2026-10-01). 아이콘이 있으면 아이콘(`SAGE_ICON_SIZE`) · 6(`SAGE_ICON_TEXT_GAP`) · 글자를 가운데에 묶는다
+- (`QToolButton` 캡션 닫기) `Ghost`의 "놓인 면"은 SageSDI `SetSurfaceColor` 값이다. 부르지 않으면 `SAGE_COLOR_PANEL`이라 캡션(`SAGE_COLOR_LIST_HEADER`) 위 닫기 버튼은 흰 사각형이 된다 (`SageDialogCaptionBar.cpp` — `SetSurfaceColor` 호출 없음)
 
 ## 폰트 적용
 
@@ -76,4 +77,4 @@ SageSDI에 규격이 없다. 추측으로 채우지 않는다 (SKILL.md *값 출
 | 표 행 상태 색 (성공 · 실패 행 면 · 배지) | 실패 행 `#FDF6F4`만 문서에 있다. 코드(`SetRowStyle`)에서 확인 |
 | 검색 박스 면 · 필 바 선택 상태 | 규격 없음 (T15 · T16) |
 | 스크롤바 | 사이드바는 숨김(T11 완료). 표는 **Fusion 기본** (T15 세 OS 스크린샷을 보고 사용자 결정 2026-10-01) |
-| 체크 상자 (표 · 선택 바) | 표는 SageSDI `SageUiStyle::DrawCheckBox`대로 (T15, `screens.md` *결과 표*). hover · 포커스 표시 없음. 선택 바는 T15 PR 3 |
+| 체크 상자 (표 · 선택 바) | 표는 SageSDI `SageUiStyle::DrawCheckBox`대로 (T15, `screens.md` *결과 표*). 선택 바 「전체 선택」(SageSDI는 Windows 기본 체크 상자)도 같은 그림 — `PE_IndicatorCheckBox` 14, 글자와 사이 6 (T15 사용자 결정 2026-10-01). hover · 포커스 표시 없음 |

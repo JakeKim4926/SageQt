@@ -12,6 +12,7 @@ class QRect;
 enum class SageIconGlyph
 {
     Close,
+    Reset,
     Info,
     Warning,
     Error
@@ -29,6 +30,7 @@ public:
 
 private:
     void paintClose(QPainter* painter, const QRect& rect, QIcon::Mode mode) const;
+    void paintReset(QPainter* painter, const QRect& rect, QIcon::Mode mode) const;
     void paintMessage(QPainter* painter, const QRect& rect) const;
     QColor messageColor() const;
 

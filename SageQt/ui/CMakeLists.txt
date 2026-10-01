@@ -51,10 +51,20 @@ qt_add_library(sage_ui STATIC
     ui/widgets/SageLineEdit.h
     ui/widgets/SageResultTableDelegate.cpp
     ui/widgets/SageResultTableDelegate.h
+    ui/widgets/SageSearchBox.cpp
+    ui/widgets/SageSearchBox.h
+    ui/widgets/SageSelectionBar.cpp
+    ui/widgets/SageSelectionBar.h
+    ui/widgets/SageSelectionCountLabel.cpp
+    ui/widgets/SageSelectionCountLabel.h
     ui/widgets/SageSidebarDelegate.cpp
     ui/widgets/SageSidebarDelegate.h
     ui/widgets/SageStatusCard.cpp
     ui/widgets/SageStatusCard.h
+    ui/widgets/SageSummaryBar.cpp
+    ui/widgets/SageSummaryBar.h
+    ui/widgets/SageTableTotalBar.cpp
+    ui/widgets/SageTableTotalBar.h
     ui/widgets/SageSurface.cpp
     ui/widgets/SageSurface.h
     ui/window/SageFileDropFilter.cpp

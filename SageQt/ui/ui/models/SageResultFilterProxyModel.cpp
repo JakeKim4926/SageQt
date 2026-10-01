@@ -12,13 +12,48 @@ SageResultFilterProxyModel::SageResultFilterProxyModel(SageResultTableModel& res
     setSourceModel(&resultModel);
 }
 
-void SageResultFilterProxyModel::setFilter(const QString& keyword, SageResultField field)
+void SageResultFilterProxyModel::setFilterCriteria(const QList<SageWorkflowFilterCriteria>& criteria)
+{
+    beginFilterChange();
+    m_criteriaList = criteria;
+    endFilterChange(Direction::Rows);
+}
+
+void SageResultFilterProxyModel::setFilter(const QString& keyword, int criteria)
 {
     m_resultModel.clearCheckStates();
     beginFilterChange();
     m_keyword = keyword.trimmed();
-    m_field = field;
+    m_criteria = criteria;
     endFilterChange(Direction::Rows);
+}
+
+QList<SageWorkflowFilterCriteria> SageResultFilterProxyModel::filterCriteria() const
+{
+    return m_criteriaList;
+}
+
+QString SageResultFilterProxyModel::keyword() const
+{
+    return m_keyword;
+}
+
+int SageResultFilterProxyModel::criteria() const
+{
+    return m_criteria;
+}
+
+int SageResultFilterProxyModel::effectiveCriteria() const
+{
+    for (const SageWorkflowFilterCriteria& definition : m_criteriaList) {
+        if (definition.m_criteria == m_criteria) {
+            return m_criteria;
+        }
+    }
+    if (m_criteriaList.isEmpty()) {
+        return SAGE_FILTER_CRITERIA_NONE;
+    }
+    return m_criteriaList.constFirst().m_criteria;
 }
 
 QList<SageResultRow> SageResultFilterProxyModel::visibleRows() const
@@ -92,8 +127,19 @@ bool SageResultFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelInd
     if (m_keyword.isEmpty()) {
         return true;
     }
-    return SageWorkflowResultTable::rowText(m_resultModel.row(sourceRow), m_field)
+    return SageWorkflowResultTable::rowText(m_resultModel.row(sourceRow), effectiveField())
         .contains(m_keyword, Qt::CaseInsensitive);
+}
+
+SageResultField SageResultFilterProxyModel::effectiveField() const
+{
+    const int criteria = effectiveCriteria();
+    for (const SageWorkflowFilterCriteria& definition : m_criteriaList) {
+        if (definition.m_criteria == criteria) {
+            return definition.m_field;
+        }
+    }
+    return SageResultField::Value;
 }
 
 int SageResultFilterProxyModel::sourceRowIndex(int row) const

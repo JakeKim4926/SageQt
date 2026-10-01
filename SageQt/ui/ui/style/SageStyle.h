@@ -9,6 +9,8 @@
 
 class QPainter;
 class QStyleOption;
+class QStyleOptionButton;
+class QStyleOptionComplex;
 class QTabBar;
 class QWidget;
 
@@ -26,6 +28,10 @@ public:
                        const QWidget* widget = nullptr) const override;
     void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
                      const QWidget* widget = nullptr) const override;
+    void drawComplexControl(ComplexControl control, const QStyleOptionComplex* option, QPainter* painter,
+                            const QWidget* widget = nullptr) const override;
+    int pixelMetric(PixelMetric metric, const QStyleOption* option = nullptr,
+                    const QWidget* widget = nullptr) const override;
     QSize sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& contentsSize,
                            const QWidget* widget = nullptr) const override;
     QRect subElementRect(SubElement element, const QStyleOption* option,
@@ -35,6 +41,12 @@ public:
 
 private:
     static bool isPrimaryButton(const QWidget* widget);
+    static bool isGhostButton(const QWidget* widget);
+    static void drawPushButtonIconLabel(const QStyleOptionButton& option, QPainter* painter, const QColor& textColor);
+    static void drawCheckIndicator(const QStyleOption* option, QPainter* painter);
+    static void drawComboBox(const QStyleOptionComplex* option, QPainter* painter, const QStyle& style,
+                             const QWidget* widget);
+    static void drawComboMenuItem(const QStyleOption* option, QPainter* painter, const QWidget* widget);
     static void drawPushButtonPanel(const QStyleOption* option, QPainter* painter, const QWidget* widget);
     static void drawToolButtonPanel(const QStyleOption* option, QPainter* painter);
     static void drawTabShape(const QStyleOption* option, QPainter* painter);

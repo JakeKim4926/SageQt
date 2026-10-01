@@ -1,6 +1,7 @@
 #include "ui/style/SageIconEngine.h"
 
 #include "ui/style/SageDesignDefine.h"
+#include "ui/style/SageStyleDefine.h"
 
 #include <QColor>
 #include <QPainter>
@@ -10,6 +11,9 @@
 #include <QRect>
 #include <QRectF>
 #include <QSizeF>
+#include <QtMath>
+
+#include <iterator>
 
 SageIconEngine::SageIconEngine(SageIconGlyph glyph)
     : m_glyph(glyph)
@@ -23,6 +27,8 @@ void SageIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode mod
     painter->setRenderHint(QPainter::Antialiasing);
     if (m_glyph == SageIconGlyph::Close) {
         paintClose(painter, rect, mode);
+    } else if (m_glyph == SageIconGlyph::Reset) {
+        paintReset(painter, rect, mode);
     } else {
         paintMessage(painter, rect);
     }
@@ -51,6 +57,26 @@ QPixmap SageIconEngine::scaledPixmap(const QSize& size, QIcon::Mode mode, QIcon:
 QIconEngine* SageIconEngine::clone() const
 {
     return new SageIconEngine(m_glyph);
+}
+
+void SageIconEngine::paintReset(QPainter* painter, const QRect& rect, QIcon::Mode mode) const
+{
+    const QColor color = mode == QIcon::Disabled ? SAGE_COLOR_BORDER : SAGE_COLOR_TEXT_MUTED;
+    painter->setPen(QPen(color, SAGE_ICON_STROKE, Qt::SolidLine, Qt::FlatCap));
+    painter->setBrush(Qt::NoBrush);
+    const QPointF center = QRectF(rect).center();
+    const QRectF arc(center.x() - SAGE_ICON_RESET_RADIUS, center.y() - SAGE_ICON_RESET_RADIUS,
+                     SAGE_ICON_RESET_RADIUS * 2, SAGE_ICON_RESET_RADIUS * 2);
+    const double startAngle = qRadiansToDegrees(qAtan2(SAGE_ICON_RESET_RADIUS, SAGE_ICON_RESET_ARROW));
+    const double endAngle = -qRadiansToDegrees(qAtan2(SAGE_ICON_RESET_ARROW, SAGE_ICON_RESET_RADIUS));
+    painter->drawArc(arc, qRound(startAngle * SAGE_QT_ARC_UNITS_PER_DEGREE),
+                     qRound((SAGE_FULL_CIRCLE_DEGREES - (startAngle - endAngle)) * SAGE_QT_ARC_UNITS_PER_DEGREE));
+    const QPointF arrow[] = {
+        center + QPointF(0, -SAGE_ICON_RESET_RADIUS - SAGE_ICON_RESET_ARROW),
+        center + QPointF(SAGE_ICON_RESET_ARROW, -SAGE_ICON_RESET_RADIUS),
+        center + QPointF(SAGE_ICON_RESET_ARROW * 2, -SAGE_ICON_RESET_RADIUS + SAGE_ICON_RESET_ARROW),
+    };
+    painter->drawPolyline(arrow, std::size(arrow));
 }
 
 void SageIconEngine::paintClose(QPainter* painter, const QRect& rect, QIcon::Mode mode) const

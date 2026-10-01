@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SageDefine.h"
 #include "core/workflow/SageResultRow.h"
 #include "core/workflow/SageWorkflowResultTable.h"
 
@@ -17,7 +18,12 @@ class SageResultFilterProxyModel : public QSortFilterProxyModel
 public:
     explicit SageResultFilterProxyModel(SageResultTableModel& resultModel, QObject* parent = nullptr);
 
-    void setFilter(const QString& keyword, SageResultField field);
+    void setFilterCriteria(const QList<SageWorkflowFilterCriteria>& criteria);
+    void setFilter(const QString& keyword, int criteria);
+    QList<SageWorkflowFilterCriteria> filterCriteria() const;
+    QString keyword() const;
+    int criteria() const;
+    int effectiveCriteria() const;
     QList<SageResultRow> visibleRows() const;
     int checkedRowCount() const;
     bool isRowChecked(int row) const;
@@ -31,9 +37,11 @@ protected:
 
 private:
     int sourceRowIndex(int row) const;
+    SageResultField effectiveField() const;
 
 private:
     SageResultTableModel& m_resultModel;
+    QList<SageWorkflowFilterCriteria> m_criteriaList;
     QString m_keyword;
-    SageResultField m_field = SageResultField::Value;
+    int m_criteria = SAGE_FILTER_CRITERIA_NONE;
 };

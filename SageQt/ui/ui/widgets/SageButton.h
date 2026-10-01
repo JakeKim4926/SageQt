@@ -12,7 +12,8 @@ public:
     enum class SageButtonVariant
     {
         Secondary,
-        Primary
+        Primary,
+        Ghost
     };
     Q_ENUM(SageButtonVariant)
 

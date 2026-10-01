@@ -15,6 +15,8 @@ inline const QString SAGE_STYLE_BASE_NAME = QStringLiteral("Fusion");
 inline constexpr int SAGE_FONT_INVALID_ID = -1;
 inline constexpr double SAGE_ROUND_RECT_DIAMETER_TO_RADIUS = 0.5;
 inline constexpr double SAGE_STROKE_CENTER_OFFSET = 0.5;
+inline constexpr double SAGE_FULL_CIRCLE_DEGREES = 360.0;
+inline constexpr int SAGE_QT_ARC_UNITS_PER_DEGREE = 16;
 inline constexpr int SAGE_QT_LINE_EDIT_TEXT_MARGIN = 2;
 
 inline const QList<SageFontFile> SAGE_FONT_FILES = {
