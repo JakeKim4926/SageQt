@@ -42,6 +42,7 @@ public:
 private:
     static bool isPrimaryButton(const QWidget* widget);
     static bool isGhostButton(const QWidget* widget);
+    static QColor surfaceColor(const QStyleOption* option, const QWidget* widget);
     static void drawPushButtonIconLabel(const QStyleOptionButton& option, QPainter* painter, const QColor& textColor);
     static void drawCheckIndicator(const QStyleOption* option, QPainter* painter);
     static void drawComboBox(const QStyleOptionComplex* option, QPainter* painter, const QStyle& style,

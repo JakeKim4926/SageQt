@@ -6,7 +6,7 @@
 SageSDI의 실행 기록 탭과 메인 창 상태 표시줄을 옮긴다. 이 주제가 끝나면 샘플 업무가 입력 → 실행 → 결과 → 기록까지 세 OS에서 동작한다 (UI 이관 완료).
 
 ## 시작 전에
-1. 선행 주제: T15
+1. 선행 주제: 없음 (T15 완료 — 결과 표 패널 · delegate · 표 규칙이 있다)
 2. 스킬 로드: `sageqt-ui`, `coding-design`, `coding-rules`, `git-workflow`
    - 읽을 reference: `coding-design/references/model-view.md` · `ui-composition.md` (창의 앱 수준 연결), `coding-rules/references/api-shape.md`
 3. 결정 — 착수 시 사용자와 확정

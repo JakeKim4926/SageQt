@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SageDefine.h"
+#include "core/workflow/SageResultRow.h"
 #include "core/workflow/SageWorkflowRunResult.h"
 #include "core/workflow/SageWorkflowTab.h"
 
@@ -17,6 +18,7 @@ class ISageWorkflowHandler;
 class QFrame;
 class QStackedWidget;
 class QTabBar;
+class SageResultTablePanel;
 class SageSurface;
 class SageWorkflowHistoryPanel;
 class SageWorkflowInputPanel;
@@ -30,6 +32,9 @@ struct SageWorkspaceState
     QString m_inputPath;
     QString m_outputFolder;
     SageWorkflowResultState m_result;
+    QString m_filterKeyword;
+    int m_filterCriteria = SAGE_FILTER_CRITERIA_NONE;
+    QString m_checkedRowNums;
 };
 
 class SageWorkspacePanel : public QWidget
@@ -51,6 +56,9 @@ private slots:
     void onRunRequested(SageTaskType taskType);
     void onRunFinished(const SageWorkflowRunResult& result);
     void onOpenOutputFolder();
+    void onResultTableChanged();
+    void onResultSelectionChanged(int selectedCount);
+    void onInputResetRequested();
 
 private:
     void createWidgets();
@@ -63,7 +71,19 @@ private:
     bool validateInputPath(QString& outInputPath);
     bool validateOutputFolder(QString& outOutputFolder);
     void setRunningState(bool running);
+    const ISageWorkflowHandler* findCurrentHandler() const;
+    SageResultTablePanel& resultTableFor(const ISageWorkflowHandler& handler) const;
+    bool isLastResultOf(const ISageWorkflowHandler& handler) const;
+    bool isInputTableVisible(const ISageWorkflowHandler& handler) const;
+    bool isResultFilterVisible(const ISageWorkflowHandler& handler) const;
+    void refreshVisibility();
+    void rebuildResultTable(const ISageWorkflowHandler& handler, const QString& checkedRowNums);
     void applyResultTableSchema(const ISageWorkflowHandler& handler, SageTaskType taskType);
+    void setResultTableRows(const ISageWorkflowHandler& handler, const QList<SageResultRow>& rows);
+    void updateResultSummary(const ISageWorkflowHandler& handler);
+    void updateActionButtonState();
+    void applyActionButtonState(int selectedCount);
+    bool buildSelectedRowNums(const ISageWorkflowHandler& handler, SageTaskType taskType, QString& outRowNums);
     void applyStatusCardResult(const ISageWorkflowHandler* handler, SageTaskType taskType, const QJsonObject& response,
                                bool success, int resultCount);
 

@@ -67,7 +67,8 @@ void SageWorkspacePanel::showWorkflow(SageWorkflowType workflowType)
     m_inputPanel->applyHandler(*handler);
     m_inputPanel->setInputPath(state.m_inputPath);
     m_inputPanel->setOutputFolder(state.m_outputFolder);
-    applyResultTableSchema(*handler, m_controller->resultState().m_taskType.value_or(SageTaskType::Generate));
+    resultTableFor(*handler).restoreFilter(state.m_filterKeyword, state.m_filterCriteria);
+    rebuildResultTable(*handler, state.m_checkedRowNums);
 }
 
 void SageWorkspacePanel::applyDroppedPaths(const QStringList& paths)
@@ -93,6 +94,7 @@ void SageWorkspacePanel::onTabChanged(int visualIndex)
     }
     m_selectedTabKind = m_tabs.at(visualIndex).m_kind;
     m_panelStack->setCurrentWidget(panelFor(m_selectedTabKind));
+    refreshVisibility();
 }
 
 void SageWorkspacePanel::onRunRequested(SageTaskType taskType)
@@ -108,12 +110,18 @@ void SageWorkspacePanel::onRunRequested(SageTaskType taskType)
     if (taskType == SageTaskType::Generate && !validateOutputFolder(outputFolder)) {
         return;
     }
+    const ISageWorkflowHandler* handler = findCurrentHandler();
+    QString selectedRowNums;
+    if (handler == nullptr || !buildSelectedRowNums(*handler, taskType, selectedRowNums)) {
+        return;
+    }
 
     SageWorkflowRunRequest request;
     request.m_workflowType = *m_currentWorkflow;
     request.m_taskType = taskType;
     request.m_inputPath = inputPath;
     request.m_outputFolder = outputFolder;
+    request.m_selectedRowNums = selectedRowNums;
 
     QString error;
     if (!m_controller->start(request, error)) {
@@ -132,20 +140,23 @@ void SageWorkspacePanel::onRunFinished(const SageWorkflowRunResult& result)
     QList<SageResultRow> rows;
     const bool success = SageWorkflowResultPresenter().buildRows(handler, result.m_taskType, result.m_response, rows);
     m_controller->finish(result, success, keepInputTable);
-    if (handler != nullptr && !keepInputTable && !handler->hasInputTable()) {
+    if (handler != nullptr && !keepInputTable) {
         applyResultTableSchema(*handler, result.m_taskType);
-        m_resultPanel->resultTable().setRows(rows);
+        setResultTableRows(*handler, rows);
     }
 
     if (handler != nullptr) {
         selectTabKind(handler->hasInputTable() ? SageWorkflowTabKind::Input : SageWorkflowTabKind::DocumentResult);
+        refreshVisibility();
         const std::optional<QString> completedMessage = handler->generateCompletedMessage();
         if (result.m_taskType == SageTaskType::Generate && success && completedMessage.has_value()) {
             SageMessageBoxDlg completedDialog(SageMessageIcon::Info, *completedMessage, this);
             completedDialog.exec();
         }
     }
-    applyStatusCardResult(handler, result.m_taskType, result.m_response, success, static_cast<int>(rows.size()));
+    const int resultCount =
+        keepInputTable ? m_inputPanel->inputTable().checkedRowCount() : static_cast<int>(rows.size());
+    applyStatusCardResult(handler, result.m_taskType, result.m_response, success, resultCount);
     setRunningState(false);
 }
 
@@ -219,6 +230,13 @@ void SageWorkspacePanel::connectSignals()
     connect(m_controller, &SageWorkflowController::runFinished, this, &SageWorkspacePanel::onRunFinished);
     connect(m_inputPanel, &SageWorkflowInputPanel::openOutputFolderRequested, this,
             &SageWorkspacePanel::onOpenOutputFolder);
+    connect(m_inputPanel, &SageWorkflowInputPanel::inputResetRequested, this,
+            &SageWorkspacePanel::onInputResetRequested);
+    for (SageResultTablePanel* resultTable : {&m_inputPanel->inputTable(), &m_resultPanel->resultTable()}) {
+        connect(resultTable, &SageResultTablePanel::filterChanged, this, &SageWorkspacePanel::onResultTableChanged);
+        connect(resultTable, &SageResultTablePanel::selectionChanged, this,
+                &SageWorkspacePanel::onResultSelectionChanged);
+    }
 }
 
 void SageWorkspacePanel::saveCurrentState()
@@ -231,6 +249,17 @@ void SageWorkspacePanel::saveCurrentState()
     state.m_inputPath = m_inputPanel->inputPath();
     state.m_outputFolder = m_inputPanel->outputFolder();
     state.m_result = m_controller->resultState();
+    const ISageWorkflowHandler* handler = m_registry.findHandler(*m_currentWorkflow);
+    state.m_checkedRowNums.clear();
+    if (handler == nullptr) {
+        return;
+    }
+    const SageResultTablePanel& resultTable = resultTableFor(*handler);
+    state.m_filterKeyword = resultTable.filterKeyword();
+    state.m_filterCriteria = resultTable.filterCriteria();
+    if (isInputTableVisible(*handler)) {
+        state.m_checkedRowNums = resultTable.checkedRowNums();
+    }
 }
 
 void SageWorkspacePanel::rebuildTabs()
@@ -261,6 +290,7 @@ void SageWorkspacePanel::selectTabKind(SageWorkflowTabKind tabKind)
     }
     m_selectedTabKind = selectedKind;
     m_panelStack->setCurrentWidget(panelFor(m_selectedTabKind));
+    refreshVisibility();
 }
 
 QWidget* SageWorkspacePanel::panelFor(SageWorkflowTabKind tabKind) const
@@ -301,6 +331,8 @@ bool SageWorkspacePanel::validateOutputFolder(QString& outOutputFolder)
 void SageWorkspacePanel::setRunningState(bool running)
 {
     m_inputPanel->setRunningState(running);
+    updateActionButtonState();
+    refreshVisibility();
 }
 
 void SageWorkspacePanel::applyStatusCardResult(const ISageWorkflowHandler* handler, SageTaskType taskType,
@@ -335,10 +367,163 @@ void SageWorkspacePanel::applyStatusCardResult(const ISageWorkflowHandler* handl
     m_inputPanel->setStatusResult(true, message, QDir::toNativeSeparators(outputPath));
 }
 
-void SageWorkspacePanel::applyResultTableSchema(const ISageWorkflowHandler& handler, SageTaskType taskType)
+void SageWorkspacePanel::onResultTableChanged()
 {
-    if (handler.hasInputTable()) {
+    const ISageWorkflowHandler* handler = findCurrentHandler();
+    if (handler == nullptr) {
         return;
     }
-    m_resultPanel->resultTable().setColumns(handler.resultColumns(taskType), handler.resultStyle(taskType));
+    updateResultSummary(*handler);
+    updateActionButtonState();
+}
+
+void SageWorkspacePanel::onResultSelectionChanged(int selectedCount)
+{
+    applyActionButtonState(selectedCount);
+}
+
+void SageWorkspacePanel::onInputResetRequested()
+{
+    const ISageWorkflowHandler* handler = findCurrentHandler();
+    if (handler == nullptr || !handler->hasInputTable()) {
+        return;
+    }
+    SageResultTablePanel& inputTable = m_inputPanel->inputTable();
+    m_inputPanel->setInputPath(QString());
+    m_inputPanel->resetStatusCard();
+    inputTable.restoreFilter(QString(), inputTable.filterCriteria());
+    inputTable.clearRows();
+    m_controller->clearResult();
+    applyResultTableSchema(*handler, SageTaskType::Generate);
+    refreshVisibility();
+}
+
+const ISageWorkflowHandler* SageWorkspacePanel::findCurrentHandler() const
+{
+    if (!m_currentWorkflow.has_value()) {
+        return nullptr;
+    }
+    return m_registry.findHandler(*m_currentWorkflow);
+}
+
+SageResultTablePanel& SageWorkspacePanel::resultTableFor(const ISageWorkflowHandler& handler) const
+{
+    return handler.hasInputTable() ? m_inputPanel->inputTable() : m_resultPanel->resultTable();
+}
+
+bool SageWorkspacePanel::isLastResultOf(const ISageWorkflowHandler& handler) const
+{
+    const SageWorkflowResultState& resultState = m_controller->resultState();
+    return resultState.m_workflowType == handler.workflowType() && resultState.m_taskType.has_value();
+}
+
+bool SageWorkspacePanel::isInputTableVisible(const ISageWorkflowHandler& handler) const
+{
+    return handler.hasInputTable() && isResultFilterVisible(handler);
+}
+
+bool SageWorkspacePanel::isResultFilterVisible(const ISageWorkflowHandler& handler) const
+{
+    return isLastResultOf(handler) && handler.hasCustomResultTable(*m_controller->resultState().m_taskType);
+}
+
+void SageWorkspacePanel::refreshVisibility()
+{
+    const ISageWorkflowHandler* handler = findCurrentHandler();
+    const bool inputTabSelected = m_selectedTabKind == SageWorkflowTabKind::Input;
+    const bool inputTableVisible = handler != nullptr && isInputTableVisible(*handler);
+    const bool filterVisible = handler != nullptr && isResultFilterVisible(*handler);
+    m_inputPanel->setInputResetVisible(!m_controller->isRunning() && inputTabSelected && inputTableVisible);
+    m_inputPanel->setInputTableVisible(inputTabSelected && inputTableVisible, filterVisible);
+    m_resultPanel->setFilterVisible(m_selectedTabKind == SageWorkflowTabKind::DocumentResult && filterVisible);
+}
+
+void SageWorkspacePanel::rebuildResultTable(const ISageWorkflowHandler& handler, const QString& checkedRowNums)
+{
+    applyResultTableSchema(handler, m_controller->resultState().m_taskType.value_or(SageTaskType::Generate));
+    if (isResultFilterVisible(handler)) {
+        const SageWorkflowResultState& resultState = m_controller->resultState();
+        QList<SageResultRow> rows;
+        SageWorkflowResultPresenter().buildRows(&handler, *resultState.m_taskType, resultState.m_response, rows);
+        setResultTableRows(handler, rows);
+        if (isInputTableVisible(handler)) {
+            resultTableFor(handler).restoreCheckedRowNums(checkedRowNums);
+        }
+    }
+    updateActionButtonState();
+    refreshVisibility();
+}
+
+void SageWorkspacePanel::applyResultTableSchema(const ISageWorkflowHandler& handler, SageTaskType taskType)
+{
+    SageResultTablePanel& resultTable = resultTableFor(handler);
+    resultTable.setColumns(handler.resultColumns(taskType), handler.resultStyle(taskType));
+    resultTable.setFilterCriteria(handler.filterCriteria());
+}
+
+void SageWorkspacePanel::setResultTableRows(const ISageWorkflowHandler& handler, const QList<SageResultRow>& rows)
+{
+    resultTableFor(handler).setRows(rows);
+    updateResultSummary(handler);
+    updateActionButtonState();
+}
+
+void SageWorkspacePanel::updateResultSummary(const ISageWorkflowHandler& handler)
+{
+    SageResultTablePanel& resultTable = resultTableFor(handler);
+    const SageWorkflowResultState& resultState = m_controller->resultState();
+    QList<SageResultSummaryItem> items;
+    if (!isLastResultOf(handler) || !handler.buildResultSummary(*resultState.m_taskType, resultTable.visibleRows(),
+                                                                resultState.m_response, items)) {
+        resultTable.clearSummary();
+        resultTable.clearTotals();
+        return;
+    }
+    resultTable.setSummaryItems(items);
+    QList<SageResultTotalCell> cells;
+    if (!handler.buildResultTotals(*resultState.m_taskType, resultTable.visibleRows(), cells)) {
+        resultTable.clearTotals();
+        return;
+    }
+    resultTable.setTotalCells(cells);
+}
+
+void SageWorkspacePanel::updateActionButtonState()
+{
+    const ISageWorkflowHandler* handler = findCurrentHandler();
+    if (handler == nullptr) {
+        return;
+    }
+    applyActionButtonState(handler->hasInputTable() ? m_inputPanel->inputTable().checkedRowCount() : 0);
+}
+
+void SageWorkspacePanel::applyActionButtonState(int selectedCount)
+{
+    const ISageWorkflowHandler* handler = findCurrentHandler();
+    if (handler == nullptr) {
+        return;
+    }
+    bool enabled = !m_controller->isRunning();
+    if (enabled && handler->hasInputTable()) {
+        enabled = selectedCount > 0;
+    }
+    m_inputPanel->setGenerateEnabled(enabled);
+}
+
+bool SageWorkspacePanel::buildSelectedRowNums(const ISageWorkflowHandler& handler, SageTaskType taskType,
+                                              QString& outRowNums)
+{
+    outRowNums.clear();
+    if (!handler.hasInputTable() || taskType != SageTaskType::Generate) {
+        return true;
+    }
+    const SageResultTablePanel& inputTable = m_inputPanel->inputTable();
+    outRowNums = inputTable.checkedRowNums();
+    QString selectionError;
+    if (handler.validateSelectedRows(inputTable.checkedRowCount(), !outRowNums.isEmpty(), selectionError)) {
+        return true;
+    }
+    SageMessageBoxDlg errorDialog(SageMessageIcon::Warning, selectionError, this);
+    errorDialog.exec();
+    return false;
 }

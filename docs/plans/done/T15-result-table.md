@@ -63,10 +63,10 @@ PR 4개: `feature/result-table-model` (model · proxy), `feature/result-table-pa
 - [x] 결과 행 model (열은 핸들러 정의, 정렬 · 체크는 role)
 - [x] 필터 proxy (검색어 · 필터 기준)
 - [x] delegate · 헤더 모드
-- [ ] 패널: 제목 · 검색 · 초기화 · 선택 막대 · 요약 · 합계
-- [ ] 업무별 상태 보존에 필터 · 선택 행 연결 (T13 자리)
-- [ ] 테스트: model 행 · 열 · role, proxy 필터 결과, 체크 행 번호 왕복
-- [ ] 세 OS 스크린샷
+- [x] 패널: 제목 · 검색 · 초기화 · 선택 막대 · 요약 · 합계
+- [x] 업무별 상태 보존에 필터 · 선택 행 연결 (T13 자리)
+- [x] 테스트: model 행 · 열 · role, proxy 필터 결과, 체크 행 번호 왕복
+- [x] 세 OS 스크린샷
 
 ## 완료 기준
 - 3-OS CI 통과
@@ -102,4 +102,23 @@ PR 4개: `feature/result-table-model` (model · proxy), `feature/result-table-pa
 - 합계 막대 (`SageTableTotalBar.cpp`): 표 바로 아래 40, 면 `LIST_HEADER` · 위 1px `BORDER`. 칸은 열 위치 · 폭에 맞춘다 — 왼쪽 정렬 +6 · 오른쪽 정렬 −6. 건수는 굵은 목록 폰트(SemiBold) `SECONDARY`, 나머지 Bold: 라벨 `TEXT_MUTED` · 금액 `TEXT` · 강조 금액 `PRIMARY`. SageSDI는 열 폭이 바뀔 때만 칸을 다시 맞춘다 — SageQt는 가로 스크롤 때도 맞춘다
 - 초기화 버튼: Ghost + 되돌리기 아이콘(반지름 6 · 화살 3 · 선 2, 아이콘과 글자 사이 `SAGE_ICON_TEXT_GAP` 6), 놓인 면 `APP_BACKGROUND`(`SetSurfaceColor`), 폭 84
 - 테스트 앱 폰트: 표 패널 테스트가 `main.cpp`처럼 앱 폰트를 본문으로 두지 않아 버튼 · 콤보 글자가 굵게 그려졌다 → `initTestCase`에서 맞춤 (오프스크린 그림으로 발견)
+- 입력 표 (`SageWorkflowInputPanel`): 같은 `SageResultTablePanel` 클래스의 제목 없는 인스턴스. 자리 = 상태 카드 아래 16 위치(`GetTableAreaTop`)에서 띠 12를 뺀 곳 — 상태 카드와 표 패널 사이 4. 보이는 조건(`IsInputTableVisible`) = 입력 표 업무 · 마지막 결과가 이 업무 · 그 작업 종류가 사용자 결과 표(`UsesCustomResultTable`). 보이면 선택 막대를 켜고, 검색은 결과 필터 조건과 같다. 빈 상태 안내(`SAGE_UI_EMPTY_STATE_HINT`, 본문 · `SECONDARY_TEXT` · 가운데)는 입력 표가 안 보이고 실행 중이 아닐 때 같은 자리(위 +12 · 아래 −26)에 뜬다 — **샘플 업무(입력 표 없음)의 입력 탭에도 뜬다** (SageSDI 그대로)
+- 입력 초기화 (`ResetInput`): Ghost 「초기화」(아이콘 없음, 폭 72 최소값, 높이 34, 실행 버튼 옆 8, 놓인 면 `PANEL` — Ghost 면을 "배경을 칠하는 가장 가까운 조상 면"으로 정해 카드 위에서 흰색). 보이는 조건 = 실행 중 아님 · 입력 탭 · 입력 표가 보임. 누르면 입력 경로 비움 · 상태 카드 대기 · 검색어 비움(기준 유지) · 행 비움 · 결과 상태 비움 · 열 다시 설정. 상태 표시줄 문구(`NotifyStatus(SAGE_UI_READY)`)는 T16
+- 실행 버튼 (`ApplyActionButtonState`): 실행 중이 아니고, 입력 표 업무면 체크한 행이 1개 이상일 때만 켠다. 체크가 바뀔 때(`selectionChanged`) · 검색 후(`filterChanged`) · 행을 채운 뒤 다시 정한다
+- 실행 요청 (`BuildSelectedRowNums`): 입력 표 업무의 생성만 — 체크한 행 수와 행 번호(원본 번호, 0 제외)를 `validateSelectedRows`에 묻고, 실패면 경고 창 후 중단. 행 번호는 payload `rowNums`
+- 실행 결과 (`DisplayResponse`): 입력 표 업무의 생성은 입력 표를 그대로 둔다(`bKeepInputTable`), 상태 카드 건수 = 체크한 행 수. 그 밖에는 결과를 낸 업무의 표(입력 표 업무면 입력 표, 아니면 결과 탭 표)에 열을 다시 설정하고 행을 채운 뒤 요약 · 합계를 다시 묻는다
+- 요약 · 합계 (`UpdateResultSummary`): 마지막 결과가 이 업무일 때만 핸들러에 **보이는 행**(proxy)을 넘겨 묻는다. 없으면 요약 · 합계를 비운다. 검색 · 초기화 · 기준 변경마다 다시 묻는다
+- 업무를 바꿨다 돌아올 때 (`SaveWorkflowState` · `RestoreWorkflowState` · `RebuildResultTable`): 저장 = 그 업무 표의 적용된 검색어 · 기준, 입력 표가 보일 때만 체크한 행 번호. 복원 = 검색어 · 기준 → 열 설정 → 사용자 결과 표면 마지막 응답으로 행을 다시 만들고 → 입력 표가 보이면 체크 복원 → 실행 버튼 · 보이기 갱신
+- 확인 범위: 입력 표 · 검색 · 요약 · 합계를 쓰는 실제 업무가 없어 테스트용 핸들러(`SageTestWorkflowHandler`에 사용자 결과 표 · 요약 · 선택 오류 설정 추가)와 오프스크린 그림(`docs/screenshots/T15/offscreen-windows-*`)으로만 확인했다. 세 OS 실제 화면은 결과 탭(빈 표 · 헤더)과 입력 탭(빈 상태 안내)뿐이다
+
+## 결과
+- PR 없이 네 브랜치로 `develop`에 squash merge: `feature/result-table-model`(model · proxy), `feature/result-table-panel`(표 패널 · delegate · 헤더 · 결과 탭), `feature/result-table-controls`(검색창 · 초기화 · 선택 막대 · 요약 · 합계), `feature/input-table`(입력 표 · 입력 초기화 · 빈 상태 안내 · 작업 영역 연결 · 업무별 상태)
+- 완료 기준 확인: 3-OS CI 통과(실행 36868311385 · 스크린샷 36868311227) / 패널이 행을 복사해 보관하는 멤버 0 — `SageResultTablePanel` 멤버는 위젯 · model · proxy · delegate · 합계 칸 정의 · 표시 상태뿐 / 필터를 건 상태의 체크 행 번호 — `restoreChecksOnlyVisibleRows` · `checkedRowNumsSkipZeroIndexAndUseSourceIndex` · `filterChangeClearsChecks` · `restoresFilterAndCheckedRows` / 결과 표와 입력 표가 같은 클래스 두 인스턴스 — `SageWorkflowResultPanel::m_resultTable` · `SageWorkflowInputPanel::m_inputTable`
+- 사용자 결정 8건: 전부 옮김 · 필터 변경 시 체크 해제 · 모양은 SageSDI대로 먼저 → 행 hover `#F8F1E6` · 좁으면 가로 스크롤 · 헤더/스크롤바 그대로 · 선택 해제 면은 배경 · 전체 선택 체크 상자는 표와 같게
+- 스크린샷 `docs/screenshots/T15/`: 세 OS 결과 탭 · 입력 탭, 오프스크린 표 · 컨트롤 · 입력 표
+- 교훈
+  - `QTableView`의 기본 그림자(Sunken)는 Box 테두리를 2px로 만든다 — 픽셀 테스트가 잡았다
+  - Qt는 hover를 칸 하나에만 준다 — 행 hover는 view의 `entered`로 직접 관리해야 한다
+  - `QHeaderView`에는 열마다 최소 폭이 없다 — SageSDI 열 폭 규칙은 패널이 계산해야 했다 (`model-view.md` 예외)
+  - 테스트 앱은 `main.cpp`처럼 앱 폰트를 맞춰야 실제와 같은 그림이 나온다
 

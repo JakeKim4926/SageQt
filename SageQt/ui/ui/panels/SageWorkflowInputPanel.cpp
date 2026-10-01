@@ -2,6 +2,7 @@
 
 #include "SageDefine.h"
 #include "core/workflow/ISageWorkflowHandler.h"
+#include "ui/panels/SageResultTablePanel.h"
 #include "ui/style/SageDesignDefine.h"
 #include "ui/widgets/SageButton.h"
 #include "ui/widgets/SageLabel.h"
@@ -12,6 +13,7 @@
 #include <QFileDialog>
 #include <QFrame>
 #include <QGridLayout>
+#include <QHBoxLayout>
 #include <QPalette>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -59,6 +61,9 @@ void SageWorkflowInputPanel::setRunningState(bool running)
     m_selectInputButton->setEnabled(!running);
     m_selectOutputButton->setEnabled(!running);
     m_runButton->setEnabled(!running);
+    m_inputResetButton->setEnabled(!running);
+    m_inputTable->setSelectionControlsEnabled(!running);
+    m_emptyHintArea->setVisible(!m_inputTableVisible && !running);
     if (running) {
         m_statusCard->setRunning(SAGE_UI_STATUS_CARD_RUNNING);
         m_progressPercent = 0;
@@ -72,6 +77,35 @@ void SageWorkflowInputPanel::setRunningState(bool running)
 void SageWorkflowInputPanel::setStatusResult(bool success, const QString& message, const QString& detail)
 {
     m_statusCard->setResult(success, message, detail);
+}
+
+void SageWorkflowInputPanel::resetStatusCard()
+{
+    m_statusCard->setIdle(SAGE_UI_STATUS_CARD_IDLE);
+}
+
+void SageWorkflowInputPanel::setGenerateEnabled(bool enabled)
+{
+    m_runButton->setEnabled(enabled);
+}
+
+void SageWorkflowInputPanel::setInputResetVisible(bool visible)
+{
+    m_inputResetButton->setVisible(visible);
+}
+
+void SageWorkflowInputPanel::setInputTableVisible(bool tableVisible, bool filterVisible)
+{
+    m_inputTableVisible = tableVisible;
+    m_inputTable->showSelectAll(tableVisible);
+    m_inputTable->showFilter(tableVisible && filterVisible);
+    m_inputTable->setVisible(tableVisible);
+    m_emptyHintArea->setVisible(!tableVisible && !m_running);
+}
+
+SageResultTablePanel& SageWorkflowInputPanel::inputTable()
+{
+    return *m_inputTable;
 }
 
 void SageWorkflowInputPanel::onSelectInputClicked()
@@ -139,6 +173,19 @@ void SageWorkflowInputPanel::createWidgets()
     m_runButton->setMinimumWidth(SAGE_BUTTON_WIDTH);
     m_runButton->setFixedHeight(SAGE_CARD_ACTION_BUTTON_HEIGHT);
 
+    m_inputResetButton = new SageButton(SAGE_UI_INPUT_RESET_BTN, m_formArea);
+    m_inputResetButton->setVariant(SageButton::SageButtonVariant::Ghost);
+    m_inputResetButton->setMinimumWidth(SAGE_INPUT_RESET_WIDTH);
+    m_inputResetButton->setFixedHeight(SAGE_CARD_ACTION_BUTTON_HEIGHT);
+    m_inputResetButton->hide();
+
+    m_inputTable = new SageResultTablePanel(this);
+    m_inputTable->hide();
+    m_emptyHintArea = new QWidget(this);
+    m_emptyHintLabel = new SageLabel(SageLabel::SageLabelVariant::Hint, SAGE_UI_EMPTY_STATE_HINT, m_emptyHintArea);
+    m_emptyHintLabel->setAlignment(Qt::AlignCenter);
+    m_emptyHintLabel->setMinimumHeight(SAGE_RESULT_MIN_HEIGHT);
+
     m_statusCard = new SageStatusCard(this);
     m_statusCard->setIdle(SAGE_UI_STATUS_CARD_IDLE);
     m_progressTimer = new QTimer(this);
@@ -149,10 +196,18 @@ void SageWorkflowInputPanel::createLayout()
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(SAGE_CARD_GAP);
+    layout->setSpacing(0);
     layout->addWidget(m_inputCard);
+    layout->addSpacing(SAGE_CARD_GAP);
     layout->addWidget(m_statusCard);
-    layout->addStretch();
+    layout->addSpacing(SAGE_CARD_GAP - SAGE_RESULT_FILTER_TOP_LIFT - SAGE_RESULT_FILTER_BOX_PAD);
+    layout->addWidget(m_inputTable, 1);
+    layout->addWidget(m_emptyHintArea, 1);
+
+    QVBoxLayout* hintLayout = new QVBoxLayout(m_emptyHintArea);
+    hintLayout->setContentsMargins(0, SAGE_RESULT_FILTER_TOP_LIFT + SAGE_RESULT_FILTER_BOX_PAD, 0,
+                                   SAGE_RESULT_HEADER_HEIGHT);
+    hintLayout->addWidget(m_emptyHintLabel);
 
     QVBoxLayout* cardLayout = new QVBoxLayout(m_inputCard);
     cardLayout->setContentsMargins(0, 0, 0, 0);
@@ -171,7 +226,12 @@ void SageWorkflowInputPanel::createLayout()
     formLayout->addWidget(m_outputLabel, 1, 0);
     formLayout->addWidget(m_outputFolderEdit, 1, 1);
     formLayout->addWidget(m_selectOutputButton, 1, 2);
-    formLayout->addWidget(m_runButton, 2, 1, Qt::AlignLeft);
+    QHBoxLayout* actionLayout = new QHBoxLayout();
+    actionLayout->setSpacing(SAGE_ACTION_GAP);
+    actionLayout->addWidget(m_runButton);
+    actionLayout->addWidget(m_inputResetButton);
+    actionLayout->addStretch();
+    formLayout->addLayout(actionLayout, 2, 1);
     formLayout->setColumnStretch(1, 1);
 }
 
@@ -181,6 +241,7 @@ void SageWorkflowInputPanel::connectSignals()
     connect(m_selectOutputButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onSelectOutputClicked);
     connect(m_runButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onRunClicked);
     connect(m_progressTimer, &QTimer::timeout, this, &SageWorkflowInputPanel::onProgressTimer);
+    connect(m_inputResetButton, &SageButton::clicked, this, &SageWorkflowInputPanel::inputResetRequested);
     connect(m_statusCard, &SageStatusCard::openFolderRequested, this,
             &SageWorkflowInputPanel::openOutputFolderRequested);
 }

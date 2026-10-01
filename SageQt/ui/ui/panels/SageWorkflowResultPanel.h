@@ -12,6 +12,7 @@ public:
     explicit SageWorkflowResultPanel(QWidget* parent = nullptr);
 
     SageResultTablePanel& resultTable();
+    void setFilterVisible(bool visible);
 
 private:
     SageResultTablePanel* m_resultTable = nullptr;

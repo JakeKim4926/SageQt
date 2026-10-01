@@ -110,6 +110,7 @@ inline constexpr int SAGE_RESULT_STATUS_WIDTH = 110;
 inline constexpr int SAGE_RESULT_REASON_WIDTH = 320;
 inline constexpr int SAGE_RESULT_FILTER_WIDTH = 150;
 inline constexpr int SAGE_RESULT_RESET_WIDTH = 84;
+inline constexpr int SAGE_INPUT_RESET_WIDTH = 72;
 inline constexpr int SAGE_BUTTON_VERT_ADJUST = 2;
 inline constexpr int SAGE_ACTION_GAP = 8;
 inline constexpr int SAGE_ICON_TEXT_GAP = 6;

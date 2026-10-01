@@ -17,6 +17,7 @@ public:
         Section,
         TableTitle,
         FormLabel,
+        Hint,
         SidebarLogo
     };
     Q_ENUM(SageLabelVariant)

@@ -240,6 +240,17 @@ int SageStyle::pixelMetric(PixelMetric metric, const QStyleOption* option, const
     return QProxyStyle::pixelMetric(metric, option, widget);
 }
 
+QColor SageStyle::surfaceColor(const QStyleOption* option, const QWidget* widget)
+{
+    for (const QWidget* ancestor = widget != nullptr ? widget->parentWidget() : nullptr; ancestor != nullptr;
+         ancestor = ancestor->parentWidget()) {
+        if (ancestor->autoFillBackground()) {
+            return ancestor->palette().color(ancestor->backgroundRole());
+        }
+    }
+    return option->palette.color(QPalette::Window);
+}
+
 bool SageStyle::isGhostButton(const QWidget* widget)
 {
     const SageButton* button = qobject_cast<const SageButton*>(widget);
@@ -333,8 +344,7 @@ void SageStyle::drawPushButtonPanel(const QStyleOption* option, QPainter* painte
     }
 
     if (isGhostButton(widget)) {
-        painter->fillRect(option->rect,
-                          isEnabled && isPressed ? SAGE_COLOR_LIST_HEADER : option->palette.color(QPalette::Window));
+        painter->fillRect(option->rect, isEnabled && isPressed ? SAGE_COLOR_LIST_HEADER : surfaceColor(option, widget));
         return;
     }
 
@@ -471,6 +481,10 @@ void SageStyle::polishLabel(QWidget* widget)
         return;
     case SageLabel::SageLabelVariant::SecondaryCaption:
         widget->setFont(SageFontCatalog::font(SageFontRole::Caption));
+        setTextColor(widget, SAGE_COLOR_SECONDARY_TEXT);
+        return;
+    case SageLabel::SageLabelVariant::Hint:
+        widget->setFont(SageFontCatalog::font(SageFontRole::Body));
         setTextColor(widget, SAGE_COLOR_SECONDARY_TEXT);
         return;
     case SageLabel::SageLabelVariant::MutedCaption:

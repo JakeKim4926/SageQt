@@ -11,7 +11,12 @@
 #include "ui/style/SageFontRegistry.h"
 #include "ui/style/SageStyle.h"
 #include "ui/widgets/SageButton.h"
+#include "ui/widgets/SageLabel.h"
+#include "ui/widgets/SageSearchBox.h"
+#include "ui/widgets/SageSelectionBar.h"
 #include "ui/widgets/SageStatusCard.h"
+#include "ui/widgets/SageSummaryBar.h"
+#include <QLineEdit>
 
 #include <QApplication>
 #include <QColor>
@@ -84,9 +89,19 @@ private slots:
     void runningCardAdvancesProgressUpToLimit();
     void completedRunShowsResultAndOpensFolder();
     void failedRunShowsReason();
+    void inputTableAppearsAfterLoad();
+    void generateSendsCheckedRowNums();
+    void generateWithoutSelectionShowsError();
+    void filterAndChecksAreRestoredPerWorkflow();
+    void filterRefreshesSummary();
+    void inputResetClearsTable();
 
 private:
     void registerGatedHandler(bool hasInputTable);
+    void registerInputTableHandler();
+    void loadInputTable(SageWorkspacePanel& panel);
+    static SageButton* inputResetButton(SageWorkspacePanel& panel);
+    static SageLabel* emptyHint(SageWorkspacePanel& panel);
     static QTabBar* tabs(SageWorkspacePanel& panel);
     static SageButton* runButton(SageWorkspacePanel& panel);
     static SageButton* openFolderButton(SageWorkspacePanel& panel);
@@ -100,11 +115,13 @@ private:
     QSemaphore m_gate;
     int m_runCount = 0;
     SageTaskType m_lastTaskType = SageTaskType::Generate;
+    QJsonObject m_lastPayload;
 };
 
 static const SageWorkflowType SAGE_TEST_WORKFLOW = static_cast<SageWorkflowType>(2);
 static const SageWorkflowType SAGE_UNKNOWN_WORKFLOW = static_cast<SageWorkflowType>(99);
 static const SageWorkflowType SAGE_GATED_WORKFLOW = static_cast<SageWorkflowType>(3);
+static const SageWorkflowType SAGE_INPUT_TABLE_WORKFLOW = static_cast<SageWorkflowType>(4);
 
 void SageWorkspacePanelTest::initTestCase()
 {
@@ -422,7 +439,7 @@ void SageWorkspacePanelTest::showingWorkflowSetsResultColumns()
     SageWorkspacePanel panel(*m_registry);
     panel.showWorkflow(SAGE_GATED_WORKFLOW);
 
-    const QTableView* table = panel.findChild<SageResultTablePanel*>()->findChild<QTableView*>();
+    const QTableView* table = panel.findChild<SageWorkflowResultPanel*>()->resultTable().findChild<QTableView*>();
     QCOMPARE(table->model()->columnCount(), 4);
     QCOMPARE(table->model()->rowCount(), 0);
 }
@@ -471,7 +488,7 @@ void SageWorkspacePanelTest::completedRunShowsResultAndOpensFolder()
     QCOMPARE(card->variant(), SageStatusCard::SageStatusCardVariant::Completed);
     QVERIFY(card->message().startsWith(SAGE_UI_SAMPLE_ACTION_BUTTON + QStringLiteral("이 완료되었습니다 · ")));
     QCOMPARE(card->detail(), QDir::toNativeSeparators(outputDirectory.path()));
-    QVERIFY(panel.findChild<SageResultTablePanel*>()->rowCount() > 0);
+    QVERIFY(panel.findChild<SageWorkflowResultPanel*>()->resultTable().rowCount() > 0);
 
     openFolderButton(panel)->click();
     QCOMPARE(recorder.urls().size(), 1);
@@ -503,6 +520,195 @@ void SageWorkspacePanelTest::failedRunShowsReason()
     QCOMPARE(card->detail(), SAGE_UI_WORKFLOW_EXCEPTION);
     QVERIFY(openFolderButton(panel)->isHidden());
     QVERIFY(!messages.contains(SAGE_UI_SAMPLE_COMPLETED));
+}
+
+void SageWorkspacePanelTest::registerInputTableHandler()
+{
+    std::unique_ptr<SageTestWorkflowHandler> handler = std::make_unique<SageTestWorkflowHandler>(
+        SAGE_INPUT_TABLE_WORKFLOW, QStringLiteral("입력 표 업무"), QStringLiteral("샘플"), false);
+    handler->setHasInputTable(true);
+    SageWorkflowResultStyle style;
+    style.m_hasCheckbox = true;
+    handler->setCustomResultTable(
+        style, {{1, SAGE_UI_RESULT_FIELD, SageResultField::Field}, {2, SAGE_UI_RESULT_STATUS, SageResultField::Status}},
+        {{3, QStringLiteral("Alpha"), QStringLiteral("apple"), QStringLiteral("success"), QString()},
+         {0, QStringLiteral("Beta"), QStringLiteral("banana"), QStringLiteral("failed"), QString()},
+         {7, QStringLiteral("Gamma"), QStringLiteral("grape"), QStringLiteral("success"), QString()}});
+    handler->setSummaryLabel(QStringLiteral("보이는 행"));
+    handler->setSelectionError(QStringLiteral("행을 선택하세요"));
+    handler->setRunTask([this](SageTaskType taskType, const QJsonObject& payload) {
+        ++m_runCount;
+        m_lastTaskType = taskType;
+        m_lastPayload = payload;
+        QJsonObject response;
+        response.insert(SAGE_JSON_KEY_SUCCESS, true);
+        response.insert(SAGE_JSON_KEY_PAYLOAD, QJsonObject());
+        return response;
+    });
+    m_registry->registerHandler(std::move(handler));
+}
+
+void SageWorkspacePanelTest::loadInputTable(SageWorkspacePanel& panel)
+{
+    SageWorkflowInputPanel* inputPanel = panel.findChild<SageWorkflowInputPanel*>();
+    panel.showWorkflow(SAGE_INPUT_TABLE_WORKFLOW);
+    inputPanel->setInputPath(QStringLiteral("C:/work/in.xlsx"));
+    emit inputPanel->runRequested(SageTaskType::Load);
+    QTRY_VERIFY(!panel.isRunning());
+}
+
+void SageWorkspacePanelTest::inputTableAppearsAfterLoad()
+{
+    registerInputTableHandler();
+    SageWorkspacePanel panel(*m_registry);
+    panel.resize(1000, 900);
+    panel.show();
+    QVERIFY(QTest::qWaitForWindowExposed(&panel));
+    SageWorkflowInputPanel* inputPanel = panel.findChild<SageWorkflowInputPanel*>();
+    SageResultTablePanel& inputTable = inputPanel->inputTable();
+    panel.showWorkflow(SAGE_INPUT_TABLE_WORKFLOW);
+    QVERIFY(!inputTable.isVisible());
+    QVERIFY(emptyHint(panel)->isVisible());
+
+    loadInputTable(panel);
+
+    QCOMPARE(m_lastTaskType, SageTaskType::Load);
+    QVERIFY(inputTable.isVisible());
+    QVERIFY(!emptyHint(panel)->isVisible());
+    QCOMPARE(inputTable.rowCount(), 3);
+    QVERIFY(inputTable.findChild<SageSelectionBar*>()->isVisible());
+    QVERIFY(inputTable.findChild<SageSearchBox*>()->isVisible());
+    QVERIFY(inputResetButton(panel)->isVisible());
+    QVERIFY(!runButton(panel)->isEnabled());
+    QCOMPARE(panel.selectedTabKind(), SageWorkflowTabKind::Input);
+}
+
+void SageWorkspacePanelTest::generateSendsCheckedRowNums()
+{
+    registerInputTableHandler();
+    SageWorkspacePanel panel(*m_registry);
+    QStringList messages;
+    const SageTestModalDriver driver(collectMessages(messages));
+    loadInputTable(panel);
+    SageWorkflowInputPanel* inputPanel = panel.findChild<SageWorkflowInputPanel*>();
+    SageResultTablePanel& inputTable = inputPanel->inputTable();
+    const QTableView* table = inputTable.findChild<QTableView*>();
+    table->model()->setData(table->model()->index(0, 0), Qt::Checked, Qt::CheckStateRole);
+    table->model()->setData(table->model()->index(2, 0), Qt::Checked, Qt::CheckStateRole);
+    QVERIFY(runButton(panel)->isEnabled());
+    inputPanel->setOutputFolder(QStringLiteral("C:/work/out"));
+
+    runButton(panel)->click();
+    QTRY_VERIFY(!panel.isRunning());
+
+    QCOMPARE(m_lastTaskType, SageTaskType::Generate);
+    QCOMPARE(m_lastPayload.value(SAGE_JSON_KEY_ROW_NUMS).toString(), QStringLiteral("3,7"));
+    QCOMPARE(inputTable.rowCount(), 3);
+    QCOMPARE(inputTable.checkedRowCount(), 2);
+    QCOMPARE(panel.findChild<SageStatusCard*>()->message(),
+             SAGE_UI_STATUS_CARD_COMPLETED_FORMAT.arg(SAGE_UI_SAMPLE_ACTION_BUTTON).arg(2));
+}
+
+void SageWorkspacePanelTest::generateWithoutSelectionShowsError()
+{
+    registerInputTableHandler();
+    SageWorkspacePanel panel(*m_registry);
+    QStringList messages;
+    const SageTestModalDriver driver(collectMessages(messages));
+    loadInputTable(panel);
+    SageWorkflowInputPanel* inputPanel = panel.findChild<SageWorkflowInputPanel*>();
+    inputPanel->setOutputFolder(QStringLiteral("C:/work/out"));
+    const int runCount = m_runCount;
+
+    emit inputPanel->runRequested(SageTaskType::Generate);
+
+    QVERIFY(messages.contains(QStringLiteral("행을 선택하세요")));
+    QVERIFY(!panel.isRunning());
+    QCOMPARE(m_runCount, runCount);
+}
+
+void SageWorkspacePanelTest::filterAndChecksAreRestoredPerWorkflow()
+{
+    registerInputTableHandler();
+    SageWorkspacePanel panel(*m_registry);
+    loadInputTable(panel);
+    SageResultTablePanel& inputTable = panel.findChild<SageWorkflowInputPanel*>()->inputTable();
+    inputTable.restoreFilter(QStringLiteral("success"), 2);
+    QCOMPARE(inputTable.rowCount(), 2);
+    const QTableView* table = inputTable.findChild<QTableView*>();
+    table->model()->setData(table->model()->index(1, 0), Qt::Checked, Qt::CheckStateRole);
+    QCOMPARE(inputTable.checkedRowNums(), QStringLiteral("7"));
+
+    panel.showWorkflow(SAGE_TEST_WORKFLOW);
+    QVERIFY(!inputTable.isVisible());
+    panel.showWorkflow(SAGE_INPUT_TABLE_WORKFLOW);
+
+    QCOMPARE(inputTable.filterKeyword(), QStringLiteral("success"));
+    QCOMPARE(inputTable.filterCriteria(), 2);
+    QCOMPARE(inputTable.rowCount(), 2);
+    QCOMPARE(inputTable.checkedRowNums(), QStringLiteral("7"));
+    QVERIFY(runButton(panel)->isEnabled());
+}
+
+void SageWorkspacePanelTest::filterRefreshesSummary()
+{
+    registerInputTableHandler();
+    SageWorkspacePanel panel(*m_registry);
+    loadInputTable(panel);
+    SageResultTablePanel& inputTable = panel.findChild<SageWorkflowInputPanel*>()->inputTable();
+    inputTable.showSelectAll(false);
+    SageSummaryBar* summaryBar = inputTable.findChild<SageSummaryBar*>();
+    QVERIFY(summaryBar->hasItems());
+
+    QLineEdit* edit = inputTable.findChild<SageSearchBox*>()->findChild<QLineEdit*>();
+    edit->setText(QStringLiteral("gamma"));
+    QTest::keyClick(edit, Qt::Key_Return);
+
+    QCOMPARE(inputTable.rowCount(), 1);
+    QCOMPARE(inputTable.visibleRows().size(), 1);
+    QVERIFY(summaryBar->hasItems());
+}
+
+void SageWorkspacePanelTest::inputResetClearsTable()
+{
+    registerInputTableHandler();
+    SageWorkspacePanel panel(*m_registry);
+    panel.resize(1000, 900);
+    panel.show();
+    QVERIFY(QTest::qWaitForWindowExposed(&panel));
+    loadInputTable(panel);
+    SageWorkflowInputPanel* inputPanel = panel.findChild<SageWorkflowInputPanel*>();
+
+    inputResetButton(panel)->click();
+
+    QVERIFY(inputPanel->inputPath().isEmpty());
+    QVERIFY(!inputPanel->inputTable().isVisible());
+    QVERIFY(emptyHint(panel)->isVisible());
+    QVERIFY(!inputResetButton(panel)->isVisible());
+    QCOMPARE(inputPanel->inputTable().rowCount(), 0);
+    QCOMPARE(panel.findChild<SageStatusCard*>()->variant(), SageStatusCard::SageStatusCardVariant::Idle);
+}
+
+SageButton* SageWorkspacePanelTest::inputResetButton(SageWorkspacePanel& panel)
+{
+    const QList<SageButton*> buttons = panel.findChild<SageWorkflowInputPanel*>()->findChildren<SageButton*>();
+    for (SageButton* button : buttons) {
+        if (button->text() == SAGE_UI_INPUT_RESET_BTN && button->icon().isNull()) {
+            return button;
+        }
+    }
+    return nullptr;
+}
+
+SageLabel* SageWorkspacePanelTest::emptyHint(SageWorkspacePanel& panel)
+{
+    const QList<SageLabel*> labels = panel.findChildren<SageLabel*>();
+    for (SageLabel* label : labels) {
+        if (label->text() == SAGE_UI_EMPTY_STATE_HINT) {
+            return label;
+        }
+    }
+    return nullptr;
 }
 
 QTEST_MAIN(SageWorkspacePanelTest)

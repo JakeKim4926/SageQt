@@ -5,6 +5,18 @@
 
 ## 열린 항목
 
+### [2026-10-01] 검증누락 — 입력 표 · 검색 · 선택 막대 · 요약 · 합계를 실제 업무로 확인하지 않았다
+- 위치: SageQt/ui/ui/panels/SageResultTablePanel.cpp, SageQt/ui/ui/panels/SageWorkspacePanel.cpp, SageQt/ui/ui/widgets/SageSearchBox.cpp · SageSelectionBar.cpp · SageSummaryBar.cpp · SageTableTotalBar.cpp
+- 설명: 두 앱의 유일한 업무(샘플)는 이 기능들을 켜지 않는다. 테스트용 핸들러(오프스크린)로만 확인했고, 세 OS 실제 화면은 빈 결과 표와 빈 상태 안내뿐이다. 기준 콤보를 펼친 목록 · 검색창 포커스 · 가로 스크롤 시 합계 칸 맞춤은 실제 화면에서 보지 않았다
+- 위험도: 중 — 입력 표 업무를 처음 붙일 때 모양 · 동작 차이가 한꺼번에 드러날 수 있다
+- 후속: 입력 표 업무를 추가하는 주제에서 세 OS 실제 화면으로 확인한다 (입력 표 · 선택 · 검색 · 요약 · 합계 · 업무 전환 복원)
+
+### [2026-10-01] 검증누락 — 표에서 마우스가 나갈 때 hover 행이 풀리는지 확인하지 않았다
+- 위치: SageQt/ui/ui/panels/SageResultTablePanel.cpp (`eventFilter`의 `QEvent::Leave`)
+- 설명: 오프스크린 테스트에서는 viewport `Leave` 이벤트를 만들 수 없어 hover 해제를 테스트하지 않았다. 행이 바뀔 때(리셋 · 필터)의 해제는 코드로만 넣었다
+- 위험도: 낮음 — 틀리면 마우스가 표 밖으로 나가도 마지막 행이 옅게 남는다
+- 후속: 실제 화면에서 결과 표에 행이 있을 때 마우스를 넣었다 빼 본다
+
 ### [2026-09-29] 검증누락 — 실제 OS 파일 끌어 놓기와 파일 · 폴더 선택 창을 사람이 확인하지 않았다
 - 위치: SageQt/ui/ui/window/SageFileDropFilter.cpp, SageQt/ui/ui/panels/SageWorkflowInputPanel.cpp
 - 설명: 드롭은 Qt 드래그 이벤트를 위젯에 보내는 테스트로만 확인했다 (탐색기 · Finder · 파일 관리자에서 실제로 끌어 놓지 않았다). `QFileDialog` 파일 · 폴더 선택 창은 CI에서 띄워 조작할 수 없어 확인하지 않았다 (macOS 시트 여부 포함)

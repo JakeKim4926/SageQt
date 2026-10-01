@@ -31,6 +31,22 @@ public:
     {
         m_hasInputTable = hasInputTable;
     }
+    void setCustomResultTable(const SageWorkflowResultStyle& style, const QList<SageWorkflowFilterCriteria>& criteria,
+                              const QList<SageResultRow>& rows)
+    {
+        m_hasCustomResultTable = true;
+        m_resultStyle = style;
+        m_filterCriteria = criteria;
+        m_customRows = rows;
+    }
+    void setSummaryLabel(const QString& summaryLabel)
+    {
+        m_summaryLabel = summaryLabel;
+    }
+    void setSelectionError(const QString& selectionError)
+    {
+        m_selectionError = selectionError;
+    }
 
     SageWorkflowType workflowType() const override
     {
@@ -71,15 +87,19 @@ public:
     }
     SageWorkflowResultStyle resultStyle(SageTaskType taskType) const override
     {
-        return m_sample.resultStyle(taskType);
+        return m_hasCustomResultTable ? m_resultStyle : m_sample.resultStyle(taskType);
     }
     bool hasCustomResultTable(SageTaskType taskType) const override
     {
-        return m_sample.hasCustomResultTable(taskType);
+        return m_hasCustomResultTable || m_sample.hasCustomResultTable(taskType);
     }
     bool buildResultSummary(SageTaskType taskType, const QList<SageResultRow>& visibleRows, const QJsonObject& response,
                             QList<SageResultSummaryItem>& outItems) const override
     {
+        if (!m_summaryLabel.isEmpty()) {
+            outItems = {{m_summaryLabel, QString::number(visibleRows.size()), QString(), false, false}};
+            return true;
+        }
         return m_sample.buildResultSummary(taskType, visibleRows, response, outItems);
     }
     bool buildResultTotals(SageTaskType taskType, const QList<SageResultRow>& visibleRows,
@@ -89,7 +109,7 @@ public:
     }
     QList<SageWorkflowFilterCriteria> filterCriteria() const override
     {
-        return m_sample.filterCriteria();
+        return m_hasCustomResultTable ? m_filterCriteria : m_sample.filterCriteria();
     }
     QString inputDialogTitle() const override
     {
@@ -109,6 +129,10 @@ public:
     }
     bool validateSelectedRows(int selectedCount, bool hasSelectedRowNums, QString& outError) const override
     {
+        if (!m_selectionError.isEmpty() && (selectedCount == 0 || !hasSelectedRowNums)) {
+            outError = m_selectionError;
+            return false;
+        }
         return m_sample.validateSelectedRows(selectedCount, hasSelectedRowNums, outError);
     }
     QString requestId(SageTaskType taskType) const override
@@ -125,6 +149,10 @@ public:
     bool buildResultRows(SageTaskType taskType, const QJsonObject& response,
                          QList<SageResultRow>& outRows) const override
     {
+        if (m_hasCustomResultTable) {
+            outRows = m_customRows;
+            return true;
+        }
         return m_sample.buildResultRows(taskType, response, outRows);
     }
 
@@ -134,6 +162,12 @@ private:
     QString m_category;
     bool m_isLoginRequired;
     bool m_hasInputTable = false;
+    bool m_hasCustomResultTable = false;
+    SageWorkflowResultStyle m_resultStyle;
+    QList<SageWorkflowFilterCriteria> m_filterCriteria;
+    QList<SageResultRow> m_customRows;
+    QString m_summaryLabel;
+    QString m_selectionError;
     SageRunTask m_runTask;
     SageSampleWorkflowHandler m_sample;
 };

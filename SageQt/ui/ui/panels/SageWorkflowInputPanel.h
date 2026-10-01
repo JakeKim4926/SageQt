@@ -11,6 +11,8 @@ class SageButton;
 class SageLabel;
 class QTimer;
 class SageLineEdit;
+class SageLabel;
+class SageResultTablePanel;
 class SageStatusCard;
 
 class SageWorkflowInputPanel : public QWidget
@@ -27,10 +29,16 @@ public:
     void applyHandler(const ISageWorkflowHandler& handler);
     void setRunningState(bool running);
     void setStatusResult(bool success, const QString& message, const QString& detail);
+    void resetStatusCard();
+    void setGenerateEnabled(bool enabled);
+    void setInputResetVisible(bool visible);
+    void setInputTableVisible(bool tableVisible, bool filterVisible);
+    SageResultTablePanel& inputTable();
 
 signals:
     void runRequested(SageTaskType taskType);
     void openOutputFolderRequested();
+    void inputResetRequested();
 
 private slots:
     void onSelectInputClicked();
@@ -56,7 +64,12 @@ private:
     SageButton* m_selectInputButton = nullptr;
     SageButton* m_selectOutputButton = nullptr;
     SageButton* m_runButton = nullptr;
+    SageButton* m_inputResetButton = nullptr;
     SageStatusCard* m_statusCard = nullptr;
+    SageResultTablePanel* m_inputTable = nullptr;
+    QWidget* m_emptyHintArea = nullptr;
+    SageLabel* m_emptyHintLabel = nullptr;
+    bool m_inputTableVisible = false;
     QTimer* m_progressTimer = nullptr;
     int m_progressPercent = 0;
     bool m_running = false;

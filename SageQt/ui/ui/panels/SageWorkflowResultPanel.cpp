@@ -18,3 +18,8 @@ SageResultTablePanel& SageWorkflowResultPanel::resultTable()
 {
     return *m_resultTable;
 }
+
+void SageWorkflowResultPanel::setFilterVisible(bool visible)
+{
+    m_resultTable->showFilter(visible);
+}

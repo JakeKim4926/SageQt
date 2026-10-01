@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-10-01] feature/input-table
+- **목적**: 입력 표 · 작업 영역 연결 (sageqt-plan T15, 네 번째 PR) · T15 완료 처리
+- **변경 내용**: 입력 패널의 입력 표(같은 표 패널 클래스) · 빈 상태 안내 · Ghost 입력 초기화, 작업 영역 표 고르기 · 보이기 조건 · 실행 버튼 조건 · 생성 요청 행 번호와 검증 · 결과 반영 · 요약/합계 갱신 · 업무별 검색어/기준/체크 보존, Ghost 면 = 배경을 칠하는 조상 면, `SageLabel` Hint, 테스트 핸들러 확장 · 작업 영역 테스트 6건. T15 결과 · DEBT_LOG 2건 · 스크린샷
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-10-01)
+
 ## [2026-10-01] feature/result-table-controls
 - **목적**: 결과 표 패널 안 컨트롤 (sageqt-plan T15, 세 번째 PR)
 - **변경 내용**: `SageSearchBox`(기준 콤보 · 검색어 · 돋보기), `SageSelectionBar` + `SageSelectionCountLabel`, `SageSummaryBar`, `SageTableTotalBar`, 표 패널 띠 · 검색 영역 · 합계 막대 · `filterChanged` · `selectionChanged`, proxy가 필터 기준 보관, `SageStyle` Ghost · 아이콘 버튼 · 체크 상자 · 기준 콤보. 사용자 결정 2건(선택 해제 면 · 전체 선택 체크 상자). 테스트 18 + model 13
