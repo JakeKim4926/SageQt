@@ -4,6 +4,7 @@
 #include "core/workflow/SageWorkflowRegistry.h"
 #include "core/workflow/SageWorkflowResultPresenter.h"
 #include "ui/dialogs/SageMessageBoxDlg.h"
+#include "ui/panels/SageResultTablePanel.h"
 #include "ui/panels/SageWorkflowHistoryPanel.h"
 #include "ui/panels/SageWorkflowInputPanel.h"
 #include "ui/panels/SageWorkflowResultPanel.h"
@@ -66,6 +67,7 @@ void SageWorkspacePanel::showWorkflow(SageWorkflowType workflowType)
     m_inputPanel->applyHandler(*handler);
     m_inputPanel->setInputPath(state.m_inputPath);
     m_inputPanel->setOutputFolder(state.m_outputFolder);
+    applyResultTableSchema(*handler, m_controller->resultState().m_taskType.value_or(SageTaskType::Generate));
 }
 
 void SageWorkspacePanel::applyDroppedPaths(const QStringList& paths)
@@ -130,6 +132,10 @@ void SageWorkspacePanel::onRunFinished(const SageWorkflowRunResult& result)
     QList<SageResultRow> rows;
     const bool success = SageWorkflowResultPresenter().buildRows(handler, result.m_taskType, result.m_response, rows);
     m_controller->finish(result, success, keepInputTable);
+    if (handler != nullptr && !keepInputTable && !handler->hasInputTable()) {
+        applyResultTableSchema(*handler, result.m_taskType);
+        m_resultPanel->resultTable().setRows(rows);
+    }
 
     if (handler != nullptr) {
         selectTabKind(handler->hasInputTable() ? SageWorkflowTabKind::Input : SageWorkflowTabKind::DocumentResult);
@@ -327,4 +333,12 @@ void SageWorkspacePanel::applyStatusCardResult(const ISageWorkflowHandler* handl
     }
     m_lastOutputPath = outputPath;
     m_inputPanel->setStatusResult(true, message, QDir::toNativeSeparators(outputPath));
+}
+
+void SageWorkspacePanel::applyResultTableSchema(const ISageWorkflowHandler& handler, SageTaskType taskType)
+{
+    if (handler.hasInputTable()) {
+        return;
+    }
+    m_resultPanel->resultTable().setColumns(handler.resultColumns(taskType), handler.resultStyle(taskType));
 }

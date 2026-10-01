@@ -10,6 +10,9 @@ from PIL import ImageGrab
 
 CAPTION_COLOR = (242, 238, 231)
 WORK_AREA_COLOR = (248, 246, 241)
+TAB_INDICATOR_COLOR = (154, 107, 63)
+TAB_INDICATOR_MIN_PIXELS = 40
+TAB_INDICATOR_MAX_ROWS = 3
 COLOR_TOLERANCE = 3
 CAPTION_HEIGHT = 40
 CAPTION_MIN_ROW_PIXELS = 200
@@ -48,6 +51,22 @@ def find_band(image, color):
         return None
     columns = numpy.nonzero(matches[caption_rows].any(axis=0))[0]
     return [int(columns.min()), int(caption_rows.min()), int(columns.max()), int(caption_rows.max())]
+
+
+def find_tab_indicator(image, work_area, scale):
+    pixels = numpy.asarray(image.convert('RGB')).astype(int)
+    region = pixels[:, work_area[0]:work_area[2] + 1]
+    matches = numpy.abs(region - numpy.array(TAB_INDICATOR_COLOR)).max(axis=2) <= COLOR_TOLERANCE
+    rows = numpy.nonzero(matches.sum(axis=1) >= TAB_INDICATOR_MIN_PIXELS * scale)[0]
+    if rows.size == 0:
+        return None
+    runs = numpy.split(rows, numpy.nonzero(numpy.diff(rows) != 1)[0] + 1)
+    thin_runs = [run for run in runs if run.size <= TAB_INDICATOR_MAX_ROWS * scale]
+    if not thin_runs:
+        return None
+    indicator_rows = thin_runs[0]
+    columns = numpy.nonzero(matches[indicator_rows].any(axis=0))[0]
+    return [int(work_area[0] + columns.min()), int(indicator_rows.min()), int(work_area[0] + columns.max()), int(indicator_rows.max())]
 
 
 def wait_for_caption():
@@ -122,7 +141,20 @@ def main():
             grab().save(out_dir / f'{prefix}-5-login-empty-id.png')
             pyautogui.press('escape')
             time.sleep(SETTLE_SECONDS)
-            result['loginClosedByEscape'] = find_caption(grab()) is None
+            image = grab()
+            result['loginClosedByEscape'] = find_caption(image) is None
+
+            indicator = find_tab_indicator(image, work_area, scale)
+            result['tabIndicator'] = indicator
+            if indicator is None:
+                return result
+            tab_width = indicator[2] - indicator[0] + 1
+            pyautogui.click((indicator[0] + tab_width * 1.5) / scale, (indicator[1] - TAB_ROW_HEIGHT * scale / 2) / scale)
+            time.sleep(SETTLE_SECONDS)
+            image = grab()
+            image.save(out_dir / f'{prefix}-6-result-tab.png')
+            moved_indicator = find_tab_indicator(image, work_area, scale)
+            result['resultTabSelected'] = moved_indicator is not None and moved_indicator[0] > indicator[2]
             return result
         finally:
             app.kill()

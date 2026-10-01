@@ -115,6 +115,8 @@ inline const QString SAGE_JSON_TYPE_RESPONSE = QStringLiteral("response");
 
 inline const QString SAGE_UI_TAB_INPUT = QStringLiteral("입력");
 inline const QString SAGE_UI_TAB_RESULT = QStringLiteral("결과");
+inline const QString SAGE_UI_SECTION_RESULT = QStringLiteral("처리 결과");
+inline const QString SAGE_UI_AMOUNT_EMPTY_MARK = QStringLiteral("—");
 inline const QString SAGE_UI_TAB_HISTORY = QStringLiteral("실행 기록");
 inline const QString SAGE_UI_SECTION_INPUT = QStringLiteral("입력 파일");
 inline const QString SAGE_UI_SECTION_OUTPUT = QStringLiteral("저장 위치");

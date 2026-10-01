@@ -105,6 +105,14 @@ void SageStyle::drawControl(ControlElement element, const QStyleOption* option, 
         drawTabLabel(option, painter);
         return;
     }
+    if (element == CE_HeaderSection || element == CE_HeaderEmptyArea) {
+        painter->fillRect(option->rect, SAGE_COLOR_LIST_HEADER);
+        return;
+    }
+    if (element == CE_HeaderLabel) {
+        drawHeaderLabel(option, painter);
+        return;
+    }
     if (element == CE_ProgressBar) {
         drawProgressBar(option, painter);
         return;
@@ -140,6 +148,9 @@ QSize SageStyle::sizeFromContents(ContentsType type, const QStyleOption* option,
     }
     if (type == CT_LineEdit) {
         size.setHeight(SAGE_EDIT_HEIGHT);
+    }
+    if (type == CT_HeaderSection) {
+        size.setHeight(SAGE_LIST_HEADER_HEIGHT);
     }
     if (type == CT_TabBarTab) {
         const QTabBar* tabBar = qobject_cast<const QTabBar*>(widget);
@@ -263,6 +274,19 @@ void SageStyle::drawLineEditFrame(const QStyleOption* option, QPainter* painter,
     qDrawPlainRect(painter, option->rect, border, SAGE_EDIT_BORDER_WIDTH);
 }
 
+void SageStyle::drawHeaderLabel(const QStyleOption* option, QPainter* painter)
+{
+    const QStyleOptionHeader* headerOption = qstyleoption_cast<const QStyleOptionHeader*>(option);
+    if (headerOption == nullptr) {
+        return;
+    }
+    const QFont font = SageFontCatalog::font(SageFontRole::List);
+    painter->setFont(font);
+    painter->setPen(SAGE_COLOR_TEXT_MUTED);
+    painter->drawText(option->rect, Qt::AlignCenter,
+                      QFontMetrics(font).elidedText(headerOption->text, Qt::ElideRight, option->rect.width()));
+}
+
 void SageStyle::drawProgressBar(const QStyleOption* option, QPainter* painter)
 {
     painter->fillRect(option->rect, SAGE_COLOR_LIST_GRID);
@@ -320,8 +344,10 @@ void SageStyle::polishLabel(QWidget* widget)
         widget->setFont(SageFontCatalog::font(SageFontRole::Caption));
         setTextColor(widget, SAGE_COLOR_TEXT_MUTED);
         return;
-    case SageLabel::SageLabelVariant::Section: {
-        widget->setFont(SageFontCatalog::font(SageFontRole::Section));
+    case SageLabel::SageLabelVariant::Section:
+    case SageLabel::SageLabelVariant::TableTitle: {
+        widget->setFont(SageFontCatalog::font(
+            label->variant() == SageLabel::SageLabelVariant::Section ? SageFontRole::Section : SageFontRole::Body));
         QPalette palette = widget->palette();
         palette.setColor(QPalette::Window, SAGE_COLOR_LIST_HEADER);
         widget->setPalette(palette);

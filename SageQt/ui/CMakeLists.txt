@@ -15,6 +15,8 @@ qt_add_library(sage_ui STATIC
     ui/models/SageSidebarModel.h
     ui/panels/SageHeaderPanel.cpp
     ui/panels/SageHeaderPanel.h
+    ui/panels/SageResultTablePanel.cpp
+    ui/panels/SageResultTablePanel.h
     ui/panels/SageSidebarPanel.cpp
     ui/panels/SageSidebarPanel.h
     ui/panels/SageWorkflowHistoryPanel.cpp
@@ -47,6 +49,8 @@ qt_add_library(sage_ui STATIC
     ui/widgets/SageLabel.h
     ui/widgets/SageLineEdit.cpp
     ui/widgets/SageLineEdit.h
+    ui/widgets/SageResultTableDelegate.cpp
+    ui/widgets/SageResultTableDelegate.h
     ui/widgets/SageSidebarDelegate.cpp
     ui/widgets/SageSidebarDelegate.h
     ui/widgets/SageStatusCard.cpp

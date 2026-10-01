@@ -15,6 +15,7 @@ public:
         SecondaryCaption,
         MutedCaption,
         Section,
+        TableTitle,
         FormLabel,
         SidebarLogo
     };

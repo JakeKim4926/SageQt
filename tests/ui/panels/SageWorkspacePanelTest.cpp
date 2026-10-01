@@ -4,6 +4,7 @@
 #include "SageTestModalDriver.h"
 #include "SageTestWorkflowHandler.h"
 #include "core/workflow/SageWorkflowRegistry.h"
+#include "ui/panels/SageResultTablePanel.h"
 #include "ui/panels/SageWorkflowHistoryPanel.h"
 #include "ui/panels/SageWorkflowInputPanel.h"
 #include "ui/panels/SageWorkflowResultPanel.h"
@@ -29,6 +30,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTabBar>
+#include <QTableView>
 #include <QTemporaryDir>
 #include <QTest>
 #include <QThreadPool>
@@ -78,6 +80,7 @@ private slots:
     void generateWithoutOutputShowsWarning();
     void generateRunsInBackgroundAndShowsResult();
     void droppedPathLoadsInputTableWorkflow();
+    void showingWorkflowSetsResultColumns();
     void runningCardAdvancesProgressUpToLimit();
     void completedRunShowsResultAndOpensFolder();
     void failedRunShowsReason();
@@ -413,6 +416,17 @@ void SageWorkspacePanelTest::droppedPathLoadsInputTableWorkflow()
     QCOMPARE(panel.selectedTabKind(), SageWorkflowTabKind::Input);
 }
 
+void SageWorkspacePanelTest::showingWorkflowSetsResultColumns()
+{
+    registerGatedHandler(false);
+    SageWorkspacePanel panel(*m_registry);
+    panel.showWorkflow(SAGE_GATED_WORKFLOW);
+
+    const QTableView* table = panel.findChild<SageResultTablePanel*>()->findChild<QTableView*>();
+    QCOMPARE(table->model()->columnCount(), 4);
+    QCOMPARE(table->model()->rowCount(), 0);
+}
+
 void SageWorkspacePanelTest::runningCardAdvancesProgressUpToLimit()
 {
     registerGatedHandler(false);
@@ -457,6 +471,7 @@ void SageWorkspacePanelTest::completedRunShowsResultAndOpensFolder()
     QCOMPARE(card->variant(), SageStatusCard::SageStatusCardVariant::Completed);
     QVERIFY(card->message().startsWith(SAGE_UI_SAMPLE_ACTION_BUTTON + QStringLiteral("이 완료되었습니다 · ")));
     QCOMPARE(card->detail(), QDir::toNativeSeparators(outputDirectory.path()));
+    QVERIFY(panel.findChild<SageResultTablePanel*>()->rowCount() > 0);
 
     openFolderButton(panel)->click();
     QCOMPARE(recorder.urls().size(), 1);

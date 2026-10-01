@@ -43,3 +43,13 @@ target_include_directories(SageWorkflowInputPanelTest PRIVATE ${SAGE_TEST_WORKFL
 target_link_libraries(SageWorkflowInputPanelTest PRIVATE sage_ui Qt::Test)
 add_test(NAME SageWorkflowInputPanelTest COMMAND SageWorkflowInputPanelTest)
 set_tests_properties(SageWorkflowInputPanelTest PROPERTIES ENVIRONMENT QT_QPA_PLATFORM=offscreen)
+
+qt_add_executable(SageResultTablePanelTest SageResultTablePanelTest.cpp)
+qt_add_resources(SageResultTablePanelTest "sage_test_fonts"
+    PREFIX "/fonts"
+    BASE ${SAGE_FONT_RESOURCE_DIR}
+    FILES ${SAGE_FONT_RESOURCES}
+)
+target_link_libraries(SageResultTablePanelTest PRIVATE sage_ui Qt::Test)
+add_test(NAME SageResultTablePanelTest COMMAND SageResultTablePanelTest)
+set_tests_properties(SageResultTablePanelTest PROPERTIES ENVIRONMENT QT_QPA_PLATFORM=offscreen)

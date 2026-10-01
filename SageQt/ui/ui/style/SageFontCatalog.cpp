@@ -17,6 +17,8 @@ QFont SageFontCatalog::font(SageFontRole role)
         return makeFont(SAGE_FONT_FAMILY_PRETENDARD, QFont::DemiBold, SAGE_HEADER_FONT_POINT_SIZE);
     case SageFontRole::List:
         return makeFont(SAGE_FONT_FAMILY_PRETENDARD, QFont::Normal, SAGE_LIST_FONT_POINT_SIZE);
+    case SageFontRole::ListBold:
+        return makeFont(SAGE_FONT_FAMILY_PRETENDARD, QFont::Bold, SAGE_LIST_FONT_POINT_SIZE);
     case SageFontRole::Caption:
         return makeFont(SAGE_FONT_FAMILY_PRETENDARD, QFont::Normal, SAGE_CAPTION_FONT_POINT_SIZE);
     case SageFontRole::Summary:

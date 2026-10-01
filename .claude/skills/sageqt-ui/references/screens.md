@@ -89,9 +89,10 @@ SageSDI `SageWorkflowInputPanel.cpp` · `SageSectionLabel.cpp`에서 옮긴다 (
 |---|---|
 | 행 | 높이 `SAGE_LIST_ROW_HEIGHT` 고정, 가로선 `SAGE_LIST_GRID_THICKNESS` `SAGE_COLOR_LIST_GRID`, 셀 여백 `SAGE_LIST_CELL_LEFT_PAD` · `SAGE_LIST_CELL_RIGHT_PAD`. 두 줄 셀 없음 |
 | 헤더 | `style-scope.md` *QHeaderView* |
-| 선택 행 | 면 `QPalette::Highlight` + 왼쪽 바 `SAGE_LIST_SELECTION_ACCENT_WIDTH` `SAGE_COLOR_PRIMARY` |
-| 열 폭 | 결과 표 `SAGE_RESULT_*_WIDTH`, 실행 기록 `SAGE_HISTORY_*_WIDTH` — **표 열 최소 폭**. 늘어나는 열은 `QHeaderView::Stretch` |
-| 늘어나는 열이 둘 이상 | SageSDI는 정의 폭 비율로 나눴다 (`DistributeColumnWidths`). `QHeaderView::Stretch`는 균등 분배라 결과가 다르다 — 결과 표는 늘어나는 열이 하나라 해당 없음. 둘 이상인 표가 생기면 그때 정한다 |
+| 선택 행 | 면 `SAGE_COLOR_LIST_ROW_SELECTED` + 왼쪽 바 `SAGE_LIST_SELECTION_ACCENT_WIDTH` `SAGE_COLOR_PRIMARY` (가로선 위). 포커스 표시 없음 |
+| 마우스를 올린 행 | 행 전체 면 `SAGE_COLOR_LIST_ROW_HOVER` (`#F8F1E6` — 흰색과 선택 행 색의 중간). 선택 행은 선택 색이 이긴다. **SageSDI에는 없다** — T15 세 OS 스크린샷과 후보 3개를 보고 사용자 결정 (2026-10-01) |
+| 열 폭 | 결과 표 `SAGE_RESULT_*_WIDTH`, 실행 기록 `SAGE_HISTORY_*_WIDTH`. 고정 열은 정의 폭, 늘어나는 열은 남는 폭 — 정의 폭보다 작아지면 모든 열을 정의 폭으로 두고 가로 스크롤 (SageSDI와 같다, `coding-design/references/model-view.md` 예외, 사용자 결정 2026-10-01) |
+| 늘어나는 열이 둘 이상 | 정의 폭 비율로 나누고 마지막 늘어나는 열이 나머지를 받는다 (`DistributeColumnWidths` 그대로) |
 | 배지 열 | 높이 `SAGE_LIST_BADGE_HEIGHT`, 좌우 여백 `SAGE_LIST_BADGE_PAD_X`, 반경 `SAGE_LIST_BADGE_RADIUS`, 캡션 폰트 |
 | 요약 · 합계 · 선택 바 | `SAGE_SUMMARY_*` · `SAGE_TOTAL_BAR_HEIGHT` · `SAGE_SELECTION_*`. 흰 박스 금지, 폭은 표 폭을 따른다 |
 | 검색 · 필 바 | `SAGE_SEARCH_*` · `SAGE_RESULT_FILTER_*` · `SAGE_PILL_*` |

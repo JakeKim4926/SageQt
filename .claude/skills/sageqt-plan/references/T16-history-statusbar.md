@@ -11,7 +11,8 @@ SageSDI의 실행 기록 탭과 메인 창 상태 표시줄을 옮긴다. 이 �
    - 읽을 reference: `coding-design/references/model-view.md` · `ui-composition.md` (창의 앱 수준 연결), `coding-rules/references/api-shape.md`
 3. 결정 — 착수 시 사용자와 확정
    - 상태 표시줄의 키보드 표시기 (아래): MFC 마법사 기본값이다. 권장 — 옮기지 않고 상태 메시지만
-4. 재확인할 사실
+4. **T15에서 정한 표 규칙** — 실행 기록 표도 같은 delegate 규칙(행 hover `SAGE_COLOR_LIST_ROW_HOVER`, 헤더 hover 없음, 스크롤바 Fusion 기본)과 열 폭 규칙(최소 폭 아래면 가로 스크롤, `coding-design/references/model-view.md` 예외)을 따를지 확인한다 — 배지 열 · 흐린 문구 · 행 상태 색은 T15 delegate에 없다
+5. 재확인할 사실
    - **메인 창 최소 크기** — T11에서 초기 크기만 1280 × 800으로 정했다 (사용자 결정). 모든 패널이 들어온 이 주제에서 내용이 잘리지 않는 최소 크기를 재서 사용자에게 확인한다 (`sageqt-ui/references/screens.md` *메인 창*)
    - `SageWorkflowHistoryPanel.cpp`의 `AppendEntry`: 응답 JSON에서 출력 경로 · 사유를 어떻게 꺼내는지, 시각 형식
    - 기록 필터(`UpdateFilterLabels` · `RebuildVisibleRows`)의 기준, 빈 상태 표시(`UpdateEmptyState`)

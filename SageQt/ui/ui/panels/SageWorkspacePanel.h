@@ -63,6 +63,7 @@ private:
     bool validateInputPath(QString& outInputPath);
     bool validateOutputFolder(QString& outOutputFolder);
     void setRunningState(bool running);
+    void applyResultTableSchema(const ISageWorkflowHandler& handler, SageTaskType taskType);
     void applyStatusCardResult(const ISageWorkflowHandler* handler, SageTaskType taskType, const QJsonObject& response,
                                bool success, int resultCount);
 

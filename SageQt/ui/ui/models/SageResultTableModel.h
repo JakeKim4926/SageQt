@@ -10,7 +10,9 @@
 
 enum class SageResultTableRole
 {
-    SourceRowIndex = Qt::UserRole
+    SourceRowIndex = Qt::UserRole,
+    Highlighted,
+    Muted
 };
 
 class SageResultTableModel : public QAbstractTableModel
@@ -26,6 +28,7 @@ public:
     void clearCheckStates();
 
     const SageResultRow& row(int row) const;
+    const SageWorkflowColumn& column(int column) const;
     SageWorkflowResultStyle resultStyle() const;
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
@@ -37,6 +40,7 @@ public:
 
 private:
     bool isCheckCell(const QModelIndex& index) const;
+    bool isHighlightColumn(int column) const;
     Qt::Alignment columnAlignment(int column) const;
 
 private:
