@@ -2,18 +2,12 @@
 
 #include "core/workflow/SageResultRow.h"
 #include "core/workflow/SageWorkflowResultTable.h"
+#include "ui/models/SageTableRole.h"
 
 #include <QAbstractTableModel>
 #include <QList>
 #include <QModelIndex>
 #include <QVariant>
-
-enum class SageResultTableRole
-{
-    SourceRowIndex = Qt::UserRole,
-    Highlighted,
-    Muted
-};
 
 class SageResultTableModel : public QAbstractTableModel
 {

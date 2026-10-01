@@ -16,6 +16,8 @@ qt_add_library(sage_core STATIC
     core/workflow/SageWorkflowResultPresenter.h
     core/workflow/SageWorkflowResultTable.cpp
     core/workflow/SageWorkflowResultTable.h
+    core/workflow/SageWorkflowHistory.cpp
+    core/workflow/SageWorkflowHistory.h
     core/workflow/SageWorkflowRunRequest.h
     core/workflow/SageWorkflowRunResult.h
     core/workflow/SageWorkflowRunner.cpp

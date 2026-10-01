@@ -1,6 +1,6 @@
 #include "ui/widgets/SageResultTableDelegate.h"
 
-#include "ui/models/SageResultTableModel.h"
+#include "ui/models/SageTableRole.h"
 #include "ui/style/SageDesignDefine.h"
 #include "ui/style/SageFontCatalog.h"
 
@@ -40,6 +40,9 @@ void SageResultTableDelegate::paint(QPainter* painter, const QStyleOptionViewIte
     const QRect cellRect = option.rect;
     const bool selected = option.state.testFlag(QStyle::State_Selected);
     QColor background = index.row() % 2 == 1 ? SAGE_COLOR_LIST_ROW_ALT : SAGE_COLOR_PANEL;
+    if (index.data(static_cast<int>(SageTableRole::RowTone)).value<SageTableTone>() == SageTableTone::Failed) {
+        background = SAGE_COLOR_STATUS_CARD_BG_ERROR;
+    }
     if (index.row() == m_hoveredRow) {
         background = SAGE_COLOR_LIST_ROW_HOVER;
     }
@@ -51,13 +54,19 @@ void SageResultTableDelegate::paint(QPainter* painter, const QStyleOptionViewIte
     if (hasCheckBox(index)) {
         drawCheckBox(painter, cellRect, index.data(Qt::CheckStateRole).value<Qt::CheckState>() == Qt::Checked);
     }
-    const bool highlighted = index.data(static_cast<int>(SageResultTableRole::Highlighted)).toBool();
+    const SageTableTone badgeTone = index.data(static_cast<int>(SageTableRole::BadgeTone)).value<SageTableTone>();
+    if (badgeTone != SageTableTone::None) {
+        drawBadge(painter, cellRect, index.data().toString(), badgeTone);
+    }
+    const bool highlighted = index.data(static_cast<int>(SageTableRole::Highlighted)).toBool();
     const QFont font = SageFontCatalog::font(highlighted ? SageFontRole::ListBold : SageFontRole::List);
     const QRect textArea = textRect(cellRect, index);
     painter->setFont(font);
     painter->setPen(textColor(index));
-    painter->drawText(textArea, index.data(Qt::TextAlignmentRole).value<Qt::Alignment>(),
-                      QFontMetrics(font).elidedText(index.data().toString(), Qt::ElideRight, textArea.width()));
+    if (badgeTone == SageTableTone::None) {
+        painter->drawText(textArea, index.data(Qt::TextAlignmentRole).value<Qt::Alignment>(),
+                          QFontMetrics(font).elidedText(index.data().toString(), Qt::ElideRight, textArea.width()));
+    }
 
     if (m_rowSeparator) {
         painter->fillRect(QRect(cellRect.left(), cellRect.bottom() + 1 - SAGE_LIST_GRID_THICKNESS, cellRect.width(),
@@ -150,15 +159,39 @@ void SageResultTableDelegate::drawCheckBox(QPainter* painter, const QRect& cellR
     painter->restore();
 }
 
+void SageResultTableDelegate::drawBadge(QPainter* painter, const QRect& contentRect, const QString& text,
+                                        SageTableTone tone)
+{
+    if (text.isEmpty()) {
+        return;
+    }
+    const QFont font = SageFontCatalog::font(SageFontRole::Caption);
+    const int badgeWidth = QFontMetrics(font).horizontalAdvance(text) + SAGE_LIST_BADGE_PAD_X * 2;
+    const QRect badge(contentRect.left() + (contentRect.width() - badgeWidth) / 2,
+                      contentRect.top() + (contentRect.height() - SAGE_LIST_BADGE_HEIGHT) / 2, badgeWidth,
+                      SAGE_LIST_BADGE_HEIGHT);
+    const QColor face = tone == SageTableTone::Success ? SAGE_COLOR_BADGE_BG_SUCCESS : SAGE_COLOR_STATUS_BG_ERROR;
+    painter->save();
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(face);
+    painter->drawRoundedRect(badge, SAGE_LIST_BADGE_RADIUS, SAGE_LIST_BADGE_RADIUS);
+    painter->restore();
+    painter->setFont(font);
+    painter->setPen(tone == SageTableTone::Success ? SAGE_COLOR_STATUS_CARD_TEXT_SUCCESS
+                                                   : SAGE_COLOR_INLINE_ERROR_TEXT);
+    painter->drawText(badge, Qt::AlignCenter, text);
+}
+
 QColor SageResultTableDelegate::textColor(const QModelIndex& index)
 {
     if (index.column() == 0) {
         return SAGE_COLOR_TEXT;
     }
-    if (index.data(static_cast<int>(SageResultTableRole::Muted)).toBool()) {
+    if (index.data(static_cast<int>(SageTableRole::Muted)).toBool()) {
         return SAGE_COLOR_TEXT_PLACEHOLDER;
     }
-    if (index.data(static_cast<int>(SageResultTableRole::Highlighted)).toBool()) {
+    if (index.data(static_cast<int>(SageTableRole::Highlighted)).toBool()) {
         return SAGE_COLOR_PRIMARY;
     }
     return SAGE_COLOR_TEXT;

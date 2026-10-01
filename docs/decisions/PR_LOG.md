@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-10-02] feature/history-panel
+- **목적**: 실행 기록 탭 (sageqt-plan T16, 첫 번째 PR)
+- **변경 내용**: core `SageWorkflowHistory`(응답 → 기록 행), `SageHistoryModel` · `SageHistoryFilterProxyModel`, `SageWorkflowHistoryPanel`(필 바 · 표 · 빈 상태), `SageFilterPillBar` · `SageEmptyState`, 공통 표 위젯 `SageTableView`(결과 표에서 뽑아냄), delegate 실패 행 면 · 배지, 표 role `SageTableRole`로 모음, 캡처 스크립트 실행 기록 탭 단계. 사용자 결정 3건(표시기 안 옮김 · 시각 고정 형식 · 기록 표도 결과 표 규칙). 스크린샷 `docs/screenshots/T16/`
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-10-02)
+
 ## [2026-10-01] feature/input-table
 - **목적**: 입력 표 · 작업 영역 연결 (sageqt-plan T15, 네 번째 PR) · T15 완료 처리
 - **변경 내용**: 입력 패널의 입력 표(같은 표 패널 클래스) · 빈 상태 안내 · Ghost 입력 초기화, 작업 영역 표 고르기 · 보이기 조건 · 실행 버튼 조건 · 생성 요청 행 번호와 검증 · 결과 반영 · 요약/합계 갱신 · 업무별 검색어/기준/체크 보존, Ghost 면 = 배경을 칠하는 조상 면, `SageLabel` Hint, 테스트 핸들러 확장 · 작업 영역 테스트 6건. T15 결과 · DEBT_LOG 2건 · 스크린샷

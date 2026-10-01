@@ -7,21 +7,19 @@
 #include <QString>
 #include <QWidget>
 
-class QEvent;
 class QFrame;
 class QHBoxLayout;
 class QSpacerItem;
-class QTableView;
 class QVBoxLayout;
 class SageButton;
 class SageLabel;
 class SageResultFilterProxyModel;
-class SageResultTableDelegate;
 class SageResultTableModel;
 class SageSearchBox;
 class SageSelectionBar;
 class SageSummaryBar;
 class SageTableTotalBar;
+class SageTableView;
 
 class SageResultTablePanel : public QWidget
 {
@@ -59,9 +57,6 @@ signals:
     void filterChanged();
     void selectionChanged(int selectedCount);
 
-protected:
-    bool eventFilter(QObject* watched, QEvent* event) override;
-
 private:
     void createWidgets(const QString& title);
     void createLayout();
@@ -79,8 +74,6 @@ private:
     void syncSelectionBar();
     void updateBand();
     void updateTotalBarCells();
-    void setHoveredRow(int row);
-    void applyColumnWidths();
     static int columnWidth(SageResultField field);
 
 private:
@@ -97,11 +90,10 @@ private:
     QSpacerItem* m_resetGap = nullptr;
     QVBoxLayout* m_layout = nullptr;
     QSpacerItem* m_bandGap = nullptr;
-    QTableView* m_tableView = nullptr;
+    SageTableView* m_tableView = nullptr;
     SageTableTotalBar* m_totalBar = nullptr;
     SageResultTableModel* m_model = nullptr;
     SageResultFilterProxyModel* m_proxy = nullptr;
-    SageResultTableDelegate* m_delegate = nullptr;
     QList<SageResultTotalCell> m_totalCells;
     bool m_hasTitle = false;
     bool m_selectAllVisible = false;

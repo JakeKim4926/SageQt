@@ -86,11 +86,11 @@ QVariant SageResultTableModel::data(const QModelIndex& index, int role) const
             return {};
         }
         return m_checked.at(index.row()) ? Qt::Checked : Qt::Unchecked;
-    case static_cast<int>(SageResultTableRole::SourceRowIndex):
+    case static_cast<int>(SageTableRole::SourceRowIndex):
         return resultRow.m_sourceRowIndex;
-    case static_cast<int>(SageResultTableRole::Highlighted):
+    case static_cast<int>(SageTableRole::Highlighted):
         return isHighlightColumn(index.column());
-    case static_cast<int>(SageResultTableRole::Muted):
+    case static_cast<int>(SageTableRole::Muted):
         return m_style.m_highlightCount > 0 &&
                SageWorkflowResultTable::rowText(resultRow, m_columns.at(index.column()).m_field) ==
                    SAGE_UI_AMOUNT_EMPTY_MARK;

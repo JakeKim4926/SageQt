@@ -1,6 +1,7 @@
 #include "ui/panels/SageWorkspacePanel.h"
 
 #include "core/workflow/ISageWorkflowHandler.h"
+#include "core/workflow/SageWorkflowHistory.h"
 #include "core/workflow/SageWorkflowRegistry.h"
 #include "core/workflow/SageWorkflowResultPresenter.h"
 #include "ui/dialogs/SageMessageBoxDlg.h"
@@ -12,6 +13,7 @@
 #include "ui/widgets/SageSurface.h"
 #include "ui/workflow/SageWorkflowController.h"
 
+#include <QDateTime>
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileInfo>
@@ -139,9 +141,14 @@ void SageWorkspacePanel::onRunFinished(const SageWorkflowRunResult& result)
         result.m_taskType == SageTaskType::Generate && handler != nullptr && handler->hasInputTable();
     QList<SageResultRow> rows;
     const bool success = SageWorkflowResultPresenter().buildRows(handler, result.m_taskType, result.m_response, rows);
+    const QString runningInputPath = m_controller->resultState().m_inputPath;
     m_controller->finish(result, success, keepInputTable);
     if (handler != nullptr && !keepInputTable) {
         applyResultTableSchema(*handler, result.m_taskType);
+    }
+    m_historyPanel->appendEntries(
+        SageWorkflowHistory::buildEntries(runningInputPath, result.m_response, success, QDateTime::currentDateTime()));
+    if (handler != nullptr && !keepInputTable) {
         setResultTableRows(*handler, rows);
     }
 

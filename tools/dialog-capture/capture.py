@@ -155,6 +155,13 @@ def main():
             image.save(out_dir / f'{prefix}-6-result-tab.png')
             moved_indicator = find_tab_indicator(image, work_area, scale)
             result['resultTabSelected'] = moved_indicator is not None and moved_indicator[0] > indicator[2]
+
+            pyautogui.click((indicator[0] + tab_width * 2.5) / scale, (indicator[1] - TAB_ROW_HEIGHT * scale / 2) / scale)
+            time.sleep(SETTLE_SECONDS)
+            image = grab()
+            image.save(out_dir / f'{prefix}-7-history-tab.png')
+            history_indicator = find_tab_indicator(image, work_area, scale)
+            result['historyTabSelected'] = history_indicator is not None and history_indicator[0] > indicator[2] + tab_width
             return result
         finally:
             app.kill()

@@ -489,6 +489,7 @@ void SageWorkspacePanelTest::completedRunShowsResultAndOpensFolder()
     QVERIFY(card->message().startsWith(SAGE_UI_SAMPLE_ACTION_BUTTON + QStringLiteral("이 완료되었습니다 · ")));
     QCOMPARE(card->detail(), QDir::toNativeSeparators(outputDirectory.path()));
     QVERIFY(panel.findChild<SageWorkflowResultPanel*>()->resultTable().rowCount() > 0);
+    QCOMPARE(panel.findChild<SageWorkflowHistoryPanel*>()->visibleRowCount(), 1);
 
     openFolderButton(panel)->click();
     QCOMPARE(recorder.urls().size(), 1);

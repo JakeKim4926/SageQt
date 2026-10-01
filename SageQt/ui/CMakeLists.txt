@@ -7,12 +7,17 @@ qt_add_library(sage_ui STATIC
     ui/dialogs/SageMessageBoxDlg.h
     ui/dialogs/SagePasswordChangeDlg.cpp
     ui/dialogs/SagePasswordChangeDlg.h
+    ui/models/SageHistoryFilterProxyModel.cpp
+    ui/models/SageHistoryFilterProxyModel.h
+    ui/models/SageHistoryModel.cpp
+    ui/models/SageHistoryModel.h
     ui/models/SageResultFilterProxyModel.cpp
     ui/models/SageResultFilterProxyModel.h
     ui/models/SageResultTableModel.cpp
     ui/models/SageResultTableModel.h
     ui/models/SageSidebarModel.cpp
     ui/models/SageSidebarModel.h
+    ui/models/SageTableRole.h
     ui/panels/SageHeaderPanel.cpp
     ui/panels/SageHeaderPanel.h
     ui/panels/SageResultTablePanel.cpp
@@ -43,6 +48,10 @@ qt_add_library(sage_ui STATIC
     ui/widgets/SageButton.h
     ui/widgets/SageDialogCaptionBar.cpp
     ui/widgets/SageDialogCaptionBar.h
+    ui/widgets/SageEmptyState.cpp
+    ui/widgets/SageEmptyState.h
+    ui/widgets/SageFilterPillBar.cpp
+    ui/widgets/SageFilterPillBar.h
     ui/widgets/SageInlineMessage.cpp
     ui/widgets/SageInlineMessage.h
     ui/widgets/SageLabel.cpp
@@ -65,6 +74,8 @@ qt_add_library(sage_ui STATIC
     ui/widgets/SageSummaryBar.h
     ui/widgets/SageTableTotalBar.cpp
     ui/widgets/SageTableTotalBar.h
+    ui/widgets/SageTableView.cpp
+    ui/widgets/SageTableView.h
     ui/widgets/SageSurface.cpp
     ui/widgets/SageSurface.h
     ui/window/SageFileDropFilter.cpp

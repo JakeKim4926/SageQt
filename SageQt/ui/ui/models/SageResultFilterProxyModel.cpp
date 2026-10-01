@@ -144,5 +144,5 @@ SageResultField SageResultFilterProxyModel::effectiveField() const
 
 int SageResultFilterProxyModel::sourceRowIndex(int row) const
 {
-    return index(row, 0).data(static_cast<int>(SageResultTableRole::SourceRowIndex)).toInt();
+    return index(row, 0).data(static_cast<int>(SageTableRole::SourceRowIndex)).toInt();
 }

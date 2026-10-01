@@ -1,6 +1,9 @@
 #pragma once
 
+#include "ui/models/SageTableRole.h"
+
 #include <QRect>
+#include <QString>
 #include <QStyledItemDelegate>
 
 class QAbstractItemModel;
@@ -32,6 +35,7 @@ private:
     static QRect textRect(const QRect& cellRect, const QModelIndex& index);
     static void drawCheckBox(QPainter* painter, const QRect& cellRect, bool checked);
     static QColor textColor(const QModelIndex& index);
+    static void drawBadge(QPainter* painter, const QRect& contentRect, const QString& text, SageTableTone tone);
 
 private:
     bool m_rowSeparator = false;

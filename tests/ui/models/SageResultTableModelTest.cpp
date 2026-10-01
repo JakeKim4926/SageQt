@@ -81,7 +81,7 @@ void SageResultTableModelTest::showsColumnsAndRowText()
     QCOMPARE(model.index(1, 1).data().toString(), QStringLiteral("Banana"));
     QCOMPARE(model.index(1, 2).data().toString(), QStringLiteral("failed"));
     QCOMPARE(model.index(1, 3).data().toString(), QStringLiteral("r"));
-    QCOMPARE(model.index(2, 0).data(static_cast<int>(SageResultTableRole::SourceRowIndex)).toInt(), 7);
+    QCOMPARE(model.index(2, 0).data(static_cast<int>(SageTableRole::SourceRowIndex)).toInt(), 7);
     QVERIFY(!model.index(0, 0).data(Qt::CheckStateRole).isValid());
 }
 
