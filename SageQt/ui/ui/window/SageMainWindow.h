@@ -8,6 +8,7 @@ class SageAuthSession;
 class SageHeaderPanel;
 class SageSidebarPanel;
 class SageUserService;
+class SageLabel;
 class SageWorkspacePanel;
 class SageWorkflowRegistry;
 
@@ -37,5 +38,6 @@ private:
     QWidget* m_contentArea = nullptr;
     SageHeaderPanel* m_headerPanel = nullptr;
     SageWorkspacePanel* m_workspacePanel = nullptr;
+    SageLabel* m_statusLabel = nullptr;
     SageFileDropFilter* m_fileDropFilter = nullptr;
 };

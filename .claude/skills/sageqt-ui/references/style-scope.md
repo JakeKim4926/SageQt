@@ -39,6 +39,7 @@
 | `QTabBar` | `CT_TabBarTab` · `CE_TabBarTabShape` · `CE_TabBarTabLabel` · `PE_FrameTabBarBase` | 탭 면은 칠하지 않는다(줄 면이 보인다). 선택 탭: *본문 강조* · `SAGE_COLOR_TEXT` · 아래 인디케이터 `SAGE_TAB_INDICATOR_HEIGHT` `SAGE_COLOR_PRIMARY`. 비선택: 본문 · `SAGE_COLOR_SECONDARY_TEXT`, **마우스를 올리면 `SAGE_COLOR_TEXT`** (SageSDI에는 없다 — 사용자 결정 2026-09-29). 키보드 포커스 표시는 없다. 글자는 인디케이터를 뺀 높이에서 가운데 (`SageTabCtrl.cpp`). 탭 폭 · 줄은 `screens.md` *탭 줄*. 기본 선(`PE_FrameTabBarBase`)은 그리지 않는다 — 줄 아래선이 대신한다 | — |
 | `QHeaderView` | `CE_HeaderSection` · `CE_HeaderEmptyArea` · `CE_HeaderLabel` · `CT_HeaderSection` | 높이 `SAGE_LIST_HEADER_HEIGHT`, 면 `SAGE_COLOR_LIST_HEADER`, 글자 `SAGE_COLOR_TEXT_MUTED` · 목록 폰트 · 말줄임, 세로 구분선 · 아래선 없음, 항상 가운데. **hover · 눌림 · 포커스 없음** — 헤더는 누를 수 없다 (SageSDI와 같다, T15 사용자 결정 2026-10-01) | — |
 | `QProgressBar` (상태 카드) | `CE_ProgressBarGroove` · `CE_ProgressBarContents` | 높이 `SAGE_STATUS_CARD_PROGRESS_HEIGHT`, 트랙 `SAGE_COLOR_LIST_GRID`, 채움 `SAGE_COLOR_PRIMARY` | — |
+| `QStatusBar` | `PE_PanelStatusBar` · `PE_FrameStatusBarItem` | 면 `SAGE_COLOR_APP_BACKGROUND` · 위 1px `SAGE_COLOR_BORDER`, 항목 테두리 없음 (`screens.md` *상태 표시줄*, T16) | — |
 | `QFrame` (패널 경계 `Box`) | `CE_ShapedFrame` | 1px `SAGE_COLOR_BORDER` | — |
 | `QFrame` (구분선 `HLine` · `VLine`) | `CE_ShapedFrame` | 1px `SAGE_BORDER_THICKNESS`, 색 팔레트 `Mid` | — |
 

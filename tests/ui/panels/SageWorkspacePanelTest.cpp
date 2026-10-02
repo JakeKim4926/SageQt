@@ -31,6 +31,7 @@
 #include <QPoint>
 #include <QRect>
 #include <QSemaphore>
+#include <QSignalSpy>
 #include <QStackedWidget>
 #include <QString>
 #include <QStringList>
@@ -41,6 +42,7 @@
 #include <QThreadPool>
 #include <QTimer>
 #include <QUrl>
+#include <QVariant>
 
 #include <memory>
 #include <stdexcept>
@@ -95,6 +97,8 @@ private slots:
     void filterAndChecksAreRestoredPerWorkflow();
     void filterRefreshesSummary();
     void inputResetClearsTable();
+    void statusFollowsRunSteps();
+    void failedRunReportsFailedStatus();
 
 private:
     void registerGatedHandler(bool hasInputTable);
@@ -710,6 +714,45 @@ SageLabel* SageWorkspacePanelTest::emptyHint(SageWorkspacePanel& panel)
         }
     }
     return nullptr;
+}
+
+void SageWorkspacePanelTest::statusFollowsRunSteps()
+{
+    registerInputTableHandler();
+    SageWorkspacePanel panel(*m_registry);
+    QSignalSpy statusSpy(&panel, &SageWorkspacePanel::statusChanged);
+    panel.showWorkflow(SAGE_INPUT_TABLE_WORKFLOW);
+    QCOMPARE(statusSpy.takeFirst().at(0).toString(), SAGE_UI_READY);
+
+    panel.applyDroppedPaths({QStringLiteral("C:/work/in.xlsx")});
+    QTRY_VERIFY(!panel.isRunning());
+    QStringList statuses;
+    for (const QList<QVariant>& arguments : std::as_const(statusSpy)) {
+        statuses.append(arguments.at(0).toString());
+    }
+    QCOMPARE(statuses, QStringList({SAGE_UI_DROP_RECEIVED, SAGE_UI_RUNNING, SAGE_UI_COMPLETED}));
+
+    statusSpy.clear();
+    inputResetButton(panel)->click();
+    QCOMPARE(statusSpy.count(), 1);
+    QCOMPARE(statusSpy.takeFirst().at(0).toString(), SAGE_UI_READY);
+}
+
+void SageWorkspacePanelTest::failedRunReportsFailedStatus()
+{
+    std::unique_ptr<SageTestWorkflowHandler> handler = std::make_unique<SageTestWorkflowHandler>(
+        SAGE_GATED_WORKFLOW, QStringLiteral("실패 업무"), QStringLiteral("샘플"), false);
+    handler->setRunTask(
+        [](SageTaskType, const QJsonObject&) -> QJsonObject { throw std::runtime_error("handler failure"); });
+    m_registry->registerHandler(std::move(handler));
+    SageWorkspacePanel panel(*m_registry);
+    QStringList messages;
+    const SageTestModalDriver driver(collectMessages(messages));
+    QSignalSpy statusSpy(&panel, &SageWorkspacePanel::statusChanged);
+    startGatedGenerate(panel, QStringLiteral("C:/work/out"));
+    QTRY_VERIFY(!panel.isRunning());
+
+    QCOMPARE(statusSpy.last().at(0).toString(), SAGE_UI_FAILED);
 }
 
 QTEST_MAIN(SageWorkspacePanelTest)

@@ -81,6 +81,13 @@ void SageStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* opti
     case PE_IndicatorCheckBox:
         drawCheckIndicator(option, painter);
         return;
+    case PE_PanelStatusBar:
+        painter->fillRect(option->rect, SAGE_COLOR_APP_BACKGROUND);
+        painter->fillRect(QRect(option->rect.left(), option->rect.top(), option->rect.width(), SAGE_BORDER_THICKNESS),
+                          SAGE_COLOR_BORDER);
+        return;
+    case PE_FrameStatusBarItem:
+        return;
     case PE_FrameFocusRect:
         if (qobject_cast<const QAbstractButton*>(widget) != nullptr ||
             qobject_cast<const QTabBar*>(widget) != nullptr) {

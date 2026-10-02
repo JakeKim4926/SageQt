@@ -5,6 +5,18 @@
 
 ## 열린 항목
 
+### [2026-10-02] 검증누락 — 샘플 업무 전 구간(입력 → 실행 → 결과 → 기록)을 사람이 세 OS에서 실행해 보지 않았다
+- 위치: SageQt/ui/ui/panels/SageWorkspacePanel.cpp, SageWorkflowHistoryPanel.cpp, SageQt/ui/ui/window/SageMainWindow.cpp
+- 설명: T16 완료 기준의 "세 OS에서 샘플 업무 전 구간 동작 (Mac mini 포함, 확인 표)"은 세 OS CI의 오프스크린 테스트(`SageWorkspacePanelTest` — 실행 · 결과 표 · 상태 카드 · 기록 · 상태 문자열)로만 확인했다. CI 스크린샷은 실행 전 화면(입력 · 결과 · 기록 탭)뿐이다 — 파일 선택 창을 CI에서 조작할 수 없어 실제 실행 후 화면은 없다. Mac mini가 아직 없다
+- 위험도: 중 — UI 이관의 마지막 확인이다. 실제 실행 후 결과 표 · 기록 표 · 상태 표시줄을 사람이 보지 않았다
+- 후속: Mac mini 준비 뒤 세 OS에서 샘플 업무를 한 번씩 실행하고 확인 표(사이드바 → 입력 → 실행 → 결과 → 기록 · 상태 표시줄)를 채운다. 파일 끌어 놓기 · 선택 창 확인(2026-09-29 항목)과 함께 한다
+
+### [2026-10-02] 가정 — 실행 기록의 파일별 행(`files` 배열) 위치를 `payload.files`로 가정했다
+- 위치: SageQt/core/core/workflow/SageWorkflowHistory.cpp
+- 설명: SageSDI는 응답 JSON 문자열에서 `"files"`를 처음 찾는 곳을 썼다. 이 배열을 내는 핸들러가 두 앱 모두 없어 실제 위치를 확인할 수 없었다
+- 위험도: 낮음 — 지금 업무에는 영향이 없다. `files`를 내는 업무를 붙이면 기록이 파일별로 나뉘지 않을 수 있다
+- 후속: 파일별 결과를 내는 업무를 추가하는 주제에서 응답 형식을 정하고 `SageWorkflowHistoryTest`를 맞춘다
+
 ### [2026-10-01] 검증누락 — 입력 표 · 검색 · 선택 막대 · 요약 · 합계를 실제 업무로 확인하지 않았다
 - 위치: SageQt/ui/ui/panels/SageResultTablePanel.cpp, SageQt/ui/ui/panels/SageWorkspacePanel.cpp, SageQt/ui/ui/widgets/SageSearchBox.cpp · SageSelectionBar.cpp · SageSummaryBar.cpp · SageTableTotalBar.cpp
 - 설명: 두 앱의 유일한 업무(샘플)는 이 기능들을 켜지 않는다. 테스트용 핸들러(오프스크린)로만 확인했고, 세 OS 실제 화면은 빈 결과 표와 빈 상태 안내뿐이다. 기준 콤보를 펼친 목록 · 검색창 포커스 · 가로 스크롤 시 합계 칸 맞춤은 실제 화면에서 보지 않았다

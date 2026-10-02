@@ -7,10 +7,13 @@
 #include "ui/panels/SageSidebarPanel.h"
 #include "ui/panels/SageWorkspacePanel.h"
 #include "ui/style/SageDesignDefine.h"
+#include "ui/style/SageStyleDefine.h"
+#include "ui/widgets/SageLabel.h"
 #include "ui/window/SageFileDropFilter.h"
 
 #include <QFrame>
 #include <QHBoxLayout>
+#include <QStatusBar>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -55,6 +58,11 @@ void SageMainWindow::createWidgets(const SageWorkflowRegistry& registry, SageAut
     setAcceptDrops(true);
     installEventFilter(m_fileDropFilter);
     setCentralWidget(m_centralWidget);
+    statusBar()->setSizeGripEnabled(false);
+    statusBar()->setFixedHeight(SAGE_STATUS_BAR_HEIGHT);
+    m_statusLabel = new SageLabel(SageLabel::SageLabelVariant::Hint, SAGE_UI_READY, statusBar());
+    m_statusLabel->setIndent(SAGE_CONTENT_PAD_X - SAGE_QT_STATUS_BAR_ITEM_OFFSET);
+    statusBar()->addWidget(m_statusLabel, 1);
 }
 
 void SageMainWindow::createLayout()
@@ -82,6 +90,7 @@ void SageMainWindow::connectSignals()
     connect(m_headerPanel, &SageHeaderPanel::loginRequested, this, &SageMainWindow::openLoginDialog);
     connect(m_sidebarPanel, &SageSidebarPanel::passwordChangeRequested, this,
             &SageMainWindow::openPasswordChangeDialog);
+    connect(m_workspacePanel, &SageWorkspacePanel::statusChanged, m_statusLabel, &SageLabel::setText);
     const std::optional<SageWorkflowType> selectedWorkflow = m_sidebarPanel->selectedWorkflow();
     if (selectedWorkflow.has_value()) {
         m_headerPanel->showWorkflow(*selectedWorkflow);

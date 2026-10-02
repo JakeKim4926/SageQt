@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-10-02] feature/status-bar
+- **목적**: 상태 표시줄 · 상태 메시지 (sageqt-plan T16, 두 번째 PR) · T16 완료 처리
+- **변경 내용**: 작업 영역 `statusChanged`(대기 중 · 처리 중 · 파일 드롭 수신 · 완료 · 실패), 메인 창 상태 표시줄(라벨 · 왼쪽 여백 24 · 높이 24 · 보조 글자색 · 손잡이 없음), `SageStyle` 상태 표시줄 면 · 위 구분선. 사용자 결정 4건. T16 결과 · DEBT_LOG 2건 · 스크린샷
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-10-02)
+
 ## [2026-10-02] feature/history-panel
 - **목적**: 실행 기록 탭 (sageqt-plan T16, 첫 번째 PR)
 - **변경 내용**: core `SageWorkflowHistory`(응답 → 기록 행), `SageHistoryModel` · `SageHistoryFilterProxyModel`, `SageWorkflowHistoryPanel`(필 바 · 표 · 빈 상태), `SageFilterPillBar` · `SageEmptyState`, 공통 표 위젯 `SageTableView`(결과 표에서 뽑아냄), delegate 실패 행 면 · 배지, 표 role `SageTableRole`로 모음, 캡처 스크립트 실행 기록 탭 단계. 사용자 결정 3건(표시기 안 옮김 · 시각 고정 형식 · 기록 표도 결과 표 규칙). 스크린샷 `docs/screenshots/T16/`

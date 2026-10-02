@@ -71,6 +71,9 @@ void SageWorkspacePanel::showWorkflow(SageWorkflowType workflowType)
     m_inputPanel->setOutputFolder(state.m_outputFolder);
     resultTableFor(*handler).restoreFilter(state.m_filterKeyword, state.m_filterCriteria);
     rebuildResultTable(*handler, state.m_checkedRowNums);
+    if (!m_controller->isRunning()) {
+        emit statusChanged(SAGE_UI_READY);
+    }
 }
 
 void SageWorkspacePanel::applyDroppedPaths(const QStringList& paths)
@@ -84,6 +87,7 @@ void SageWorkspacePanel::applyDroppedPaths(const QStringList& paths)
     }
     m_inputPanel->setInputPath(paths.constFirst());
     selectTabKind(SageWorkflowTabKind::Input);
+    emit statusChanged(SAGE_UI_DROP_RECEIVED);
     if (handler->hasInputTable()) {
         onRunRequested(SageTaskType::Load);
     }
@@ -164,6 +168,7 @@ void SageWorkspacePanel::onRunFinished(const SageWorkflowRunResult& result)
     const int resultCount =
         keepInputTable ? m_inputPanel->inputTable().checkedRowCount() : static_cast<int>(rows.size());
     applyStatusCardResult(handler, result.m_taskType, result.m_response, success, resultCount);
+    emit statusChanged(success ? SAGE_UI_COMPLETED : SAGE_UI_FAILED);
     setRunningState(false);
 }
 
@@ -340,6 +345,9 @@ void SageWorkspacePanel::setRunningState(bool running)
     m_inputPanel->setRunningState(running);
     updateActionButtonState();
     refreshVisibility();
+    if (running) {
+        emit statusChanged(SAGE_UI_RUNNING);
+    }
 }
 
 void SageWorkspacePanel::applyStatusCardResult(const ISageWorkflowHandler* handler, SageTaskType taskType,
@@ -403,6 +411,7 @@ void SageWorkspacePanel::onInputResetRequested()
     m_controller->clearResult();
     applyResultTableSchema(*handler, SageTaskType::Generate);
     refreshVisibility();
+    emit statusChanged(SAGE_UI_READY);
 }
 
 const ISageWorkflowHandler* SageWorkspacePanel::findCurrentHandler() const

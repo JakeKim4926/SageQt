@@ -6,7 +6,7 @@
 세 OS에서 앱이 올바른 이름 · 버전 · 아이콘을 갖고, 번들 폰트의 라이선스 고지가 갖춰진다.
 
 ## 시작 전에
-1. 선행 주제: T16
+1. 선행 주제: 없음 (T16 완료 — UI 이관이 끝났다)
 2. 스킬 로드: `coding-design` (빌드 정의 — OS별 분기는 패키징 설정에만), `git-workflow`
    - 읽을 reference: `coding-design/references/cmake-targets.md`
 3. 결정 대기 — 사용자에게 확정받는다

@@ -46,8 +46,8 @@ SageSDI의 실행 기록 탭과 메인 창 상태 표시줄을 옮긴다. 이 �
 ## 작업
 PR 1~2개: `feature/history-panel`, `feature/status-bar`
 - [x] 실행 기록 model · 패널 · 필터 · 빈 상태
-- [ ] 상태 표시줄과 상태 메시지 연결
-- [ ] 샘플 업무 전 구간 확인 (세 OS): 사이드바 → 입력 → 실행 → 결과 → 기록, 스크린샷
+- [x] 상태 표시줄과 상태 메시지 연결
+- [x] 샘플 업무 전 구간 확인 (세 OS): 사이드바 → 입력 → 실행 → 결과 → 기록, 스크린샷 — CI 테스트로만 (아래 결과 · DEBT_LOG)
 
 ## 완료 기준
 - 3-OS CI 통과
@@ -66,3 +66,21 @@ PR 1~2개: `feature/history-panel`, `feature/status-bar`
 - 빈 상태 (`SageEmptyState.cpp`): 면 `PANEL` · 1px `BORDER`. 가운데에 아이콘 상자 44(반경 8, 면 `LIST_HEADER`, 표 모양 아이콘 22 · 선 1 `PRIMARY`) · 12 · 제목(헤더 폰트 · `TEXT` · 높이 22) · 12 · 설명(본문 · `SECONDARY_TEXT`, 최대 폭 420에서 줄바꿈). 기록이 없으면 「아직 실행 기록이 없습니다 / 문서를 생성하면 여기에 쌓입니다」, 필터 결과가 없으면 「조건에 맞는 기록이 없습니다 / 다른 항목을 선택해 보세요」. 동작 버튼(`SetAction`)은 사용처가 없어 옮기지 않았다
 - 실행 기록은 업무와 상관없이 하나다 (작업 영역에 패널 하나). 추가 시점은 실행이 끝난 직후, 결과 표 열 설정 뒤 · 행 채우기 앞 (`DisplayResponse`). 입력 경로는 실행을 시작할 때의 입력 경로(`GetRunningInputPath`)
 - 공통 표 위젯 `SageTableView`(`QTableView`): 결과 표 · 기록 표가 같은 설정(테두리 · 행 높이 · 헤더 · 선택)과 delegate · 행 hover · 열 폭 규칙을 쓰도록 T15의 결과 표 패널에서 뽑아냈다
+- 상태 메시지 (`NotifyStatus` · `SageSDIView`): 창을 만들 때 · 업무를 고를 때(실행 중이 아니면) 「대기 중」, 실행 시작(`SetRunningState(TRUE)`) 「처리 중」, 드롭 받음 「파일 드롭 수신」(입력 표 업무면 바로 불러오기라 곧 「처리 중」), 입력 초기화 「대기 중」, 실행이 끝나면 「완료」/「실패」. **SageSDI UI 규칙 문서(sagesdi-ui 377)는 "상태바에 「완료」 한 단어로 결과를 알리지 않는다"인데 코드는 알린다 — 사용자 결정 (2026-10-02): 코드대로 5종 모두**. SageSDI 헤더에는 상태 글자가 없다(`m_wndHeaderStatus` 없음)
+- 연결: 작업 영역 `statusChanged` → 창의 상태 표시줄 라벨 `setText` (창의 앱 수준 연결, 중계 slot 없음). `QStatusBar::showMessage`는 글자 위치(왼쪽 6)를 Qt가 코드에 박아 두어 여백을 줄 수 없다 → `SageLabel`을 상태 표시줄에 넣었다. Qt 상태 표시줄은 항목 앞에 2px을 둔다(`SAGE_QT_STATUS_BAR_ITEM_OFFSET`, 테스트로 측정)
+- 상태 표시줄 모양 결정 (2026-10-02, macOS 실제 화면 · Windows 오프스크린을 보고): 왼쪽 여백 24 · 높이 24 · 보조 글자색. Windows · Linux CI 화면(768 · 800)은 창(800)보다 낮아 상태 표시줄이 화면 밖이다
+- 메인 창 최소 크기 결정 (2026-10-02): 따로 정하지 않고 레이아웃이 정한다 (오프스크린 Windows 측정 631 × 638 = 사이드바 220 + 선 1 + 작업 영역 410, 헤더 57 + 작업 영역 562 + 상태 표시줄 19 — 상태 표시줄 높이를 24로 바꾸기 전 측정)
+
+## 결과
+- PR 없이 두 브랜치로 `develop`에 squash merge: `feature/history-panel`(실행 기록 탭 · 공통 표 위젯 `SageTableView`), `feature/status-bar`(상태 표시줄 · 상태 메시지 5종)
+- 완료 기준 확인
+  - 3-OS CI 통과 — 실행 36947240980 · 스크린샷 36947240984
+  - 세 OS에서 샘플 업무 전 구간 — **세 OS CI 테스트로만 확인** (`SageWorkspacePanelTest`: 실행 → 결과 표 → 상태 카드 → 기록 → 상태 문자열). 사람이 직접 실행한 확인 표는 없고 Mac mini도 아직 없다 → `DEBT_LOG.md`. 세 OS 스크린샷은 실행 전 입력 · 결과 · 기록 탭
+  - 상태 문자열 5종 — `statusFollowsRunSteps` · `failedRunReportsFailedStatus` · `statusBarShowsReadyAndWorkspaceStatus`
+- 사용자 결정 7건: 표시기 안 옮김 · 시각 고정 형식 · 기록 표도 결과 표 규칙 · 완료/실패 문구는 코드대로 · 상태 표시줄은 스크린샷 보고 → 여백 24 · 높이 24 · 보조 글자색 · 최소 크기는 레이아웃에 맡김
+- 스크린샷 `docs/screenshots/T16/`
+- 교훈
+  - 픽셀 테스트는 글자가 지나가지 않는 곳을 잰다 — 배지 가운데를 쟀더니 OS마다 글꼴이 달라 실패했다
+  - `QStatusBar::showMessage`는 글자 위치를 바꿀 수 없다 — 여백이 필요하면 라벨을 넣는다
+  - CI 화면이 창보다 작으면 아래쪽(상태 표시줄)이 화면 밖이다 — 오프스크린 그림으로 보완했다
+

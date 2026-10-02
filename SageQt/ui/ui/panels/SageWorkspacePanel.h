@@ -47,6 +47,9 @@ public:
     SageWorkflowTabKind selectedTabKind() const;
     bool isRunning() const;
 
+signals:
+    void statusChanged(const QString& status);
+
 public slots:
     void showWorkflow(SageWorkflowType workflowType);
     void applyDroppedPaths(const QStringList& paths);

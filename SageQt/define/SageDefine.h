@@ -73,6 +73,9 @@ inline const QString SAGE_UI_MSGBOX_OK = QStringLiteral("확인");
 inline const QString SAGE_LOG_WINDOW_MOVE_UNSUPPORTED =
     QStringLiteral("창 끌어서 이동을 시작할 수 없습니다. Platform=%1");
 
+inline const QString SAGE_UI_READY = QStringLiteral("대기 중");
+inline const QString SAGE_UI_RUNNING = QStringLiteral("처리 중");
+inline const QString SAGE_UI_DROP_RECEIVED = QStringLiteral("파일 드롭 수신");
 inline const QString SAGE_UI_COMPLETED = QStringLiteral("완료");
 inline const QString SAGE_UI_FAILED = QStringLiteral("실패");
 

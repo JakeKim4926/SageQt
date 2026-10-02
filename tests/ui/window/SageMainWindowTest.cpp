@@ -1,5 +1,7 @@
 #include "ui/window/SageMainWindow.h"
 
+#include "SageDefine.h"
+
 #include "SageTestAuth.h"
 #include "core/auth/SageAuthSession.h"
 #include "core/auth/SageUserService.h"
@@ -26,6 +28,7 @@
 #include <QPoint>
 #include <QPointF>
 #include <QRectF>
+#include <QStatusBar>
 #include <QString>
 #include <QTabBar>
 #include <QTest>
@@ -40,6 +43,7 @@ private slots:
     void initTestCase();
     void startsAtInitialSize();
     void headerShowsSelectedWorkflow();
+    void statusBarShowsReadyAndWorkspaceStatus();
     void drawsSidebarDividerAndAlignedLines();
     void fileDroppedOnInputPathEditBecomesInputPath();
     void fileDroppedOnResultAreaBecomesInputPath();
@@ -88,6 +92,24 @@ void SageMainWindowTest::headerShowsSelectedWorkflow()
                                 label->text() == QStringLiteral("샘플 업무"));
     }
     QVERIFY(hasTitle);
+}
+
+void SageMainWindowTest::statusBarShowsReadyAndWorkspaceStatus()
+{
+    const SageWorkflowRegistry registry;
+    const SageTestUserRepository repository;
+    const SageTestPasswordHasher hasher;
+    const SageUserService userService(repository, hasher);
+    SageAuthSession session;
+    SageMainWindow window(registry, userService, session);
+
+    const SageLabel* statusLabel = window.statusBar()->findChild<SageLabel*>();
+    QCOMPARE(statusLabel->text(), SAGE_UI_READY);
+    QVERIFY(!window.statusBar()->isSizeGripEnabled());
+    QCOMPARE(window.statusBar()->height(), 24);
+    emit window.findChild<SageWorkspacePanel*>()->statusChanged(SAGE_UI_RUNNING);
+    QCOMPARE(statusLabel->text(), SAGE_UI_RUNNING);
+    QCOMPARE(statusLabel->mapTo(&window, QPoint()).x() + statusLabel->indent(), 24);
 }
 
 void SageMainWindowTest::drawsSidebarDividerAndAlignedLines()

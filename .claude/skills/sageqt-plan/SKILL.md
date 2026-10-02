@@ -31,8 +31,7 @@ description: >
 
 | ID | 단계 | 주제 | 선행 | 결정 대기 | 상태 |
 |---|---|---|---|---|---|
-| [T16](references/T16-history-statusbar.md) | UI 이관 | 실행 기록 · 상태 표시줄 | — | — | 대기 |
-| [T17](references/T17-app-metadata.md) | 배포 | 버전 · 아이콘 · 폰트 라이선스 | T16 | 제품 버전 | 대기 |
+| [T17](references/T17-app-metadata.md) | 배포 | 버전 · 아이콘 · 폰트 라이선스 | — | 제품 버전 | 대기 |
 | [T18](references/T18-packaging.md) | 배포 | 패키징 · CI 산출물 | T17 | — | 대기 |
 | [T19](references/T19-signing.md) | 배포 | 서명 · 공증 | T18 | — | 대기 |
 

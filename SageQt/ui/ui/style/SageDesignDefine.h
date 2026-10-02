@@ -89,6 +89,7 @@ inline constexpr int SAGE_SELECTION_ACCENT_WIDTH = 3;
 inline constexpr int SAGE_HEADER_HEIGHT = 56;
 inline constexpr int SAGE_CONTENT_PAD_X = 24;
 inline constexpr int SAGE_CONTENT_PAD_Y = 20;
+inline constexpr int SAGE_STATUS_BAR_HEIGHT = 24;
 inline constexpr int SAGE_TAB_HEIGHT = 40;
 inline constexpr int SAGE_TAB_INDICATOR_HEIGHT = 2;
 inline constexpr int SAGE_TAB_PAD_X = 16;

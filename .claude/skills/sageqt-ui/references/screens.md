@@ -8,7 +8,8 @@
 |---|---|
 | 구성 | 왼쪽 사이드바 · 1px 세로 구분선 `SAGE_COLOR_BORDER` (`SageSDIView.cpp` `OnDraw`) · 오른쪽에 헤더 → 탭 줄 → 작업 영역 (`ui-composition.md` *화면 클래스 구성*) |
 | 배경 | `QPalette::Window` (`SAGE_COLOR_APP_BACKGROUND`) |
-| 초기 · 최소 크기 | SageSDI에 없다 (`CMainFrame`은 제목만 바꾸고 `OnGetMinMaxInfo`도 없다). 초기 `SAGE_MAIN_WINDOW_WIDTH` × `SAGE_MAIN_WINDOW_HEIGHT` (1280 × 800, 사용자 결정 2026-09-28). 최소 크기는 모든 패널이 들어오는 T16에서 내용 기준으로 정한다 |
+| 초기 · 최소 크기 | SageSDI에 없다 (`CMainFrame`은 제목만 바꾸고 `OnGetMinMaxInfo`도 없다). 초기 `SAGE_MAIN_WINDOW_WIDTH` × `SAGE_MAIN_WINDOW_HEIGHT` (1280 × 800, 사용자 결정 2026-09-28). 최소 크기는 따로 정하지 않고 레이아웃이 정한다 — 내용이 잘리지 않는 크기(오프스크린 Windows 측정 631 × 638, OS 글꼴에 따라 조금 다름)까지만 줄고, 결과 표는 가로 스크롤 (T16 사용자 결정 2026-10-02) |
+| 상태 표시줄 | 창 맨 아래 전체 폭, 높이 `SAGE_STATUS_BAR_HEIGHT` 24, 면 `SAGE_COLOR_APP_BACKGROUND` · 위 1px `SAGE_COLOR_BORDER`, 크기 조절 손잡이 없음. 메시지는 `SageLabel` `Hint`(본문 · `SAGE_COLOR_SECONDARY_TEXT`), 왼쪽 여백 `SAGE_CONTENT_PAD_X` 24. 키보드 표시기 없음. **SageSDI는 Windows 기본 상태 표시줄이라 규격이 없다** — 세 OS 스크린샷을 보고 사용자 결정 (T16, 2026-10-02) |
 | 창 제목 | `SAGE_UI_MAIN_WINDOW_TITLE` (이미 있음) |
 
 ## 사이드바 (T11)
