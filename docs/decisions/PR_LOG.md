@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-10-02] chore/ci-artifacts
+- **목적**: CI 결과물 · Qt 없는 환경 실행 확인 (sageqt-plan T18, 세 번째 PR) · T18 완료 처리
+- **변경 내용**: build job(release)에 install + cpack + 산출물 업로드, `verify-package` job(새 러너에서 압축 풀고 실행 · DB 생성 확인), Linux 검증 러너에 시스템 라이브러리. T18 결과 · DEBT_LOG
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-10-02)
+
 ## [2026-10-02] chore/deploy-script
 - **목적**: 배포 스크립트 (sageqt-plan T18, 두 번째 PR)
 - **변경 내용**: `SageQt/packaging/CMakeLists.txt`(install + `qt_generate_deploy_app_script` NO_TRANSLATIONS + 라이선스 · .desktop · 아이콘 설치 + CPack ZIP/DragNDrop/TGZ + SHA256), 프리셋 `SAGE_PACKAGE_PLATFORM`. 로컬 Windows에서 zip 생성 · Qt 없이 실행 · qsqlite 로드 확인

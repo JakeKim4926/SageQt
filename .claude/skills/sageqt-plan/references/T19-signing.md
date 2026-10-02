@@ -6,7 +6,7 @@
 배포 결과물이 사용자 PC에서 보안 경고 없이 실행된다 — Windows Authenticode 서명, macOS 서명 · 공증.
 
 ## 시작 전에
-1. 선행 주제: T18
+1. 선행 주제: 없음 (T18 완료 — CI가 세 OS 결과물을 만든다: `package-<프리셋>` 산출물)
 2. 스킬 로드: `git-workflow`
 3. 결정 · 준비 — 사용자에게 확인
    - Apple Developer Program 가입 (연 $99), Windows 코드서명 인증서

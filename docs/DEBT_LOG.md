@@ -5,6 +5,12 @@
 
 ## 열린 항목
 
+### [2026-10-02] 검증누락 — 배포 결과물로 로그인 · 샘플 업무를 해 보지 않았다
+- 위치: .github/workflows/build.yml (`verify-package`), SageQt/packaging/CMakeLists.txt
+- 설명: Qt가 없는 새 러너에서 세 결과물이 실행되고 DB가 만들어지는 것까지만 CI로 확인했다. 로그인 창 · 샘플 업무 실행 · 파일 선택 창은 결과물로 해 보지 않았다. Linux tar.gz는 시스템 라이브러리(`libopengl0 libegl1 libxcb-cursor0 libxkbcommon-x11-0 libxcb-icccm4 libxcb-keysyms1 libxcb-shape0`)가 있어야 실행된다 — 배포 안내에 아직 적지 않았다
+- 위험도: 중 — 배포 직전 확인이다
+- 후속: 세 OS 실제 PC(Mac mini 포함)에 결과물을 풀어 로그인 · 샘플 업무 · 기록까지 해 본다 (2026-10-02 "샘플 업무 전 구간" 항목과 함께). Linux 시스템 라이브러리 목록을 배포 안내(릴리스 노트 · README)에 적는다
+
 ### [2026-10-02] 검증누락 — 샘플 업무 전 구간(입력 → 실행 → 결과 → 기록)을 사람이 세 OS에서 실행해 보지 않았다
 - 위치: SageQt/ui/ui/panels/SageWorkspacePanel.cpp, SageWorkflowHistoryPanel.cpp, SageQt/ui/ui/window/SageMainWindow.cpp
 - 설명: T16 완료 기준의 "세 OS에서 샘플 업무 전 구간 동작 (Mac mini 포함, 확인 표)"은 세 OS CI의 오프스크린 테스트(`SageWorkspacePanelTest` — 실행 · 결과 표 · 상태 카드 · 기록 · 상태 문자열)로만 확인했다. CI 스크린샷은 실행 전 화면(입력 · 결과 · 기록 탭)뿐이다 — 파일 선택 창을 CI에서 조작할 수 없어 실제 실행 후 화면은 없다. Mac mini가 아직 없다
