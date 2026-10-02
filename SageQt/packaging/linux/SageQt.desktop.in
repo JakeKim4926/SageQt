@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=@SAGE_PRODUCT_NAME@
+Exec=@SAGE_APPLICATION_NAME@
+Categories=Office;
+Terminal=false
+X-AppVersion=@PROJECT_VERSION@

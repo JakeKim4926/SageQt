@@ -1,3 +1,4 @@
+#include "SageAppInfo.h"
 #include "SageDefine.h"
 #include "core/auth/SageAuthSession.h"
 #include "core/auth/SageUserService.h"
@@ -37,6 +38,7 @@ int main(int argc, char* argv[])
     QApplication application(argc, argv);
     QCoreApplication::setOrganizationName(SAGE_ORGANIZATION_NAME);
     QCoreApplication::setApplicationName(SAGE_APPLICATION_NAME);
+    QCoreApplication::setApplicationVersion(SAGE_APPLICATION_VERSION);
 
     QString error;
     if (!SageFontRegistry::registerApplicationFonts(error)) {

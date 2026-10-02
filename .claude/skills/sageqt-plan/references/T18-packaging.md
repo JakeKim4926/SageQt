@@ -6,12 +6,13 @@
 CI가 세 OS용 배포 결과물을 만든다 — Qt 런타임 · 플러그인(특히 `qsqlite`)을 포함해, Qt가 설치되지 않은 PC에서도 실행되는 형태로.
 
 ## 시작 전에
-1. 선행 주제: T17
+1. 선행 주제: 없음 (T17 완료 — 버전 · 식별 정보 · 라이선스 복사가 있다, 아이콘은 대기)
 2. 스킬 로드: `coding-design` (빌드 정의), `git-workflow`
    - 읽을 reference: `coding-design/references/cmake-targets.md`
 3. 결정 — 착수 시 사용자와 확정
    - 결과물 형식: Windows (폴더 zip · 설치 파일), macOS (`.dmg`), Linux (AppImage 등)
-4. 재확인할 사실
+4. **T17에서 넘긴 것** — 앱 아이콘은 사용자가 고해상도 원본을 주기로 했다 (`DEBT_LOG.md`). 받았는지 확인하고, 받았으면 `.ico` · `.icns` · Linux PNG를 먼저 연결한다. 배포 틀은 `SageQt/packaging/`(windows `SageQt.rc.in` · linux `SageQt.desktop.in`)에 둔다. 라이선스는 빌드 결과물의 `licenses/`(macOS 번들 `Contents/Resources/licenses`)에 이미 복사된다
+5. 재확인할 사실
    - Qt 6.11의 `qt_generate_deploy_app_script`가 세 OS에서 무엇을 해 주는지 (Qt 문서)
    - Linux 배포 도구는 Qt가 제공하지 않는다 — 착수 시 선택지 조사
 

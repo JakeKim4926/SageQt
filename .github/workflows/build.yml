@@ -79,6 +79,35 @@ jobs:
       - name: Test
         run: ctest --preset ${{ matrix.preset }}
 
+      - name: Check app metadata
+        shell: bash
+        run: |
+          expected=$(sed -nE 's/^project\(SageQt VERSION ([0-9.]+).*/\1/p' CMakeLists.txt)
+          dir=out/build/${{ matrix.preset }}/SageQt
+          case "$RUNNER_OS" in
+            Windows)
+              actual=$(pwsh -NoProfile -Command "(Get-Item '$dir/SageQt.exe').VersionInfo.ProductVersion" | tr -d '\r')
+              licenses=$dir/licenses
+              ;;
+            macOS)
+              plist=$dir/SageQt.app/Contents/Info.plist
+              actual=$(plutil -extract CFBundleShortVersionString raw "$plist")
+              echo "bundle identifier: $(plutil -extract CFBundleIdentifier raw "$plist")"
+              test "$(plutil -extract CFBundleIdentifier raw "$plist")" = "com.sage.sageqt"
+              licenses=$dir/SageQt.app/Contents/Resources/licenses
+              ;;
+            Linux)
+              actual=$(sed -n 's/^X-AppVersion=//p' "$dir/SageQt.desktop")
+              licenses=$dir/licenses
+              ;;
+          esac
+          echo "expected version: $expected, actual: $actual"
+          test -n "$expected"
+          test "$actual" = "$expected"
+          ls "$licenses"
+          test -f "$licenses/PretendardLicense.txt"
+          test -f "$licenses/GmarketSansLicense.txt"
+
   static-analysis:
     name: static-analysis
     runs-on: ubuntu-24.04

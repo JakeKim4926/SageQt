@@ -5,6 +5,12 @@
 
 ## 열린 항목
 
+### [2026-10-02] 임시구현 — 앱 아이콘이 없다 (고해상도 원본 대기)
+- 위치: SageQt/packaging/ (windows `SageQt.rc.in` · linux `SageQt.desktop.in`), SageQt/CMakeLists.txt (macOS `.icns`)
+- 설명: SageSDI 아이콘은 32×32 한 장뿐이라 macOS(최대 1024) · Linux(256)에 부족하다. 사용자가 고해상도 원본을 주기로 했다 (T17 결정). 그전까지 세 OS 모두 기본 아이콘이다
+- 위험도: 중 — 배포 전에 반드시 채워야 한다
+- 후속: 원본(1024 PNG 또는 SVG)을 받으면 `.ico`(16~256) · `.icns` · Linux PNG를 만들고 rc · `Info.plist` · `.desktop` · 창 아이콘에 연결한다. T18 착수 전에 확인한다
+
 ### [2026-10-02] 검증누락 — 샘플 업무 전 구간(입력 → 실행 → 결과 → 기록)을 사람이 세 OS에서 실행해 보지 않았다
 - 위치: SageQt/ui/ui/panels/SageWorkspacePanel.cpp, SageWorkflowHistoryPanel.cpp, SageQt/ui/ui/window/SageMainWindow.cpp
 - 설명: T16 완료 기준의 "세 OS에서 샘플 업무 전 구간 동작 (Mac mini 포함, 확인 표)"은 세 OS CI의 오프스크린 테스트(`SageWorkspacePanelTest` — 실행 · 결과 표 · 상태 카드 · 기록 · 상태 문자열)로만 확인했다. CI 스크린샷은 실행 전 화면(입력 · 결과 · 기록 탭)뿐이다 — 파일 선택 창을 CI에서 조작할 수 없어 실제 실행 후 화면은 없다. Mac mini가 아직 없다

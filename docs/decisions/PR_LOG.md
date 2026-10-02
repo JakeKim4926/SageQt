@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-10-02] chore/app-metadata
+- **목적**: 버전 · 앱 식별 정보 · 폰트 라이선스 (sageqt-plan T17)
+- **변경 내용**: `project(VERSION 1.0.0)` + 식별 정보 변수 단일 출처, `SageAppInfo.h` 생성, `packaging/windows/SageQt.rc.in` · `packaging/linux/SageQt.desktop.in`, macOS `MACOSX_BUNDLE_*`, `licenses/` 복사, CI 메타데이터 확인 단계, `coding-design` 폴더 구조에 `packaging/`. 아이콘은 원본 대기(DEBT_LOG). 사용자 결정 4건
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-10-02)
+
 ## [2026-10-02] feature/status-bar
 - **목적**: 상태 표시줄 · 상태 메시지 (sageqt-plan T16, 두 번째 PR) · T16 완료 처리
 - **변경 내용**: 작업 영역 `statusChanged`(대기 중 · 처리 중 · 파일 드롭 수신 · 완료 · 실패), 메인 창 상태 표시줄(라벨 · 왼쪽 여백 24 · 높이 24 · 보조 글자색 · 손잡이 없음), `SageStyle` 상태 표시줄 면 · 위 구분선. 사용자 결정 4건. T16 결과 · DEBT_LOG 2건 · 스크린샷

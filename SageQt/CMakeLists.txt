@@ -39,7 +39,38 @@ set_target_properties(SageQt
     PROPERTIES
         WIN32_EXECUTABLE TRUE
         MACOSX_BUNDLE TRUE
+        MACOSX_BUNDLE_BUNDLE_NAME ${SAGE_PRODUCT_NAME}
+        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION}
+        MACOSX_BUNDLE_GUI_IDENTIFIER ${SAGE_BUNDLE_IDENTIFIER}
+        MACOSX_BUNDLE_COPYRIGHT ${SAGE_COPYRIGHT}
+        XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER ${SAGE_BUNDLE_IDENTIFIER}
 )
+
+set(SAGE_LICENSE_FILES
+    ${SAGE_FONT_RESOURCE_DIR}/GmarketSansLicense.txt
+    ${SAGE_FONT_RESOURCE_DIR}/PretendardLicense.txt
+)
+
+if(WIN32)
+    configure_file(packaging/windows/SageQt.rc.in ${CMAKE_CURRENT_BINARY_DIR}/SageQt.rc @ONLY)
+    target_sources(SageQt PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/SageQt.rc)
+endif()
+
+if(APPLE)
+    target_sources(SageQt PRIVATE ${SAGE_LICENSE_FILES})
+    set_source_files_properties(${SAGE_LICENSE_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/licenses)
+else()
+    add_custom_command(TARGET SageQt POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:SageQt>/licenses
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${SAGE_LICENSE_FILES} $<TARGET_FILE_DIR:SageQt>/licenses
+        VERBATIM
+    )
+endif()
+
+if(UNIX AND NOT APPLE)
+    configure_file(packaging/linux/SageQt.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/SageQt.desktop @ONLY)
+endif()
 
 target_link_libraries(SageQt
     PRIVATE

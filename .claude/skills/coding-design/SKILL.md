@@ -100,7 +100,8 @@ SageQt/                                 ← 저장소 루트
     │       ├── style/                  ← SageStyle · 팔레트 · SageDesignDefine.h
     │       └── workflow/               ← SageWorkflowController
     │
-    └── resources/                      ← 폰트 · 아이콘 (실행 파일 타깃에 등록)
+    ├── resources/                      ← 폰트 · 아이콘 · 폰트 라이선스 (실행 파일 타깃에 등록)
+    └── packaging/                      ← OS별 배포 틀 (windows/ 버전 리소스, linux/ .desktop, T18 설치 설정) — CMake가 configure_file로 채운다
 ```
 
 `core/core/`처럼 폴더가 겹치는 이유는 `references/cmake-targets.md`에 있다.
