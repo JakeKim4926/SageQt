@@ -53,6 +53,7 @@
 - 위험도: 중 — 코드와 무관한 실패가 머지 전 검증을 막을 수 있다
 - 재발: [2026-09-28] screenshots 워크플로 windows job에서 같은 오류 (실행 36329540896, 재실행으로 통과)
 - 재발: [2026-09-28] screenshots windows job 세 번째 (실행 36402551588, 재실행으로 통과) — 모두 캐시 없는 새 브랜치 첫 실행
+- 재발: [2026-10-02] build windows-x64-debug, 새 브랜치 첫 실행 (실행 36985807635, 오류 `Specified path is bad: lib/cmake/Qt6BuildInternals/...` exit 254, 재실행으로 통과)
 - 후속: 두 번 나왔다 — py7zr 버전 고정이나 재시도를 검토한다. aqtinstall 정식 릴리스 전환(기존 DEBT)과 함께 본다
 
 ### [2026-09-27] 임시구현 — CI가 매 실행마다 clazy를 소스에서 빌드한다

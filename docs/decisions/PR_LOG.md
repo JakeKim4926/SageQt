@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-10-02] chore/deploy-script
+- **목적**: 배포 스크립트 (sageqt-plan T18, 두 번째 PR)
+- **변경 내용**: `SageQt/packaging/CMakeLists.txt`(install + `qt_generate_deploy_app_script` NO_TRANSLATIONS + 라이선스 · .desktop · 아이콘 설치 + CPack ZIP/DragNDrop/TGZ + SHA256), 프리셋 `SAGE_PACKAGE_PLATFORM`. 로컬 Windows에서 zip 생성 · Qt 없이 실행 · qsqlite 로드 확인
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-10-02)
+
 ## [2026-10-02] chore/app-icon
 - **목적**: 앱 아이콘 (sageqt-plan T18, 첫 번째 PR — T17에서 넘긴 것)
 - **변경 내용**: `tools/app-icon/make_app_icon.py`(원본 구성을 1024로 다시 그림), `resources/icons`(1024 원본 · ico · icns · 256 PNG), Windows rc · macOS Info.plist · Linux .desktop · 창 아이콘 연결, CI 아이콘 검사, DEBT_LOG 아이콘 해결. 사용자 결정 2건(결과물 형식 · 아이콘 B)

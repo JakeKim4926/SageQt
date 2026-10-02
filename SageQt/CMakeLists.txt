@@ -95,6 +95,8 @@ target_link_libraries(SageQt
         Qt::Widgets
 )
 
+add_subdirectory(packaging)
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/tests ${PROJECT_BINARY_DIR}/tests)
 
 option(SAGE_BUILD_TOOLS "Build the developer tools under tools/" OFF)

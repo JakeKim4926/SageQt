@@ -23,6 +23,9 @@
         "strategy": "external",
         "value": "x64"
       },
+      "cacheVariables": {
+        "SAGE_PACKAGE_PLATFORM": "windows-x64"
+      },
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -36,7 +39,8 @@
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/out/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_OSX_ARCHITECTURES": "arm64"
+        "CMAKE_OSX_ARCHITECTURES": "arm64",
+        "SAGE_PACKAGE_PLATFORM": "macos-arm64"
       },
       "condition": {
         "type": "equals",
@@ -50,6 +54,9 @@
       "inherits": "Qt",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "cacheVariables": {
+        "SAGE_PACKAGE_PLATFORM": "linux-x64"
+      },
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
