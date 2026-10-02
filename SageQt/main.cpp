@@ -15,6 +15,7 @@
 
 #include <QApplication>
 #include <QCoreApplication>
+#include <QIcon>
 #include <QLoggingCategory>
 #include <QString>
 #include <QStyle>
@@ -39,6 +40,7 @@ int main(int argc, char* argv[])
     QCoreApplication::setOrganizationName(SAGE_ORGANIZATION_NAME);
     QCoreApplication::setApplicationName(SAGE_APPLICATION_NAME);
     QCoreApplication::setApplicationVersion(SAGE_APPLICATION_VERSION);
+    QApplication::setWindowIcon(QIcon(SAGE_APP_ICON_RESOURCE));
 
     QString error;
     if (!SageFontRegistry::registerApplicationFonts(error)) {

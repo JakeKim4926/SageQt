@@ -43,4 +43,6 @@ PR 1~2개: `chore/deploy-script`, `chore/ci-artifacts`
 - 서명 · 공증 — T19
 
 ## 확인한 사실
-(진행 중 기록)
+- 사용자 결정 (2026-10-02): (1) 결과물은 **Windows zip · macOS .dmg · Linux tar.gz** (CPack 기본 도구만, 설치 파일 · AppImage는 필요할 때). (2) 앱 아이콘: 사용자가 알려준 `D:/Projects/SageTaechang/SageTaechang/res/SageTaechang.ico`는 SageSDI 아이콘과 **같은 파일**(MD5 `035bf091…`, 32×32 한 장)이라 고해상도 원본이 없다 → 사용자 지시("어떻게든 고화질로")로 **다시 그렸다**. 원본 구성(크림색 원형 배지 · 점 테두리 · 금색 띠 · S.A.G.E 글자)을 Gmarket Sans Bold로 1024에 그렸고, 원본 위쪽 인물 모양은 32px에서 알아볼 수 없어 넣지 않았다. 후보 A(원본 확대) · B(다시 그림) 중 B 선택 (`docs/screenshots/T18/icon-candidates.png`)
+- 아이콘: `tools/app-icon/make_app_icon.py`가 `SageQt/resources/icons/`에 `sageqt-1024.png`(원본) · `sageqt.ico`(16~256 7개) · `sageqt.icns`(16~1024) · `sageqt-256.png`(Linux · 창 아이콘)를 만든다. 연결: Windows rc `IDI_ICON1` · macOS `MACOSX_BUNDLE_ICON_FILE` + 번들 `Resources` · Linux `.desktop` `Icon=sageqt` · 창 아이콘 `QApplication::setWindowIcon`(Qt 리소스 `:/icons/sageqt-256.png`). 로컬 빌드 exe에서 아이콘을 꺼내 확인
+- Qt 6.11 배포 스크립트(`Qt6CoreDeploySupport.cmake`): Windows `windeployqt`, macOS `macdeployqt`, 그 밖(Linux)은 Qt 자체 복사(`_qt_internal_generic_deployqt` — 라이브러리 `lib/` · 플러그인 `plugins/`, Technical Preview)

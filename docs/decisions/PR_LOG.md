@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-10-02] chore/app-icon
+- **목적**: 앱 아이콘 (sageqt-plan T18, 첫 번째 PR — T17에서 넘긴 것)
+- **변경 내용**: `tools/app-icon/make_app_icon.py`(원본 구성을 1024로 다시 그림), `resources/icons`(1024 원본 · ico · icns · 256 PNG), Windows rc · macOS Info.plist · Linux .desktop · 창 아이콘 연결, CI 아이콘 검사, DEBT_LOG 아이콘 해결. 사용자 결정 2건(결과물 형식 · 아이콘 B)
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-10-02)
+
 ## [2026-10-02] chore/app-metadata
 - **목적**: 버전 · 앱 식별 정보 · 폰트 라이선스 (sageqt-plan T17)
 - **변경 내용**: `project(VERSION 1.0.0)` + 식별 정보 변수 단일 출처, `SageAppInfo.h` 생성, `packaging/windows/SageQt.rc.in` · `packaging/linux/SageQt.desktop.in`, macOS `MACOSX_BUNDLE_*`, `licenses/` 복사, CI 메타데이터 확인 단계, `coding-design` 폴더 구조에 `packaging/`. 아이콘은 원본 대기(DEBT_LOG). 사용자 결정 4건

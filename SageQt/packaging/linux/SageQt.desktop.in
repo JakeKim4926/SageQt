@@ -2,6 +2,7 @@
 Type=Application
 Name=@SAGE_PRODUCT_NAME@
 Exec=@SAGE_APPLICATION_NAME@
+Icon=@SAGE_APP_ICON_NAME@
 Categories=Office;
 Terminal=false
 X-AppVersion=@PROJECT_VERSION@

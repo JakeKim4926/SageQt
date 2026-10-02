@@ -95,9 +95,12 @@ jobs:
               echo "bundle identifier: $(plutil -extract CFBundleIdentifier raw "$plist")"
               test "$(plutil -extract CFBundleIdentifier raw "$plist")" = "com.sage.sageqt"
               licenses=$dir/SageQt.app/Contents/Resources/licenses
+              test "$(plutil -extract CFBundleIconFile raw "$plist")" = "sageqt.icns"
+              test -f "$dir/SageQt.app/Contents/Resources/sageqt.icns"
               ;;
             Linux)
               actual=$(sed -n 's/^X-AppVersion=//p' "$dir/SageQt.desktop")
+              grep -qx 'Icon=sageqt' "$dir/SageQt.desktop"
               licenses=$dir/licenses
               ;;
           esac

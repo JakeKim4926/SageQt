@@ -35,6 +35,18 @@ qt_add_resources(SageQt "sage_fonts"
     FILES ${SAGE_FONT_RESOURCES}
 )
 
+set(SAGE_APP_ICON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons)
+set(SAGE_APP_ICON_NAME "sageqt")
+set(SAGE_APP_ICON_ICO ${SAGE_APP_ICON_DIR}/sageqt.ico)
+set(SAGE_APP_ICON_ICNS ${SAGE_APP_ICON_DIR}/sageqt.icns)
+set(SAGE_APP_ICON_PNG ${SAGE_APP_ICON_DIR}/sageqt-256.png)
+
+qt_add_resources(SageQt "sage_icons"
+    PREFIX "/icons"
+    BASE ${SAGE_APP_ICON_DIR}
+    FILES ${SAGE_APP_ICON_PNG}
+)
+
 set_target_properties(SageQt
     PROPERTIES
         WIN32_EXECUTABLE TRUE
@@ -44,6 +56,7 @@ set_target_properties(SageQt
         MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION}
         MACOSX_BUNDLE_GUI_IDENTIFIER ${SAGE_BUNDLE_IDENTIFIER}
         MACOSX_BUNDLE_COPYRIGHT ${SAGE_COPYRIGHT}
+        MACOSX_BUNDLE_ICON_FILE sageqt.icns
         XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER ${SAGE_BUNDLE_IDENTIFIER}
 )
 
@@ -58,8 +71,9 @@ if(WIN32)
 endif()
 
 if(APPLE)
-    target_sources(SageQt PRIVATE ${SAGE_LICENSE_FILES})
+    target_sources(SageQt PRIVATE ${SAGE_LICENSE_FILES} ${SAGE_APP_ICON_ICNS})
     set_source_files_properties(${SAGE_LICENSE_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/licenses)
+    set_source_files_properties(${SAGE_APP_ICON_ICNS} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 else()
     add_custom_command(TARGET SageQt POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:SageQt>/licenses

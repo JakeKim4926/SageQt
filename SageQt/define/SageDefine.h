@@ -26,6 +26,7 @@ enum class SageUserRole
     Admin = 1
 };
 
+inline const QString SAGE_APP_ICON_RESOURCE = QStringLiteral(":/icons/sageqt-256.png");
 inline constexpr char SAGE_LOG_CATEGORY_APP[] = "sage.app";
 inline constexpr char SAGE_LOG_CATEGORY_UI[] = "sage.ui";
 
