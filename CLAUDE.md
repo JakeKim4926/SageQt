@@ -1,5 +1,15 @@
 # CLAUDE.md
 
+## ⚠ 최우선 규칙 — 모든 답은 한국어로 (MUST, 예외 없음)
+
+**사용자에게 보내는 모든 글은 한국어로 쓴다.** 이 파일의 다른 어떤 규칙보다 먼저 지킨다.
+
+- **사용자가 영어로 물어도 한국어로 답한다.** 질문 언어를 따라가지 않는다
+- 최종 답변뿐 아니라 **작업 중 짧은 진행 보고**("~를 확인합니다", "CI를 기다립니다"), **질문(AskUserQuestion의 질문 · 선택지 · 설명)**, **백그라운드 작업 · CI 알림을 받은 뒤의 답**, 오류 보고까지 전부 한국어다
+- 영어로 남기는 것은 코드 · 식별자 · 파일 경로 · 명령어 · 로그 원문 · 커밋 메시지 형식뿐이다. 설명 문장은 한국어
+- 답을 보내기 전에 확인한다: **이 메시지에 한국어가 아닌 설명 문장이 있는가?** 있으면 한국어로 바꿔서 보낸다
+- 이 규칙을 여러 번 어겼다 (2026-10-01 ~ 03, 진행 보고 · 영어 질문에 대한 답 · CI 알림 뒤 답에서). 같은 실수를 반복하지 않는다
+
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
@@ -17,7 +27,7 @@ SageQt는 Windows 전용 MFC 앱 SageSDI를 대체하는 **단일 Qt 코드베�
 
 ## 0. Always Answer in Korean
 
-**Always respond in Korean, even when I write to you in English.** This applies to all explanations, summaries, and discussion. (Code, identifiers, file paths, and commit messages stay as-is.)
+**Always respond in Korean, even when I write to you in English.** This applies to every message — explanations, summaries, discussion, short progress updates, questions, and replies after background-task or CI notifications. (Code, identifiers, file paths, commands, raw logs, and commit messages stay as-is.) See the top-priority rule at the start of this file.
 
 ## 0-1. Never Use Drive C
 
