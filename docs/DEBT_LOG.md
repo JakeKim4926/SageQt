@@ -5,6 +5,12 @@
 
 ## 열린 항목
 
+### [2026-10-03] 임시구현 — Windows 글자 엔진을 Qt의 예전 엔진(GDI)으로 바꿨다
+- 위치: CMakePresets.json (`SAGE_QPA_PLATFORM_ARGUMENTS`), SageQt/main.cpp, SageQt/define/SageAppInfo.h.in
+- 설명: SageSDI와 같은 글자 모양을 위해 `windows:fontengine=gdi`를 쓴다 (사용자 결정). Qt 6.8부터 기본은 DirectWrite이고, GDI 엔진은 컬러 이모지 글꼴을 그리지 못한다. 앞으로 Qt 버전에서 GDI 엔진이 빠지거나 바뀌면 앱이 기본 엔진으로 돌아간다
+- 위험도: 낮음 — 지금 앱은 이모지를 쓰지 않는다. Qt를 올릴 때 확인할 항목이다
+- 후속: Qt 버전을 올릴 때 GDI 엔진이 남아 있는지 · 같은 모양인지 SageSDI 화면과 다시 대조한다. 고해상도(125% · 150%) 화면에서는 재지 않았다 — 실제 PC에서 확인한다
+
 ### [2026-10-02] 검증누락 — 배포 결과물로 로그인 · 샘플 업무를 해 보지 않았다
 - 위치: .github/workflows/build.yml (`verify-package`), SageQt/packaging/CMakeLists.txt
 - 설명: Qt가 없는 새 러너에서 세 결과물이 실행되고 DB가 만들어지는 것까지만 CI로 확인했다. 로그인 창 · 샘플 업무 실행 · 파일 선택 창은 결과물로 해 보지 않았다. Linux tar.gz는 시스템 라이브러리(`libopengl0 libegl1 libxcb-cursor0 libxkbcommon-x11-0 libxcb-icccm4 libxcb-keysyms1 libxcb-shape0`)가 있어야 실행된다 — 배포 안내에 아직 적지 않았다

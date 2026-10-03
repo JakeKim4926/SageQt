@@ -24,7 +24,8 @@
         "value": "x64"
       },
       "cacheVariables": {
-        "SAGE_PACKAGE_PLATFORM": "windows-x64"
+        "SAGE_PACKAGE_PLATFORM": "windows-x64",
+        "SAGE_QPA_PLATFORM_ARGUMENTS": "windows:fontengine=gdi"
       },
       "condition": {
         "type": "equals",

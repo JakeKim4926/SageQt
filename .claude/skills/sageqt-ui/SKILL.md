@@ -89,6 +89,8 @@ description: >
 - 굵기를 쓰는 곳: 강조 열 Bold, 합계 밴드 라벨 Bold, 목록 선택 SemiBold, *본문 강조* 행의 곳 SemiBold. 버튼은 변형과 무관하게 Regular다 (*값 출처 원칙* 표)
 - **등록하는 폰트 파일은 쓰이는 4개다** — `PretendardRegular` · `PretendardSemiBold` · `PretendardBold` · `GmarketSansTTFBold`. `GmarketSansTTFLight` · `Medium`은 저장소에 있지만(T02) 쓰는 곳이 0곳이라 등록하지 않는다
 - 앱 기본 폰트는 본문(14px Regular)이다. 역할 폰트를 누가 적용하는지는 `style-scope.md` *폰트 적용*
+- **Windows 글자 엔진은 GDI다** — Qt 기본(DirectWrite)은 SageSDI(GDI)보다 획이 굵고 진하게 그려진다. Windows 프리셋의 `SAGE_QPA_PLATFORM_ARGUMENTS`(`windows:fontengine=gdi`)를 `main.cpp`가 `QT_QPA_PLATFORM`이 비어 있을 때만 넣는다 — 코드에 OS 분기 없음. SageSDI 화면과 픽셀 대조: 평균 밝기 차이 제목 1.52 → 0.16 · 탭 8.30 → 0.22 (사용자 결정 2026-10-03). `QFont::PreferFullHinting`은 DirectWrite에서 효과가 없었다. macOS(CoreText 회색 안티에일리어싱) · Linux(시스템 fontconfig)는 OS 기본 그대로 — 비교할 SageSDI가 없다. GDI는 Qt의 예전 엔진이라 컬러 이모지 글꼴을 그리지 못하고, 앞으로 Qt에서 빠질 수 있다 (`DEBT_LOG.md`)
+- **라벨 글자색은 `WindowText`와 `Text` 둘 다에 넣는다** — 배경 역할이 `Base`인 부모(카드) 안에서는 `QLabel`의 글자 역할이 `Text`가 된다. `WindowText`에만 넣어 폼 라벨이 본문 색으로 그려졌었다 (세 OS 모두, 2026-10-03 수정)
 
 ## 위젯 변형 (variant)
 

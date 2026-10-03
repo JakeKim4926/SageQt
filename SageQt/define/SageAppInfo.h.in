@@ -5,3 +5,5 @@
 inline const QString SAGE_ORGANIZATION_NAME = QStringLiteral("@SAGE_ORGANIZATION_NAME@");
 inline const QString SAGE_APPLICATION_NAME = QStringLiteral("@SAGE_APPLICATION_NAME@");
 inline const QString SAGE_APPLICATION_VERSION = QStringLiteral("@PROJECT_VERSION@");
+inline constexpr char SAGE_QPA_PLATFORM_ARGUMENTS[] = "@SAGE_QPA_PLATFORM_ARGUMENTS@";
+inline constexpr char SAGE_QPA_PLATFORM_ENV[] = "QT_QPA_PLATFORM";

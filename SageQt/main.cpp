@@ -36,6 +36,9 @@ static int failStartup(const QString& error)
 
 int main(int argc, char* argv[])
 {
+    if (qstrlen(SAGE_QPA_PLATFORM_ARGUMENTS) > 0 && !qEnvironmentVariableIsSet(SAGE_QPA_PLATFORM_ENV)) {
+        qputenv(SAGE_QPA_PLATFORM_ENV, SAGE_QPA_PLATFORM_ARGUMENTS);
+    }
     QApplication application(argc, argv);
     QCoreApplication::setOrganizationName(SAGE_ORGANIZATION_NAME);
     QCoreApplication::setApplicationName(SAGE_APPLICATION_NAME);

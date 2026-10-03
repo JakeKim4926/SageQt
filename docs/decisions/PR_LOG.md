@@ -12,6 +12,12 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-10-03] fix/label-text-color
+- **목적**: 글자가 SageSDI보다 진하고 거칠게 보이던 문제 (사용자 확인 화면에서 발견)
+- **변경 내용**: (1) `SageStyle::setTextColor`가 `Text` 역할에도 색을 넣는다 — 카드 안 폼 라벨이 본문 색으로 그려지던 버그(세 OS), 테스트 추가. (2) Windows 글자 엔진 GDI — 프리셋 `SAGE_QPA_PLATFORM_ARGUMENTS`, `QT_QPA_PLATFORM`이 비어 있을 때만 적용(사용자 결정). SageSDI 화면과 픽셀 대조로 확인(폼 라벨 15.81 → 0.15). sageqt-ui 폰트 규칙 · DEBT_LOG
+- **PR 링크**: 없음
+- **결과**: merged (develop, 2026-10-03)
+
 ## [2026-10-02] chore/ci-artifacts
 - **목적**: CI 결과물 · Qt 없는 환경 실행 확인 (sageqt-plan T18, 세 번째 PR) · T18 완료 처리
 - **변경 내용**: build job(release)에 install + cpack + 산출물 업로드, `verify-package` job(새 러너에서 압축 풀고 실행 · DB 생성 확인), Linux 검증 러너에 시스템 라이브러리. T18 결과 · DEBT_LOG

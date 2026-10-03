@@ -1,4 +1,5 @@
 #include "ui/panels/SageWorkflowInputPanel.h"
+#include "ui/style/SageDesignDefine.h"
 
 #include "SageTestWorkflowHandler.h"
 #include "ui/style/SageFontRegistry.h"
@@ -26,6 +27,7 @@ private slots:
     void pathsShowNativeSeparatorsAndReturnQtPaths();
     void pathEditsAreReadOnlyAndIgnoreDrops();
     void drawsCardHeaderAndPathField();
+    void formLabelsUseMutedTextColor();
 
 private:
     static QList<SageLineEdit*> edits(SageWorkflowInputPanel& panel);
@@ -103,6 +105,25 @@ void SageWorkflowInputPanelTest::drawsCardHeaderAndPathField()
     QCOMPARE(image.pixelColor(editTopLeft + QPoint(inputEdit->width() / 2, inputEdit->height() / 2)),
              QColor(248, 246, 241));
     QCOMPARE(image.pixelColor(edits(panel).at(1)->mapTo(&panel, QPoint())), QColor(220, 214, 205));
+}
+
+void SageWorkflowInputPanelTest::formLabelsUseMutedTextColor()
+{
+    SageWorkflowInputPanel panel;
+    panel.resize(900, 600);
+    panel.show();
+    QVERIFY(QTest::qWaitForWindowExposed(&panel));
+
+    int formLabelCount = 0;
+    const QList<SageLabel*> labels = panel.findChildren<SageLabel*>();
+    for (const SageLabel* label : labels) {
+        if (label->variant() != SageLabel::SageLabelVariant::FormLabel) {
+            continue;
+        }
+        ++formLabelCount;
+        QCOMPARE(label->palette().color(label->foregroundRole()), SAGE_COLOR_TEXT_MUTED);
+    }
+    QCOMPARE(formLabelCount, 2);
 }
 
 QTEST_MAIN(SageWorkflowInputPanelTest)

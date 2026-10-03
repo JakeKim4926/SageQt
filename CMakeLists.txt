@@ -8,6 +8,7 @@ set(SAGE_COMPANY_NAME "Sage")
 set(SAGE_PRODUCT_NAME "SageQt")
 set(SAGE_COPYRIGHT "Copyright © 2026 Sage")
 set(SAGE_BUNDLE_IDENTIFIER "com.sage.sageqt")
+set(SAGE_QPA_PLATFORM_ARGUMENTS "" CACHE STRING "Qt platform plugin arguments used when QT_QPA_PLATFORM is not set")
 
 enable_testing()
 

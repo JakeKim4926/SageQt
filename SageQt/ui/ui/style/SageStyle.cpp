@@ -523,6 +523,7 @@ void SageStyle::setTextColor(QWidget* widget, const QColor& color)
 {
     QPalette palette = widget->palette();
     palette.setColor(QPalette::WindowText, color);
+    palette.setColor(QPalette::Text, color);
     widget->setPalette(palette);
 }
 
