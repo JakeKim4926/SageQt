@@ -6,9 +6,13 @@
 
 PR 없이 반영한다. CI가 작업 브랜치 push에서도 돌기 때문에 머지 전에 세 OS 검증을 받을 수 있다.
 
-1. 작업 브랜치를 push한다 (`git push -u origin <브랜치명>`)
-2. **그 커밋 해시로** CI 실행을 찾아 모든 job이 `success`인지 확인한다 (`sageqt-plan` 공통 함정: 최근 실행이 아니라 해시로)
-3. 로컬에서 `develop`을 최신으로 받고 squash merge한다
+1. **규칙 점검** — `git diff develop...HEAD` 전체를 `code-review-expert`로 리뷰한다. 점검표 A ~ G 중 해당하는 항목 전부와 `coding-rules`의 *작성 후 점검표*를 바뀐 파일마다 본다. 코드 변경이 없는 브랜치(문서만)는 건너뛴다
+   - Blocker · Major가 0개일 때만 다음 단계로 간다. Minor는 고치거나, 남기면 `debt-log-guard`로 기록한다
+   - 점검 결과(각 등급 개수와 남긴 항목)를 PR_LOG의 *규칙 점검* 칸에 적는다
+   - CI가 통과했다는 사실은 규칙 점검을 대신하지 않는다. CI는 기계로 잡을 수 있는 일부 규칙만 본다
+2. 작업 브랜치를 push한다 (`git push -u origin <브랜치명>`)
+3. **그 커밋 해시로** CI 실행을 찾아 모든 job이 `success`인지 확인한다 (`sageqt-plan` 공통 함정: 최근 실행이 아니라 해시로)
+4. 로컬에서 `develop`을 최신으로 받고 squash merge한다
    ```bash
    git checkout develop
    git pull origin develop
@@ -16,8 +20,8 @@ PR 없이 반영한다. CI가 작업 브랜치 push에서도 돌기 때문에 �
    git commit            # 아래 squash merge 메시지 형식
    git push origin develop
    ```
-4. `develop`의 CI도 통과하는지 확인한다
-5. *머지 후 정리*대로 브랜치를 지우고, *PR 작업 로그*를 남긴다 (로그 커밋은 3번 전에 작업 브랜치에 넣는다)
+5. `develop`의 CI도 통과하는지 확인한다
+6. *머지 후 정리*대로 브랜치를 지우고, *PR 작업 로그*를 남긴다 (로그 커밋은 4번 전에 작업 브랜치에 넣는다)
 
 UI 변경의 스크린샷은 `docs/screenshots/<주제 ID>/`에 커밋하고, 수동 확인 표는 주제 파일의 *결과* 절에 적는다.
 
@@ -61,6 +65,8 @@ PR 본문에는 아래 항목을 반드시 기재한다.
 
 ## 머지 전 체크리스트
 
+- [ ] 코드 변경이 있으면 규칙 점검을 했고 Blocker · Major가 0개인가 (*develop 반영 절차* 1)
+- [ ] 새 폴더 · 링크 · 디자인 상수 · 위젯 · 예외가 생겼으면 해당 스킬 문서를 같은 브랜치에서 갱신했는가
 - [ ] 작업 브랜치 CI의 모든 job이 통과했는가 (커밋 해시로 확인)
 - [ ] PR_LOG에 목적과 변경 범위가 기재되어 있는가
 - [ ] UI 변경이 있다면 스크린샷이 `docs/screenshots/<주제 ID>/`에 있는가
@@ -173,6 +179,7 @@ git push origin --delete <브랜치명>
 - **목적**: 무엇을 위한 작업인지
 - **변경 내용**: 주요 작업 요약
 - **PR 링크**: (있으면. 없으면 "없음")
+- **규칙 점검**: Blocker n · Major n · Minor n (남긴 항목은 DEBT 번호) / 코드 변경 없음
 - **결과**: merged / closed / pending
 ```
 

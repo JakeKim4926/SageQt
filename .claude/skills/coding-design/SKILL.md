@@ -49,7 +49,7 @@ description: >
 
 ```
 SageQt/                                 ← 저장소 루트
-├── CMakeLists.txt                      ← 최상위 (하위 디렉터리 추가 · enable_testing()만)
+├── CMakeLists.txt                      ← 최상위 (project() · 앱 식별 정보 SAGE_* 변수 · 하위 디렉터리 추가 · enable_testing(), T17)
 ├── CMakePresets.json                   ← OS별 세팅 — OS는 코드가 아니라 여기서 갈린다
 ├── CLAUDE.md
 ├── docs/
@@ -59,7 +59,7 @@ SageQt/                                 ← 저장소 루트
 │   ├── plans/done/                     ← 끝난 계획 주제 파일 (이력, sageqt-plan)
 │   └── screenshots/<주제 ID>/          ← UI 확인 스크린샷 (git-workflow)
 ├── tests/                              ← Qt Test. 소스 계층 구조를 따라간다
-│   ├── app/                            ← 조립 수준 흐름 (실제 DB · 해시 + 창, main.cpp와 같은 조립). 공용 테스트 대역은 tests/ui/의 SageTest*.h
+│   ├── app/                            ← 조립 수준 흐름 (실제 DB · 해시 + 창, main.cpp와 같은 조립). 공용 테스트 대역은 tests/ui/의 SageTest*.h, core 인터페이스(ISageWorkflowHandler)의 대역은 tests/core/workflow/의 SageTestWorkflowHandler.h (T14)
 │   ├── core/
 │   ├── infra/
 │   └── ui/                             ← 화면 없이(offscreen) 검증할 수 있는 스타일 · 폰트 · 다이얼로그 키 동작 · 그린 색
@@ -88,12 +88,13 @@ SageQt/                                 ← 저장소 루트
     │   └── infra/
     │       ├── db/                     ← QtSql 연결 스코프 · 스키마 초기화 · Sage*Repository
     │       ├── file/
+    │       ├── auth/                   ← 비밀번호 해시 구현 (ISagePasswordHasher, T05)
     │       ├── office/                 ← (문서 처리 도입 시 생성)
     │       └── platform/               ← (승인된 OS 전용 코드만. 승인 시 생성)
     │
     ├── ui/                             ← sage_ui 타깃 폴더
     │   └── ui/
-    │       ├── window/                 ← SageMainWindow
+    │       ├── window/                 ← SageMainWindow · 창이 설치하는 이벤트 필터 (SageFileDropFilter, T13)
     │       ├── panels/                 ← Sage*Panel
     │       ├── dialogs/                ← Sage*Dlg
     │       ├── widgets/                ← 커스텀 위젯 · delegate

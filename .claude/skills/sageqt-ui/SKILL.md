@@ -66,7 +66,9 @@ description: >
 
 - **폼 라벨**: 한 폼 안의 라벨 열은 그 폼의 가장 긴 라벨에 맞춰 같은 폭으로 정렬한다 (`QFormLayout` 또는 그리드). 64 · 96은 최소 폭이다. SageSDI의 96은 Windows GDI로 잰 「변경할 비밀번호」 88px에서 나온 값이라 다른 OS에서 맞는다는 보장이 없다
 - **고정 높이 안의 글자**: T02 측정에서 픽셀 크기 지정 시 줄 높이 차이는 -1.5 ~ +4.4%(로고 제외)라 한 줄 텍스트는 고정 높이 안에 들어간다. 로고(Gmarket Sans)만 macOS에서 -13.7% — T11 세 OS 스크린샷에서 제목 칸(`SAGE_HEADER_HEIGHT`) 안에 들어감을 확인했다
-- 좌표 · 크기를 코드로 지정하지 않는다 — 고정 높이도 `setFixedHeight`가 아니라 위젯의 `sizeHint` · 레이아웃 제약으로 준다 (`ui-composition.md` 소유 규칙 3)
+- 좌표를 코드로 지정하지 않는다. 크기는 레이아웃 제약으로 준다 (`ui-composition.md` 소유 규칙 3)
+  - 고정 대상인 높이는 `SageDesignDefine.h` 값으로 `setFixedHeight`를 쓸 수 있다 (사용자 결정 2026-10-03)
+  - `setFixedWidth`는 글자가 없는 칸(선 · 사이드바)에만 쓴다. 글자가 들어가는 폭은 `setMinimumWidth`와 `QFontMetrics`로 준다. 그리기 계산에서도 최소값 상수를 고정 폭으로 쓰지 않는다
 - 간격 값은 SageSDI 규칙대로 4의 배수만 쓴다
 
 ## 폰트 (CRITICAL)

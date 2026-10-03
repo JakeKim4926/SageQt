@@ -14,7 +14,13 @@
 - 매직 넘버 / 매직 스트링 → `SageDefine.h`
 - 색 · 여백 리터럴 → `SageDesignDefine.h`
 - 네이밍 형식 — camelCase 함수, `m_` 멤버, `out` 출력 매개변수, `Sage` 클래스 접두사, **헝가리안 잔재** (`str`, `n`, `b`, `p`, `m_wnd`)
+- `bool` 멤버가 `m_is` / `m_has` / `m_can`으로 시작하는가
+- slot 이름이 `on` + 발신원 + 사건인가
+- 위젯 멤버 접미사가 담은 클래스의 종류와 맞는가 (패널 → `Panel`, 막대 → `Bar`)
 - `get` 접두사 사용 여부
+- `connect` 대상 함수가 모두 `slots` 구역에 선언되어 있는가
+- 모든 값 타입 멤버에 선언부 기본값이 있는가 (스칼라 · enum · 포인터는 `= 값`, 클래스 타입은 `{}`, 참조 멤버만 제외)
+- 각 파일이 쓰는 타입의 헤더를 직접 include하는가 · include 그룹 순서
 - null 계약 — 참조 / `find*` + 포인터 / `std::optional` / `create*` + `unique_ptr`가 이름과 일치하는가
 - 실패 가능한 함수가 `bool + QString& outError` 규약을 따르는지
 - 비즈니스 전역 상태 · 싱글턴 추가 여부
@@ -31,7 +37,8 @@
 **`new`, `connect`, 스레드 경계가 등장하는 모든 변경에서 반드시 확인한다.**
 
 - `delete`가 등장하지 않는가
-- 모든 `new`가 **생성 시점에** 부모를 받는 `QObject`인가 — 부모 없이 만들어 레이아웃에 넣는 패턴 포함
+- 모든 `new`가 **생성 시점에** 부모를 받는 `QObject`인가 — 부모 없이 만들어 레이아웃에 넣는 패턴, `new QHBoxLayout()` · `new QSpacerItem` · `new QStandardItem`을 만든 뒤 다른 줄에서 넘기는 패턴 포함
+- 테스트 코드에서도 `QObject`를 `std::unique_ptr`로 들고 있지 않은가
 - `QObject`가 아닌 소유 객체가 값 또는 `std::unique_ptr`인가
 - `std::shared_ptr`가 쓰이지 않았는가
 - `QObject`를 `std::unique_ptr`로 소유하지 않는가 (부모와 이중 해제)
@@ -67,7 +74,8 @@ ui  ──→  core  ←──  infra
 - 신규 파일이 `coding-design`의 폴더 구조에 맞는 위치에 있는가
 - 경계 인터페이스가 `core`에 정의되고 `infra`가 구현하며 `main.cpp`가 조립하는가
 - `common`이 도메인 모델을 물지 않는가
-- `core` · `infra` 변경에 대응하는 테스트가 추가·수정되었는가
+- `core` · `infra` 변경에 대응하는 테스트가 추가·수정되었는가 — 새 클래스면 `tests/`의 같은 계층 경로에 테스트 파일이 있는가
+- 새 폴더 · `target_link_libraries` 변경이 `coding-design`의 폴더 구조도 · 타깃 표에 반영되었는가 (승인 기록만 있고 표가 그대로면 Major)
 
 ### E. 창 비대화 체크
 
@@ -81,6 +89,8 @@ ui  ──→  core  ←──  infra
 - `setStyleSheet` 호출이나 `.qss` 파일이 추가되지 않았는가
 - 위젯을 가진 화면 클래스의 생성자가 `createWidgets()` → `createLayout()` → `connectSignals()` 형태인가 (위젯이 없으면 빈 함수를 만들지 않는다)
 - Qt Designer `.ui` 파일이 추가되지 않았는가
+- 패널이 자기가 소유하지 않은 위젯(자식의 자식)의 signal을 연결하거나 그 API를 accessor로 꺼내 직접 부르지 않는가 (`ui-composition.md` 소유 규칙 2)
+- 바뀐 화면 클래스마다 완료 기준 A — 이 파일이 열리는 이유가 하나인가. 이번 변경으로 이유가 하나 늘었으면 Major
 
 ### F. DB 변경 체크
 
@@ -99,6 +109,9 @@ ui  ──→  core  ←──  infra
 - Qt 기본 위젯으로 되는 것을 서브클래싱하지 않았는가
 - 표 데이터를 model이 유일하게 보관하고, 필터 · 정렬이 proxy에 있으며, 열 폭이 `QHeaderView` 모드로 정해지는가
 - 고정 좌표 대신 레이아웃을 쓰는가
+- `design-values.md`의 *쓰는 방식*이 **최소값**인 상수를 `setFixedWidth`나 그리기 계산의 고정 폭으로 쓰지 않았는가
+- 같은 그리기 코드(체크 상자 등)가 `SageStyle`과 delegate · 커스텀 위젯에 따로 있지 않은가
+- 새 디자인 상수 · 커스텀 위젯이 `design-values.md` · `widgets.md`에 반영되었는가
 - 상태 변화(실행 중 / 완료 / 실패)가 예측 가능한가
 
 세부 규격은 `sageqt-ui` 스킬(`design-values.md` · `style-scope.md` · `widgets.md` · `screens.md`)을 따른다. 특히 글자 폭 고정 · 포인트 폰트 · GDI식 서체 이름 · 규격 없는 값의 추측을 확인한다.

@@ -16,7 +16,7 @@
 |---|---|---|---|---|
 | `SageButton` | 기본 위젯 + SageStyle | `SageButton : QPushButton` (아이콘 단독은 `QToolButton`) | `SageButtonVariant { Secondary, Primary, Ghost }` (`Danger`는 호출 0곳 — `style-scope.md`) | T08 · T09 · T10 · T12 ~ T16 |
 | `SageEdit` | 기본 위젯 + SageStyle | `SageLineEdit : QLineEdit` | `SageLineEditVariant { Normal, Error }` — 색만 바꾸므로 `setVariant` + `update()` | T10 · T13 |
-| `SageLabel` | 기본 위젯 + SageStyle | `SageLabel : QLabel` | `SageLabelVariant { Title, Section, SecondaryCaption, MutedCaption, FormLabel, Hint, SidebarLogo }` — 값은 쓰는 주제에서 추가 (T11: `SidebarLogo`, T12: `Title` · `SecondaryCaption` · `MutedCaption`, T10: `FormLabel`, T13: `Section`) | T10 ~ T13 · T15 |
+| `SageLabel` | 기본 위젯 + SageStyle | `SageLabel : QLabel` | `SageLabelVariant { Title, SecondaryCaption, MutedCaption, Section, TableTitle, FormLabel, Hint, SidebarLogo }` — 값은 쓰는 주제에서 추가 (T11: `SidebarLogo`, T12: `Title` · `SecondaryCaption` · `MutedCaption`, T10: `FormLabel`, T13: `Section`, T15: `TableTitle` · `Hint`) | T10 ~ T13 · T15 |
 | `SageSectionLabel` | 기본 위젯 + SageStyle | `SageLabel` (`Section`) | 위 enum의 `Section` | T13 · T15 |
 | `SageTabCtrl` | 기본 위젯 + SageStyle | `QTabBar` + `QStackedWidget` | — | T13 |
 | `SageHeaderCtrl` | 기본 위젯 + SageStyle | `QHeaderView` | — | T15 · T16 |
@@ -33,6 +33,8 @@
 | `SageFilterPillBar` | 커스텀 위젯 | `SageFilterPillBar` | — (선택은 상태) | T16 |
 | `SageEmptyState` | 커스텀 위젯 | `SageEmptyState` | — | T16 |
 | `SageListCtrl` | delegate | `QTableView` + model/proxy + `QHeaderView` + `SageResultTableDelegate` | — (model role) | T15 · T16 |
+| (SageSDI 선택 막대의 「N건 중 N건 선택됨」 글자 그리기) | 커스텀 위젯 | `SageSelectionCountLabel` | — (글자 조각마다 색이 다르다) | T15 |
+| (결과 표 · 기록 표의 공통 설정) | 기본 위젯 + SageStyle | `SageTableView : QTableView` — 테두리 · 행 높이 · 헤더 · 선택 · delegate · 행 hover · 열 폭 규칙 (`model-view.md` 예외) | — | T15 · T16 |
 | `SageSidebarTree` | delegate | `QTreeView` + `SageSidebarDelegate` | — | T11 |
 | (SageSDI의 패널 `OnEraseBkgnd` 면 칠하기) | 기본 위젯 + SageStyle | `SageSurface : QWidget` | `SageSurfaceVariant { Sidebar, Panel }` — `Panel`은 흰 면(헤더 · 탭 줄) | T11 · T12 · T13 |
 | `SageUiResources` | 공용 자원 | 앱 폰트 · 역할 폰트 · `QPalette` · `SageDesignDefine.h` | — | T08 |
@@ -41,7 +43,7 @@
 | `SageListBox` | 옮기지 않음 | — | — | 사용처 0 (근거 화면 삭제) |
 | `SageOptionCheck` | 옮기지 않음 | — | — | 사용처 0 (`SageResultTablePanel.h`가 include만) |
 
-행 수 26 (SageSDI 25종 + 패널 면 `SageSurface`). 이름(`SageButton` · `SageLineEdit` 등)은 후보다 — 착수 주제에서 `coding-rules/references/naming.md`로 확정한다.
+행 수 28 (SageSDI 25종 + 패널 면 `SageSurface` + SageQt에서 나눈 `SageSelectionCountLabel` · `SageTableView`). 이름(`SageButton` · `SageLineEdit` 등)은 후보다 — 착수 주제에서 `coding-rules/references/naming.md`로 확정한다.
 
 ### 옮기지 않는 경로 (SageSDI 사용처 0)
 

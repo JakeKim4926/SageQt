@@ -87,7 +87,7 @@ SageWorkflowController                  실행 상태 전이 · 백그라운드 
 
 1. **업무 위젯은 그 영역 패널이 소유한다** (Qt 부모 = 패널). 창은 최상위 패널만 소유한다
 2. **위젯의 signal 연결은 그 위젯을 소유한 패널이 한다.** 창에 **중계 slot**(패널 대신 받아 넘기는 slot)을 만들지 않는다. 패널은 밖으로 **의미 있는 signal**만 낸다 (`runRequested(inputPath)`이지 `runButtonClicked()`가 아니다)
-3. **레이아웃은 패널이 자기 `QLayout`으로 정한다.** 부모는 패널을 자기 레이아웃에 넣기만 한다. **자식 위젯의 좌표·크기를 코드로 지정하지 않는다** (`move` / `resize` / `setGeometry` 금지). 최소·최대 크기 제약은 허용하되 값은 디자인 값에서 가져온다
+3. **레이아웃은 패널이 자기 `QLayout`으로 정한다.** 부모는 패널을 자기 레이아웃에 넣기만 한다. **자식 위젯의 좌표·크기를 코드로 지정하지 않는다** (`move` / `resize` / `setGeometry` 금지). 최소·최대 크기 제약은 허용하되 값은 디자인 값에서 가져온다 — 높이의 `setFixedHeight`, 글자가 없는 칸(선 · 사이드바)의 `setFixedWidth`가 여기에 든다. 글자가 들어가는 폭은 최소값만 준다 (`sageqt-ui` *레이아웃 정책*)
 4. **실행 상태와 화면 상태는 컨트롤러 또는 패널이 보관한다.** 창 멤버로 두지 않는다
 
 ### 창의 역할은 네 가지뿐이다
@@ -161,6 +161,7 @@ void SageSamplePanel::onRunButtonClicked()
 **B. 무엇을 알아야 하는가**
 창은 **워크플로 종류 · SQL · 그리는 방법 · 좌표를 몰라야 한다.**
 측정: `SageWorkflowType` 비교, `paintEvent`, `setPalette` / `setFont`, `move` / `resize` / `setGeometry` 호출이 남아 있으면 지식이 새어 있다.
+예외 (사용자 결정 2026-10-03): 창 생성자가 **자기 자신의** 초기 크기를 디자인 값으로 정하는 `resize(SAGE_MAIN_WINDOW_WIDTH, SAGE_MAIN_WINDOW_HEIGHT)`는 허용한다. 자식의 좌표 · 크기는 여전히 금지다.
 (`infra` include는 CMake가 막으므로 측정할 필요가 없다.)
 
 **C. 위젯 · 연결 · 레이아웃이 한 클래스에 함께 있는가**
@@ -170,7 +171,7 @@ void SageSamplePanel::onRunButtonClicked()
 - 워크플로 1종 추가 = 아래 4곳뿐 (사이드바 포함 다른 곳은 수정 없음)
   1. `core/workflow/handlers/`에 핸들러 파일 1쌍
   2. `SageQt/core/CMakeLists.txt` 소스 목록에 그 2개 (`file(GLOB)` 금지 — `cmake-targets.md`)
-  3. `SageDefine.h`에 업무 식별자 상수 1개
+  3. `SageDefine.h`에 그 업무의 **상수 블록 1개** — 식별자(`SageWorkflowType` 값)와 화면 문자열(`SAGE_UI_<업무>_` 접두사)을 한 곳에 모은다 (사용자 결정 2026-10-03. 화면 문자열은 `SageDefine.h`에 둔다는 `values-and-platform.md` 규칙과 맞춘 것이다)
   4. 등록부 1곳
 - 화면 영역 1개 추가 = 패널 1개 + 창의 레이아웃 1줄
 

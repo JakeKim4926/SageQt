@@ -36,7 +36,11 @@ for (const SageResultRow& row : std::as_const(m_rows)) {
 - 인자 하나로 호출할 수 있는 생성자는 `explicit`
 - 오버라이드에는 `override`를 쓰고 `virtual`을 반복하지 않는다
 - 상태를 바꾸지 않는 멤버 함수는 `const`
-- 모든 멤버는 선언부 기본값으로 초기화한다 (포인터는 `nullptr`)
+- 모든 멤버는 선언부 기본값으로 초기화한다 (사용자 결정 2026-10-03 — 값 타입 멤버 전부)
+  - 정수 · 부동소수 · `bool` · enum · 포인터 → `= 값` (`bool m_isRunning = false;`, `QLabel* m_titleLabel = nullptr;`)
+  - 클래스 타입(`QString` · `QList` · `std::optional` · DTO 등) → `{}` (`QString m_title{};`)
+  - 참조 멤버(`const SageUserService& m_userService;`)는 생성자 초기화 목록으로만 정할 수 있어 대상이 아니다
+  - 생성자 인자로 정하는 멤버도 선언부 기본값을 둔다 — 생성자 초기화 목록이 덮어쓴다
 - `QObject`를 상속하는 **모든** 클래스에 `Q_OBJECT`를 쓴다 — signal이 없어도 쓴다. 빠지면 `qobject_cast`와 `metaObject()`가 잘못 동작한다 (Qt 공식 권고)
 
 ### 선언 순서
@@ -71,6 +75,7 @@ private:
 ```
 
 `public` (생성자 → 접근자·설정자 → 동작) → `signals` → `public slots` → `protected` (오버라이드) → `private slots` → `private` 함수 → `private` 멤버 변수.
+**오버라이드는 기반 클래스와 같은 접근 수준에 둔다** (사용자 결정 2026-10-03). Qt에서 public인 가상 함수(`sizeHint` · `data` · `rowCount` · `setModel`)는 `public`의 동작 뒤에, protected인 것(`paintEvent` · `resizeEvent`)은 `protected`에 둔다. 접근 수준을 낮추면 파생 타입으로 부르는 코드가 컴파일되지 않는다.
 멤버 변수는 별도의 `private:` 구역에 둔다.
 
 ---
@@ -112,6 +117,7 @@ void setRunning(bool isRunning);
 - 앱 코드(`SageQt/`)는 `QLoggingCategory`로 계층별 카테고리를 쓴다: `sage.app`(`main.cpp`) · `sage.core` · `sage.infra` · `sage.ui`. 카테고리는 그 계층에서 처음 필요할 때 만든다
 - 카테고리는 쓰는 파일 안에서 `Q_STATIC_LOGGING_CATEGORY`로 정의한다. 여러 파일이 같은 카테고리를 쓰게 되면 그 계층에 선언 헤더를 둔다. 이름 문자열은 `SageDefine.h`의 `SAGE_LOG_CATEGORY_*`
 - 출력은 `qCDebug` · `qCInfo` · `qCWarning` · `qCCritical`만 쓴다. 카테고리 없는 `qDebug()` 등과 `std::cout` · `printf`는 쓰지 않는다
+- 이 로그 규칙은 앱 코드(`SageQt/`)에만 적용한다. 테스트 · 도구의 개발자용 출력은 `qInfo()` 등을 쓸 수 있다 (사용자 결정 2026-10-03)
 - 출력 위치는 Qt 기본 메시지 처리기다. 로그 파일은 만들지 않는다
 - 비밀번호 · 초기 비밀번호 · 개인정보를 로그에 쓰지 않는다
 - 사용자가 알아야 하는 오류는 화면(메시지 상자)으로 알린다. 로그는 개발자를 위한 것이다
@@ -126,6 +132,9 @@ void setRunning(bool isRunning);
 | 없을 수 있는 객체 (비소유) | `T*` | `find*` (`findHandler()`) | **반드시** `nullptr` 검사 |
 | 없을 수 있는 값 | `std::optional<T>` | 조회 동사 | `has_value()` 검사 |
 | 소유권 이전 | `std::unique_ptr<T>` | `create*` | 호출자가 소유 |
+| 만들어 Qt 부모 · 레이아웃 · 모델에 넣고 빌려 줌 | `T*` (null 아님) | `add*` (`addFormLabel()`) | 검사하지 않는다. 소유자는 Qt 부모 |
+
+`add*`는 Qt 관례(`QMenu::addAction`)를 따른 것이다 (사용자 결정 2026-10-03). 부모가 소유하는 위젯을 만드는 함수에 `create*`를 쓰지 않는다 — `create*`는 호출자가 소유하는 `unique_ptr`만 뜻한다. 화면 클래스의 `createWidgets()` · `createLayout()`은 반환값이 없는 작성 단계라 이 표의 대상이 아니다.
 
 ```cpp
 SageUserService& userService();
@@ -170,7 +179,7 @@ bool selectByLoginId(const QString& loginId, std::optional<SageUserDto>& outUser
 - 헤더는 `#pragma once`
 - 프로젝트 헤더는 계층 이름부터 쓴다: `#include "core/workflow/SageWorkflowRegistry.h"`
 - 공통 상수는 `#include "SageDefine.h"`
-- Qt 헤더는 클래스명만 쓴다: `#include <QPushButton>` (`<QtWidgets/QPushButton>` 쓰지 않음)
+- Qt 헤더는 클래스명만 쓴다: `#include <QPushButton>` (`<QtWidgets/QPushButton>` 쓰지 않음). 예외: 클래스 헤더가 없는 Qt 함수 헤더는 그 이름 그대로 쓴다 — `<qdrawutil.h>` (`qDrawPlainRect` 등, 사용자 결정 2026-10-03)
 - 순서: 대응 헤더 → 프로젝트 헤더 → Qt → 표준 라이브러리. 그룹 사이는 빈 줄
 - 각 파일은 쓰는 헤더를 직접 include한다. 미리 컴파일된 헤더(pch)에 기대지 않는다
 - 헤더에서 포인터·참조로만 쓰는 타입은 전방 선언한다

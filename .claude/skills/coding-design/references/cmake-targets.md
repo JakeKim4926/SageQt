@@ -18,10 +18,10 @@
 | `sage_define` | `SageQt/define` | `Qt::Core` |
 | `sage_common` | `SageQt/common` | `sage_define`, `Qt::Core` |
 | `sage_core` | `SageQt/core` | `sage_common`, `sage_define`, `Qt::Core` |
-| `sage_infra` | `SageQt/infra` | `sage_core`, `sage_common`, `sage_define`, `Qt::Core`, `Qt::Sql`(PRIVATE) |
+| `sage_infra` | `SageQt/infra` | `sage_core`, `sage_common`, `sage_define`, `Qt::Core`, `Qt::Sql`(PRIVATE), `Qt::Network`(PRIVATE — `QPasswordDigestor`, 결정 기록 2026-09-27) |
 | `sage_ui` | `SageQt/ui` | `sage_core`, `sage_common`, `sage_define`, `Qt::Widgets`, `Qt::Concurrent` |
 | `SageQt` | `SageQt/` (`main.cpp`) | 위 전부 |
-| 테스트 | `tests/` | 대상 타깃 + `Qt::Test` |
+| 테스트 | `tests/` | 대상 타깃 + `Qt::Test`. 저장된 행을 직접 읽어야 검증되는 infra 테스트만 `Qt::Sql` · `Qt::Concurrent`를 더 링크할 수 있다 (사용자 결정 2026-10-03) |
 | 개발 도구 | `tools/<도구>/` | 필요한 Qt 모듈만. 앱 계층 타깃은 링크하지 않는다 |
 
 - `sage_core`는 `Qt::Gui` / `Qt::Widgets`를 링크하지 않는다 → `core`에서 `<QWidget>`을 include하면 컴파일 에러

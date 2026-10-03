@@ -32,6 +32,19 @@ std::unique_ptr<SageUserService> service = std::make_unique<SageUserService>(rep
 
 예외: **Qt API가 문서로 소유권을 가져가는 경우**에는 부모 없이 만들어 그 줄에서 넘긴다 — `QApplication::setStyle(new SageStyle)`, `QIcon(new SageIconEngine(glyph))`. `QIconEngine::clone()`은 Qt가 요구하는 복제 함수라 `return new SageIconEngine(...)`으로 새 엔진을 돌려주고, 받은 `QIcon`이 소유한다. 넘긴 뒤의 포인터는 빌려 쓰는 것이다 (규약 2). 이 예외는 소유권 이전이 Qt 문서에 명시된 API에만 쓴다.
 
+레이아웃 · 모델에 넘기는 객체도 이 예외에 든다 (사용자 결정 2026-10-03) — `QBoxLayout::addLayout` · `QLayout::addItem` · `QStandardItemModel::appendRow` · `QStandardItem::appendRow`. 조건은 **만든 줄 바로 다음 줄에서 넘기는 것**이다. 두 줄 사이에 다른 코드를 두지 않는다. 넘긴 뒤 멤버로 들고 있는 포인터(`QSpacerItem* m_filterGap`)는 빌린 것이다 (규약 2).
+
+```cpp
+m_filterGap = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Minimum);
+m_bandLayout->addItem(m_filterGap);
+
+QHBoxLayout* actionLayout = new QHBoxLayout();
+formLayout->addLayout(actionLayout, 2, 1);
+actionLayout->addWidget(m_runButton);
+```
+
+설정을 먼저 하고 나중에 넘기거나(`new QHBoxLayout()` → `addWidget` 여러 줄 → `addLayout`), 만든 객체를 함수 밖으로 반환한 뒤 넘기는 형태(`return new QStandardItem(...)`)는 이 예외에 들지 않는다.
+
 ```cpp
 SageLoginDlg dialog(this);
 if (dialog.exec() != QDialog::Accepted) {
@@ -88,7 +101,7 @@ connect(m_watcher, &QFutureWatcher<SageWorkflowResult>::finished, this, &SageWor
 
 ## 스레드
 - UI 스레드에서 DB 조회, 파일 처리, 문서 생성 등 무거운 작업 금지
-- 백그라운드 코드에서 `QWidget`과 UI 스레드 소속 `QObject`에 접근 금지 — **값을 받고 값을 돌려준다**
+- 백그라운드 코드에서 `QWidget`과 UI 스레드 소속 `QObject`에 접근 금지 — **값을 받고 값을 돌려준다**. 앱 수명 동안 사는 서비스 · 등록부의 참조만 예외다 (`coding-design/references/threads-and-db.md`)
 - UI 스레드를 막는 대기 금지: `QFuture::waitForFinished()`, `Qt::BlockingQueuedConnection` (교착 위험)
 - `QThread` 서브클래싱 금지 — 백그라운드 작업은 `QtConcurrent::run`으로 통일한다
 - 백그라운드 작업은 예외를 밖으로 던지지 않는다 — 실패는 결과 값에 담는다

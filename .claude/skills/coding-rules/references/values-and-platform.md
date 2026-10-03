@@ -15,6 +15,16 @@ if (selectedCount > 12) { ... }
 constexpr int SAGE_RESULT_PAGE_MAX_ROWS = 12;
 ```
 
+**0 · 1 · 2 · -1도 예외가 아니다** (사용자 결정 2026-10-03). 앱 코드(`SageQt/`)의 모든 숫자 리터럴은 이름 붙은 상수다.
+- **같은 뜻은 공통 상수 하나**를 쓴다. 기하 값은 `SageDesignDefine.h`, 나머지는 `SageDefine.h`에 둔다
+  - 기하: `SAGE_NO_MARGIN`(여백 · 간격 0), `SAGE_CENTER_DIVISOR`(가운데 맞춤 2), `SAGE_RECT_EDGE_OFFSET`(`QRect`의 `right() + 1` 보정 1)
+  - 그 밖: `SAGE_INDEX_NONE`(없음 -1), `SAGE_FIRST_INDEX`(첫 번째 0)
+  - 같은 뜻의 상수가 이미 있으면 새로 만들지 않는다 (`SAGE_FILTER_CRITERIA_NONE`처럼 도메인 이름이 붙은 것은 그 도메인에서 쓴다)
+- **화면마다 뜻이 다른 값은 그 자리의 이름**을 준다
+  - 그리드 행 · 열 번호 → 그 화면 클래스 안의 `enum class` (`SageLoginDlgGridRow::Password`)
+  - 표의 열 → model의 열 enum (`SageResultColumn::Check`)
+- 공통 상수 이름은 이 문서에 추가한 뒤 쓴다. 쓰는 곳마다 새 이름을 만들지 않는다
+
 ### 문자열 리터럴 (매직 스트링)
 ```cpp
 // 금지
@@ -28,6 +38,8 @@ inline const QString SAGE_UI_FILE_NOT_FOUND = QStringLiteral("파일을 찾을 �
 
 **UI 표시 문자열은 `SageDefine.h`에 `SAGE_UI_` 접두사 상수로 선언한다.**
 이 프로젝트는 다국어를 지원하지 않으므로 `tr()`과 번역 파일을 쓰지 않는다.
+- `SAGE_UI_` 접두사는 **화면에 보이는 문자열에만** 붙인다. 직렬화 구분자처럼 화면에 나오지 않는 문자열은 붙이지 않는다
+- **문구 안에 다른 상수의 값을 다시 쓰지 않는다** (사용자 결정 2026-10-03). `"4~15자"`가 아니라 `"%1~%2자"`로 두고 `arg(SAGE_USER_PW_MIN_LEN).arg(SAGE_USER_PW_MAX_LEN)`으로 채운다. 값을 바꿀 때 문구가 따라온다
 
 ### 디자인 값 (색 · 여백 · 폰트 크기)
 위젯·화면 코드에 색 리터럴(`QColor(...)`, `"#RRGGBB"`)과 여백·크기 숫자를 쓰지 않는다.
@@ -52,10 +64,14 @@ enum class SageWorkflowType { Sample = 1 };
 if (workflowType == SageWorkflowType::Sample) { ... }
 ```
 
+정해진 값 집합이 화면에도 보이면 **enum과 표시 문구를 나눈다** (사용자 결정 2026-10-03). 로직은 enum을 비교하고, 문구는 표시하는 자리에서 `SAGE_UI_` 상수로 바꾼다. 예: 결과 상태 → `SageResultStatus` enum + `SAGE_UI_RESULT_STATUS_*`.
+
 ### 테스트 데이터
 테스트의 입력 데이터(JSON · 경로 · 문자열)는 리터럴로 쓴다. 기대값은 테스트의 목적에 따른다.
 - 값 자체를 원본과 대조하는 테스트(예: 핸들러 라벨이 SageSDI와 같은가)는 **리터럴** — 상수를 쓰면 상수가 틀려도 통과한다
 - 순서 · 구조를 보는 테스트(예: 결과 행의 순서)는 **앱 상수** — 값 대조는 위 테스트가 맡는다
+- **화면 픽셀 색 · 크기를 확인하는 테스트는 값 대조다** → 리터럴 (`QColor(220, 214, 205)`). `SAGE_COLOR_*`를 기대값으로 쓰지 않는다 (사용자 결정 2026-10-03)
+- 숫자 상수 규칙(0 · 1 · 2 · -1 포함)은 테스트의 입력 · 값 대조 기대값에 적용하지 않는다. 단, **앱에 enum이 있는 값**(표의 열 번호 등)은 테스트도 그 enum을 쓴다 (`index(0, 4)`가 아니라 `SageHistoryColumn`)
 
 ### 상수 위치 결정 규칙
 

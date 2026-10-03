@@ -57,12 +57,13 @@ description: >
 ## 상황별 요약
 
 ### 코드를 작성할 때
+0. **`references/`의 다섯 파일을 작업 주제와 상관없이 모두 읽는다.** 이름 · 소유 · 값 · 선언 규칙은 모든 코드에 적용된다. 주제 파일이 일부만 가리켜도 나머지를 건너뛰지 않는다 (T10 ~ T16에서 읽지 않은 파일의 규칙을 어겼다)
 1. 파일·클래스를 새로 만드는 작업이면 **`coding-design`으로 배치부터 확정**한다
 2. 이름을 짓는다 → `references/naming.md`
 3. 객체를 만들거나(`new`) 연결하거나(`connect`) 백그라운드로 보낸다 → `references/ownership-and-threads.md`
 4. 함수 시그니처 · 반환 · signal/slot · 클래스 선언 · include · 로그를 쓴다 → `references/api-shape.md`
 5. 숫자 · 문자열 · 색 · 경로를 쓰거나, 파일 · 프로세스 · OS 기능이 필요하다 → `references/values-and-platform.md`
-6. 끝나면 *금지 사항*과 *최종 판단 기준*으로 점검한다. 포맷은 `references/format-and-tools.md`
+6. 끝나면 아래 *작성 후 점검표*를 바뀐 줄 전부에 대해 한 줄씩 확인한다. 포맷은 `references/format-and-tools.md`
 
 ### 코드를 수정할 때
 1. 요청과 직접 이어지는 줄만 바꾼다. 인접 코드의 "개선"과 재포맷은 하지 않는다 (CLAUDE.md 3)
@@ -116,6 +117,43 @@ description: >
 | 반환 | 실패 = `bool + outError`, 없을 수 있음 = `find*` + 포인터 / `std::optional`, 항상 존재 = 참조 | `references/api-shape.md` |
 | Qt 관례 | 모든 `QObject` 파생에 `Q_OBJECT`. `connect`는 함수 포인터 문법만. QSS 금지 | `references/api-shape.md` · `coding-design/references/style.md` |
 | 로그 | 계층별 `QLoggingCategory` + `qC*` 매크로. 비밀번호 · 개인정보 금지. 사용자에게 알릴 오류는 화면으로 | `references/api-shape.md` |
+
+---
+
+## 작성 후 점검표 (CRITICAL)
+
+코드를 쓰거나 고친 뒤, 바뀐 줄 전부를 아래 항목과 대조한다. 각 항목의 근거는 괄호 안 파일에 있다.
+T10 ~ T16에서 실제로 어긴 항목은 **굵게** 표시했다 — 가장 먼저 본다.
+
+### 이름 (`naming.md`)
+- [ ] **`bool` 멤버는 `m_` + `is` / `has` / `can` + 상태** (`m_isRunning`, `m_running` 아님)
+- [ ] **slot은 `on` + 발신원 + 사건** (`onSearchButtonClicked`, `updateAuthState` 아님)
+- [ ] **위젯 멤버는 역할 + 그 클래스의 접미사** — 패널을 담으면 `…Panel`, `…Bar`를 담으면 `…Bar` (`SageResultTablePanel* m_inputTable` 아님)
+- [ ] enum 값에 타입명을 반복하지 않는다 · `get` 접두사 · 헝가리안 없음
+
+### 소유권 (`ownership-and-threads.md`)
+- [ ] **`new`는 그 줄에서 부모를 받는 `QObject`뿐** — 레이아웃 · 모델에 넘기는 객체(`addLayout` · `addItem` · `appendRow`)는 **만든 바로 다음 줄에서** 넘길 때만 예외다. 설정을 먼저 한 뒤 넘기거나 `return new QStandardItem(...)`처럼 함수 밖으로 돌려주면 위반이다 (규약 1 *예외*)
+- [ ] **`QObject`를 `std::unique_ptr`로 들고 있지 않다** (테스트 포함 — 스택 값이나 부모로)
+- [ ] 람다 `connect`에 수신 객체 · 소멸자는 RAII 래퍼에만 · 스레드 경계는 값
+
+### 선언 (`api-shape.md`)
+- [ ] **`connect`의 대상 함수는 모두 `slots` 구역에 있다** (`private:`에 둔 slot 금지)
+- [ ] **모든 값 타입 멤버에 선언부 기본값이 있다** — 스칼라 · enum · 포인터는 `= 값`, 클래스 타입은 `{}`. 참조 멤버만 제외
+- [ ] **null 계약** — 항상 있는 객체는 `T&` 반환 · `T&` 매개변수, 없을 수 있으면 `find*` + `T*` + 호출부 검사, 부모가 소유하는 것을 만들어 빌려 주면 `add*`, 호출자가 소유하면 `create*` + `unique_ptr`
+- [ ] 오버라이드는 기반 클래스와 같은 접근 수준 (`sizeHint`는 public, `paintEvent`는 protected)
+- [ ] **쓰는 타입의 헤더를 그 파일이 직접 include한다** (`QColor` · `QFont` · `QPen` · `QModelIndex`를 다른 헤더에 기대지 않는다). include 그룹 순서와 빈 줄
+- [ ] 선언 순서 · `explicit` · `override` · `const` · `Q_OBJECT` · 카테고리 로그(`qC*`)
+
+### 값 · 플랫폼 (`values-and-platform.md`)
+- [ ] **`\\` 경로 · 경로 문자열 자르기 없음** — 나누기는 `QFileInfo`, 화면 표시 직전에만 `QDir::toNativeSeparators`. 표시용으로 바꾼 경로를 다시 가공하지 않는다
+- [ ] 숫자 · 문자열 · 색 리터럴 없음 → `SageDefine.h` / `SageDesignDefine.h`. **0 · 1 · 2 · -1도 공통 상수**(`SAGE_NO_MARGIN` · `SAGE_CENTER_DIVISOR` 등), 그리드 행 · 열과 표 열은 enum
+- [ ] 문구 안에 다른 상수의 값을 다시 쓰지 않았다 (`arg`로 채움) · `SAGE_UI_`는 화면에 보이는 문자열에만 · 화면에도 보이는 값 집합은 enum + 표시 문구
+- [ ] **텍스트를 담는 위젯에 글자 폭 상수를 고정하지 않는다** — `design-values.md`의 *쓰는 방식*이 **최소값**이면 `setMinimumWidth`이고 `setFixedWidth`가 아니다. 그리기 계산에서도 최소값 상수를 고정 폭으로 쓰지 않는다 (`sageqt-ui` *레이아웃 정책*)
+- [ ] 같은 그리기 코드가 두 곳에 생기지 않는다 — 표준 위젯 모양은 `SageStyle` 하나에서 (`coding-design/references/style.md`)
+
+### 테스트 · 문서
+- [ ] `core` · `infra` 클래스를 추가했으면 `tests/`의 같은 계층 경로에 테스트가 있다
+- [ ] 새 폴더 · 링크 · 상수 · 위젯 · 예외를 만들었으면 그것을 정하는 스킬 문서를 같은 브랜치에서 갱신했다 (`sageqt-plan` *주제를 끝낼 때*)
 
 ---
 

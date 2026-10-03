@@ -293,3 +293,9 @@ SageSDI 상수에 없어 사용자가 정했거나, SageSDI 코드의 리터럴�
 | `SAGE_MAIN_WINDOW_HEIGHT` | `800` | 초기 크기 | T11, 사용자 결정 2026-09-28 |
 | `SAGE_TAB_PAD_X` | `16` | 고정 | T13, 사용자 결정 2026-09-28 — 탭 좌우 여백 (SageSDI는 Windows 기본값) |
 | `SAGE_DLG_EDIT_TEXT_PAD_X` | `4` | 고정 | T10 — SageSDI 다이얼로그 코드의 리터럴 (`SageLoginDlg.cpp:139`, `SagePasswordChangeDlg.cpp:162`)에 이름을 붙였다 |
+| `SAGE_FONT_TENTHS_PER_POINT` · `SAGE_FONT_REFERENCE_DPI` · `SAGE_FONT_POINTS_PER_INCH` | `10.0` · `96.0` · `72.0` | 환산 | T08 — 0.1pt 단위 폰트 크기를 96 DPI 픽셀로 바꾸는 계수 (`SageFontCatalog.cpp`) |
+| `SAGE_FONT_FAMILY_PRETENDARD` · `SAGE_FONT_FAMILY_GMARKET` | `"Pretendard"` · `"Gmarket Sans TTF"` | 패밀리 이름 | T08 — `*_FONT_FACE`의 GDI식 이름을 패밀리 + 굵기로 나눈 패밀리 부분 (T02) |
+| `SAGE_LIST_CHECK_CELL_WIDTH` | `20` | 고정 | T15 — SageSDI `SAGE_LIST_CHECK_IMAGE_WIDTH`(CImageList 폭)를 체크 칸 폭으로 옮겼다 |
+| `SAGE_ICON_ARROW_TIP` | `3` | 고정 | T15 — SageSDI 콤보 화살표 코드의 리터럴 `+3`에 이름을 붙였다 (`SageFilterComboBox.cpp`) |
+| `SAGE_COLOR_LIST_ROW_HOVER` | `#F8F1E6` | 색 | T15, 사용자 결정 2026-10-01 — 마우스를 올린 행 (후보 A · B · C 중 B) |
+| `SAGE_STATUS_BAR_HEIGHT` | `24` | 고정 | T16, 사용자 결정 2026-10-02 — 상태 표시줄 높이 |
