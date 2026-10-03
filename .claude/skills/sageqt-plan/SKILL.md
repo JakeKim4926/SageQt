@@ -31,6 +31,7 @@ description: >
 
 | ID | 단계 | 주제 | 선행 | 결정 대기 | 상태 |
 |---|---|---|---|---|---|
+| [T20](references/T20-rule-violations.md) | 품질 | 규칙 위반 정리 | — | — | 진행 중 |
 | [T19](references/T19-signing.md) | 배포 | 서명 · 공증 | — | — | 대기 |
 
 외부 준비물: Mac mini — macOS 실기 확인용 (T08 · T09는 CI 실제 화면 스크린샷 · 자동 끌기로 대신했다) / Apple Developer Program — T19 전 / Windows 코드서명 인증서 — T19 전

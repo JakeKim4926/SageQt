@@ -44,7 +44,7 @@ private:
     std::unique_ptr<SageTestUserRepository> m_repository;
     SageTestPasswordHasher m_hasher;
     std::unique_ptr<SageUserService> m_userService;
-    std::unique_ptr<SageAuthSession> m_authSession;
+    SageAuthSession m_authSession{};
 };
 
 void SagePasswordChangeDlgTest::initTestCase()
@@ -60,8 +60,8 @@ void SagePasswordChangeDlgTest::init()
     m_repository = std::make_unique<SageTestUserRepository>();
     m_repository->addUser(1, QStringLiteral("admin"), QStringLiteral("Admin1234"), SageUserRole::Admin, true);
     m_userService = std::make_unique<SageUserService>(*m_repository, m_hasher);
-    m_authSession = std::make_unique<SageAuthSession>();
-    m_authSession->setLogin(m_repository->user(QStringLiteral("admin")));
+    m_authSession.logout();
+    m_authSession.setLogin(m_repository->user(QStringLiteral("admin")));
 }
 
 QList<SageLineEdit*> SagePasswordChangeDlgTest::edits(QWidget& dialog)
@@ -90,7 +90,7 @@ void SagePasswordChangeDlgTest::submit(SagePasswordChangeDlg& dialog, const QStr
 
 void SagePasswordChangeDlgTest::emptyCurrentIsCheckedFirst()
 {
-    SagePasswordChangeDlg dialog(*m_userService, *m_authSession);
+    SagePasswordChangeDlg dialog(*m_userService, m_authSession);
 
     submit(dialog, QString(), QString(), QString());
 
@@ -100,7 +100,7 @@ void SagePasswordChangeDlgTest::emptyCurrentIsCheckedFirst()
 
 void SagePasswordChangeDlgTest::emptyNewIsCheckedSecond()
 {
-    SagePasswordChangeDlg dialog(*m_userService, *m_authSession);
+    SagePasswordChangeDlg dialog(*m_userService, m_authSession);
 
     submit(dialog, QStringLiteral("a"), QString(), QString());
 
@@ -110,7 +110,7 @@ void SagePasswordChangeDlgTest::emptyNewIsCheckedSecond()
 
 void SagePasswordChangeDlgTest::emptyConfirmIsCheckedThird()
 {
-    SagePasswordChangeDlg dialog(*m_userService, *m_authSession);
+    SagePasswordChangeDlg dialog(*m_userService, m_authSession);
 
     submit(dialog, QStringLiteral("a"), QStringLiteral("b"), QString());
 
@@ -120,7 +120,7 @@ void SagePasswordChangeDlgTest::emptyConfirmIsCheckedThird()
 
 void SagePasswordChangeDlgTest::mismatchSelectsConfirm()
 {
-    SagePasswordChangeDlg dialog(*m_userService, *m_authSession);
+    SagePasswordChangeDlg dialog(*m_userService, m_authSession);
 
     submit(dialog, QStringLiteral("Admin1234"), QStringLiteral("New1234"), QStringLiteral("New9999"));
 
@@ -130,7 +130,7 @@ void SagePasswordChangeDlgTest::mismatchSelectsConfirm()
 
 void SagePasswordChangeDlgTest::wrongCurrentPasswordShowsInlineError()
 {
-    SagePasswordChangeDlg dialog(*m_userService, *m_authSession);
+    SagePasswordChangeDlg dialog(*m_userService, m_authSession);
 
     submit(dialog, QStringLiteral("wrong"), QStringLiteral("New1234"), QStringLiteral("New1234"));
 
@@ -140,7 +140,7 @@ void SagePasswordChangeDlgTest::wrongCurrentPasswordShowsInlineError()
 
 void SagePasswordChangeDlgTest::invalidNewPasswordShowsServiceError()
 {
-    SagePasswordChangeDlg dialog(*m_userService, *m_authSession);
+    SagePasswordChangeDlg dialog(*m_userService, m_authSession);
 
     submit(dialog, QStringLiteral("Admin1234"), QStringLiteral("abc"), QStringLiteral("abc"));
 
@@ -151,7 +151,7 @@ void SagePasswordChangeDlgTest::invalidNewPasswordShowsServiceError()
 
 void SagePasswordChangeDlgTest::successUpdatesSessionAndAccepts()
 {
-    SagePasswordChangeDlg dialog(*m_userService, *m_authSession);
+    SagePasswordChangeDlg dialog(*m_userService, m_authSession);
     dialog.show();
     const SageTestModalDriver driver([](QDialog& modal) { modal.accept(); });
 
@@ -159,7 +159,7 @@ void SagePasswordChangeDlgTest::successUpdatesSessionAndAccepts()
 
     QTRY_COMPARE(dialog.result(), static_cast<int>(QDialog::Accepted));
     QCOMPARE(driver.titles(), QStringList{QStringLiteral("알림")});
-    QVERIFY(!m_authSession->currentUser().m_isPasswordChangeRequired);
+    QVERIFY(!m_authSession.currentUser().m_isPasswordChangeRequired);
     QCOMPARE(m_repository->user(QStringLiteral("admin")).m_passwordHash, QStringLiteral("hashed:New1234"));
 }
 

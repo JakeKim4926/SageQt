@@ -13,6 +13,13 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-10-03] refactor/t20-platform-ownership
+- **목적**: 규칙 위반 정리 (sageqt-plan T20, 첫 번째 PR) — 플랫폼 · 소유권
+- **변경 내용**: T20 주제 추가. 상태 카드 경로를 `QFileInfo`로 나누고 표시 직전에만 OS 구분자(작업 영역은 내부 경로 전달). 레이아웃 · 사이드바 항목을 만든 다음 줄에서 넘김(`add*`). 테스트 세션을 값 멤버로. `tools/rule-check/check_rules.py` + CI 단계(`\` 경로 · 부모 없는 `new`). `.pyc` 제거 · `.gitignore`
+- **PR 링크**: 없음
+- **규칙 점검**: Blocker 0 · Major 0 · Minor 1(값 멤버 기본값 — 고침) · Suggestion 1(경로 말줄임 단위 테스트 없음 — 원래부터, PR3 core 테스트와 함께 검토)
+- **결과**: merged (develop, 2026-10-03)
+
 ## [2026-10-03] docs/skill-compliance-gate
 - **목적**: 전체 코드 점검에서 나온 규칙 위반의 원인 차단 — 규칙은 모두 위반 코드보다 먼저 있었는데, 주제가 일부 reference만 읽게 했고 다 쓴 뒤 대조하는 단계가 없었다
 - **변경 내용**: (1) coding-rules 작성 후 점검표 · reference 다섯 파일 항상 읽기. (2) develop 반영 전 code-review-expert 규칙 점검(Blocker · Major 0), 주제 종료 시 책임 재측정 · 스킬 동기화. (3) 규칙 해석 16건 사용자 결정 반영(숫자 리터럴 · 소유권 이전 · add* · 오버라이드 접근 수준 · 고정 높이 · 예외 3종 · 값 집합 enum · 업무 상수 블록 · 테스트 색 리터럴 · 문구 속 숫자 · 멤버 기본값 · 테스트 링크 · 테스트 로그 · qdrawutil). (4) 승인된 코드와 어긋난 문서 동기화(infra/auth, Qt::Network, 디자인 값 9개, 위젯 2종 · 라벨 변형 2개, 구조도 3곳)

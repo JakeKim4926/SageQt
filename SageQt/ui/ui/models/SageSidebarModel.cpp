@@ -14,14 +14,14 @@ SageSidebarModel::SageSidebarModel(const QList<const ISageWorkflowHandler*>& han
     for (const ISageWorkflowHandler* handler : handlers) {
         QStandardItem* group = groups.value(handler->category(), nullptr);
         if (group == nullptr) {
-            group = appendGroup(handler->category());
+            group = addGroup(handler->category());
             groups.insert(handler->category(), group);
         }
-        group->setChild(group->rowCount(), makeWorkflow(*handler));
+        addWorkflow(*group, *handler);
     }
 
-    QStandardItem* etcGroup = appendGroup(SAGE_UI_SIDEBAR_GROUP_ETC);
-    etcGroup->setChild(etcGroup->rowCount(), makeChangePassword());
+    QStandardItem* etcGroup = addGroup(SAGE_UI_SIDEBAR_GROUP_ETC);
+    addChangePassword(*etcGroup);
 }
 
 QModelIndex SageSidebarModel::firstWorkflowIndex() const
@@ -39,37 +39,31 @@ QModelIndex SageSidebarModel::firstWorkflowIndex() const
     return {};
 }
 
-QStandardItem* SageSidebarModel::appendGroup(const QString& label)
-{
-    const int row = rowCount();
-    setItem(row, makeGroup(label));
-    return item(row);
-}
-
-QStandardItem* SageSidebarModel::makeGroup(const QString& label)
+QStandardItem* SageSidebarModel::addGroup(const QString& label)
 {
     QStandardItem* group = new QStandardItem(label);
+    appendRow(group);
     group->setFlags(Qt::ItemIsEnabled);
     group->setData(QVariant::fromValue(SageSidebarItemKind::Group), static_cast<int>(SageSidebarRole::ItemKind));
     return group;
 }
 
-QStandardItem* SageSidebarModel::makeWorkflow(const ISageWorkflowHandler& handler)
+void SageSidebarModel::addWorkflow(QStandardItem& group, const ISageWorkflowHandler& handler)
 {
     QStandardItem* workflow = new QStandardItem(handler.sidebarLabel());
+    group.appendRow(workflow);
     workflow->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
     workflow->setData(QVariant::fromValue(SageSidebarItemKind::Workflow), static_cast<int>(SageSidebarRole::ItemKind));
     workflow->setData(QVariant::fromValue(handler.workflowType()), static_cast<int>(SageSidebarRole::WorkflowType));
     workflow->setData(handler.isLoginRequired(), static_cast<int>(SageSidebarRole::LoginRequired));
-    return workflow;
 }
 
-QStandardItem* SageSidebarModel::makeChangePassword()
+void SageSidebarModel::addChangePassword(QStandardItem& group)
 {
     QStandardItem* changePassword = new QStandardItem(SAGE_UI_CHANGE_PW_MENU);
+    group.appendRow(changePassword);
     changePassword->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
     changePassword->setData(QVariant::fromValue(SageSidebarItemKind::ChangePassword),
                             static_cast<int>(SageSidebarRole::ItemKind));
     changePassword->setData(true, static_cast<int>(SageSidebarRole::LoginRequired));
-    return changePassword;
 }

@@ -286,3 +286,6 @@ jobs:
           if git grep -nE '(^|[^:])//|/\*' -- '*.cpp' '*.h'; then
             exit 1
           fi
+
+      - name: Check coding rules
+        run: python3 tools/rule-check/check_rules.py

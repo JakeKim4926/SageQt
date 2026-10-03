@@ -66,7 +66,8 @@ SageQt/                                 ← 저장소 루트
 ├── tools/                              ← 앱이 아닌 개발 도구 (측정 등). SAGE_BUILD_TOOLS=ON일 때만 빌드
 │   ├── font-probe/                     ← 도구 1개 = 폴더 1개
 │   ├── dialog-capture/                 ← CI 스크린샷 · 끌어서 이동 확인 (Python, screenshots 워크플로)
-│   └── app-icon/                       ← 앱 아이콘 생성 (Python + Pillow → resources/icons)
+│   ├── app-icon/                       ← 앱 아이콘 생성 (Python + Pillow → resources/icons)
+│   └── rule-check/                     ← 코딩 규칙 기계 검사 (Python 표준 라이브러리, CI static-analysis)
 │
 └── SageQt/                             ← 소스 루트
     ├── CMakeLists.txt                  ← 실행 파일 타깃 + 하위 타깃 추가

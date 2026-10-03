@@ -32,8 +32,7 @@ public:
     QModelIndex firstWorkflowIndex() const;
 
 private:
-    QStandardItem* appendGroup(const QString& label);
-    static QStandardItem* makeGroup(const QString& label);
-    static QStandardItem* makeWorkflow(const ISageWorkflowHandler& handler);
-    static QStandardItem* makeChangePassword();
+    QStandardItem* addGroup(const QString& label);
+    static void addWorkflow(QStandardItem& group, const ISageWorkflowHandler& handler);
+    static void addChangePassword(QStandardItem& group);
 };

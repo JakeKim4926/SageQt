@@ -95,7 +95,7 @@ void SageStatusCardTest::progressIsIgnoredWhenNotRunning()
 void SageStatusCardTest::completedWithPathShowsOpenFolder()
 {
     SageStatusCard card;
-    card.setResult(true, QStringLiteral("실행이 완료되었습니다 · 3건"), QStringLiteral("C:\\work\\out"));
+    card.setResult(true, QStringLiteral("실행이 완료되었습니다 · 3건"), QStringLiteral("C:/work/out"));
     render(card);
 
     QCOMPARE(card.variant(), SageStatusCard::SageStatusCardVariant::Completed);
@@ -124,7 +124,7 @@ void SageStatusCardTest::openFolderClickIsSignaled()
 {
     SageStatusCard card;
     QSignalSpy openSpy(&card, &SageStatusCard::openFolderRequested);
-    card.setResult(true, QStringLiteral("완료"), QStringLiteral("C:\\work\\out"));
+    card.setResult(true, QStringLiteral("완료"), QStringLiteral("C:/work/out"));
 
     card.findChild<SageButton*>()->click();
 

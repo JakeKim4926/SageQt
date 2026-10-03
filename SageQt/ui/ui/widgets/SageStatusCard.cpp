@@ -6,6 +6,8 @@
 #include "ui/widgets/SageButton.h"
 
 #include <QBrush>
+#include <QDir>
+#include <QFileInfo>
 #include <QFont>
 #include <QHBoxLayout>
 #include <QPainter>
@@ -113,9 +115,9 @@ void SageStatusCard::createLayout()
     m_layout->setSpacing(0);
     m_layout->addWidget(m_progressBar);
     QHBoxLayout* actionLayout = new QHBoxLayout();
+    m_layout->addLayout(actionLayout);
     actionLayout->addStretch();
     actionLayout->addWidget(m_openFolderButton, 0, Qt::AlignVCenter);
-    m_layout->addLayout(actionLayout);
 }
 
 void SageStatusCard::connectSignals()
@@ -291,18 +293,20 @@ QColor SageStatusCard::messageColor() const
 
 QString SageStatusCard::elidedPath(const QString& path, const QFontMetrics& metrics, int width)
 {
-    if (metrics.horizontalAdvance(path) <= width) {
-        return path;
+    const QString displayPath = QDir::toNativeSeparators(path);
+    if (metrics.horizontalAdvance(displayPath) <= width) {
+        return displayPath;
     }
-    const int separatorIndex = qMax(path.lastIndexOf(QLatin1Char('/')), path.lastIndexOf(QLatin1Char('\\')));
-    if (separatorIndex <= 0) {
-        return metrics.elidedText(path, Qt::ElideMiddle, width);
+    const QFileInfo pathInfo(path);
+    if (pathInfo.fileName() == path) {
+        return metrics.elidedText(displayPath, Qt::ElideMiddle, width);
     }
-    const QString fileName = path.mid(separatorIndex);
+    const QString displayFolder = QDir::toNativeSeparators(pathInfo.path());
+    const QString fileName = displayPath.mid(displayFolder.size());
     const int folderWidth = width - metrics.horizontalAdvance(fileName);
-    const QString folder = metrics.elidedText(path.left(separatorIndex), Qt::ElideMiddle, folderWidth);
+    const QString folder = metrics.elidedText(displayFolder, Qt::ElideMiddle, folderWidth);
     if (folder.isEmpty()) {
-        return metrics.elidedText(path, Qt::ElideMiddle, width);
+        return metrics.elidedText(displayPath, Qt::ElideMiddle, width);
     }
     return folder + fileName;
 }

@@ -15,7 +15,6 @@
 
 #include <QDateTime>
 #include <QDesktopServices>
-#include <QDir>
 #include <QFileInfo>
 #include <QFrame>
 #include <QHBoxLayout>
@@ -379,7 +378,7 @@ void SageWorkspacePanel::applyStatusCardResult(const ISageWorkflowHandler* handl
         outputPath = payload.value(SAGE_JSON_KEY_OUTPUT_FOLDER).toString();
     }
     m_lastOutputPath = outputPath;
-    m_inputPanel->setStatusResult(true, message, QDir::toNativeSeparators(outputPath));
+    m_inputPanel->setStatusResult(true, message, outputPath);
 }
 
 void SageWorkspacePanel::onResultTableChanged()

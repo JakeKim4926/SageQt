@@ -22,7 +22,6 @@
 #include <QColor>
 #include <QDesktopServices>
 #include <QDialog>
-#include <QDir>
 #include <QImage>
 #include <QJsonObject>
 #include <QLabel>
@@ -491,7 +490,7 @@ void SageWorkspacePanelTest::completedRunShowsResultAndOpensFolder()
     SageStatusCard* card = panel.findChild<SageStatusCard*>();
     QCOMPARE(card->variant(), SageStatusCard::SageStatusCardVariant::Completed);
     QVERIFY(card->message().startsWith(SAGE_UI_SAMPLE_ACTION_BUTTON + QStringLiteral("이 완료되었습니다 · ")));
-    QCOMPARE(card->detail(), QDir::toNativeSeparators(outputDirectory.path()));
+    QCOMPARE(card->detail(), outputDirectory.path());
     QVERIFY(panel.findChild<SageWorkflowResultPanel*>()->resultTable().rowCount() > 0);
     QCOMPARE(panel.findChild<SageWorkflowHistoryPanel*>()->visibleRowCount(), 1);
 

@@ -102,3 +102,7 @@ CMakeUserPresets.json
 .vscode/
 .cache/
 vcpkg_installed/
+
+# Python
+__pycache__/
+*.pyc

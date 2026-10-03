@@ -46,7 +46,7 @@ private:
     std::unique_ptr<SageTestUserRepository> m_repository;
     SageTestPasswordHasher m_hasher;
     std::unique_ptr<SageUserService> m_userService;
-    std::unique_ptr<SageAuthSession> m_authSession;
+    SageAuthSession m_authSession{};
 };
 
 void SageLoginDlgTest::initTestCase()
@@ -63,7 +63,7 @@ void SageLoginDlgTest::init()
     m_repository->addUser(1, QStringLiteral("admin"), QStringLiteral("Admin1234"), SageUserRole::Admin, true);
     m_repository->addUser(2, QStringLiteral("kim"), QStringLiteral("Kim1234"), SageUserRole::User, false);
     m_userService = std::make_unique<SageUserService>(*m_repository, m_hasher);
-    m_authSession = std::make_unique<SageAuthSession>();
+    m_authSession.logout();
 }
 
 QList<SageLineEdit*> SageLoginDlgTest::edits(QWidget& dialog)
@@ -96,7 +96,7 @@ void SageLoginDlgTest::submit(SageLoginDlg& dialog, const QString& loginId, cons
 
 void SageLoginDlgTest::emptyIdShowsInlineError()
 {
-    SageLoginDlg dialog(*m_userService, *m_authSession);
+    SageLoginDlg dialog(*m_userService, m_authSession);
 
     submit(dialog, QStringLiteral("   "), QStringLiteral("x"));
 
@@ -107,7 +107,7 @@ void SageLoginDlgTest::emptyIdShowsInlineError()
 
 void SageLoginDlgTest::emptyPasswordShowsInlineError()
 {
-    SageLoginDlg dialog(*m_userService, *m_authSession);
+    SageLoginDlg dialog(*m_userService, m_authSession);
 
     submit(dialog, QStringLiteral("kim"), QString());
 
@@ -117,45 +117,45 @@ void SageLoginDlgTest::emptyPasswordShowsInlineError()
 
 void SageLoginDlgTest::wrongPasswordShowsFailedAndSelectsPassword()
 {
-    SageLoginDlg dialog(*m_userService, *m_authSession);
+    SageLoginDlg dialog(*m_userService, m_authSession);
 
     submit(dialog, QStringLiteral("kim"), QStringLiteral("wrong"));
 
     QTRY_COMPARE(inlineMessage(dialog), QStringLiteral("아이디 또는 비밀번호가 올바르지 않습니다."));
     QCOMPARE(edits(dialog).at(1)->selectedText(), QStringLiteral("wrong"));
-    QVERIFY(!m_authSession->isLoggedIn());
+    QVERIFY(!m_authSession.isLoggedIn());
 }
 
 void SageLoginDlgTest::queryErrorShowsErrorBox()
 {
     m_repository->setFailing(true);
-    SageLoginDlg dialog(*m_userService, *m_authSession);
+    SageLoginDlg dialog(*m_userService, m_authSession);
     const SageTestModalDriver driver([](QDialog& modal) { modal.reject(); });
 
     submit(dialog, QStringLiteral("kim"), QStringLiteral("Kim1234"));
 
     QTRY_COMPARE(driver.titles(), QStringList{QStringLiteral("오류")});
-    QVERIFY(!m_authSession->isLoggedIn());
+    QVERIFY(!m_authSession.isLoggedIn());
 }
 
 void SageLoginDlgTest::validLoginSetsSessionAndAccepts()
 {
-    SageLoginDlg dialog(*m_userService, *m_authSession);
+    SageLoginDlg dialog(*m_userService, m_authSession);
     dialog.show();
 
     submit(dialog, QStringLiteral(" kim "), QStringLiteral("Kim1234"));
 
     QTRY_COMPARE(dialog.result(), static_cast<int>(QDialog::Accepted));
-    QVERIFY(m_authSession->isLoggedIn());
-    QCOMPARE(m_authSession->currentUser().m_loginId, QStringLiteral("kim"));
+    QVERIFY(m_authSession.isLoggedIn());
+    QCOMPARE(m_authSession.currentUser().m_loginId, QStringLiteral("kim"));
 }
 
 void SageLoginDlgTest::canceledForcedChangeLogsOutBeforeWarning()
 {
-    SageLoginDlg dialog(*m_userService, *m_authSession);
+    SageLoginDlg dialog(*m_userService, m_authSession);
     dialog.show();
     QList<bool> loggedInAtModal;
-    SageAuthSession& session = *m_authSession;
+    SageAuthSession& session = m_authSession;
     const SageTestModalDriver driver([&loggedInAtModal, &session](QDialog& modal) {
         loggedInAtModal.append(session.isLoggedIn());
         modal.reject();
@@ -167,14 +167,14 @@ void SageLoginDlgTest::canceledForcedChangeLogsOutBeforeWarning()
     QCOMPARE(driver.titles(),
              (QStringList{QStringLiteral("경고"), QStringLiteral("비밀번호 변경"), QStringLiteral("경고")}));
     QCOMPARE(loggedInAtModal, (QList<bool>{true, true, false}));
-    QVERIFY(!m_authSession->isLoggedIn());
+    QVERIFY(!m_authSession.isLoggedIn());
     QVERIFY(edits(dialog).at(1)->text().isEmpty());
     QVERIFY(dialog.result() != QDialog::Accepted);
 }
 
 void SageLoginDlgTest::completedForcedChangeKeepsLogin()
 {
-    SageLoginDlg dialog(*m_userService, *m_authSession);
+    SageLoginDlg dialog(*m_userService, m_authSession);
     dialog.show();
     const SageTestModalDriver driver([](QDialog& modal) {
         if (qobject_cast<SagePasswordChangeDlg*>(&modal) == nullptr) {
@@ -193,8 +193,8 @@ void SageLoginDlgTest::completedForcedChangeKeepsLogin()
     QTRY_COMPARE(dialog.result(), static_cast<int>(QDialog::Accepted));
     QCOMPARE(driver.titles(),
              (QStringList{QStringLiteral("경고"), QStringLiteral("비밀번호 변경"), QStringLiteral("알림")}));
-    QVERIFY(m_authSession->isLoggedIn());
-    QVERIFY(!m_authSession->currentUser().m_isPasswordChangeRequired);
+    QVERIFY(m_authSession.isLoggedIn());
+    QVERIFY(!m_authSession.currentUser().m_isPasswordChangeRequired);
     QCOMPARE(m_repository->user(QStringLiteral("admin")).m_passwordHash, QStringLiteral("hashed:New1234"));
 }
 

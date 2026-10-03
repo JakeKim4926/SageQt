@@ -47,6 +47,7 @@ SageUserService::SageUserService(ISageUserRepository& repository, const SageDbCo
 | `clang-tidy` | 네이밍 형식(대소문자 · 접두사 — Qt 클래스 전방 선언 `class QLabel;`은 접두사 검사에서 뺀다), `NULL` · C 캐스트 금지, `explicit` · `override` · 멤버 함수 `const` |
 | `clazy` | Qt 전용 — detach, `Q_OBJECT` 누락, connect 오용 등 (level1 + `missing-qobject-macro` · `old-style-connect`) |
 | CI grep | `auto` 키워드, 플랫폼 분기(`Q_OS_` · `_WIN32` · `__APPLE__` · `__linux__` · `<windows.h>`), 주석(`//` · `/*`, 단 `://`는 제외) — clang-tidy에는 `auto` · 주석을 금지하는 검사가 없다 |
+| `tools/rule-check/check_rules.py` | clang-tidy로 표현할 수 없는 규칙 (T20에서 추가) — `\` 경로, 부모 없이 만들어 다음 줄에서 넘기지 않는 `new`. 로컬에서도 `python tools/rule-check/check_rules.py`로 돌린다 |
 
 clazy의 `non-pod-global-static`은 끈다. `SageDefine.h`의 `inline const QString` 상수가 대상인데, 실행 파일 하나에 들어가는 상수라 시작 비용이 무시할 수준이다.
 

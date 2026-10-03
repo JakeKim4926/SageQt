@@ -227,11 +227,11 @@ void SageWorkflowInputPanel::createLayout()
     formLayout->addWidget(m_outputFolderEdit, 1, 1);
     formLayout->addWidget(m_selectOutputButton, 1, 2);
     QHBoxLayout* actionLayout = new QHBoxLayout();
+    formLayout->addLayout(actionLayout, 2, 1);
     actionLayout->setSpacing(SAGE_ACTION_GAP);
     actionLayout->addWidget(m_runButton);
     actionLayout->addWidget(m_inputResetButton);
     actionLayout->addStretch();
-    formLayout->addLayout(actionLayout, 2, 1);
     formLayout->setColumnStretch(1, 1);
 }
 
