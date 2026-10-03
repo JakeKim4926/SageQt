@@ -27,12 +27,13 @@ public slots:
 
 private slots:
     void onLogoutButtonClicked();
-    void updateAuthState();
+    void onAuthSessionStateChanged();
 
 private:
     void createWidgets();
     void createLayout();
     void connectSignals();
+    void updateAuthState();
 
 private:
     const SageWorkflowRegistry& m_registry;

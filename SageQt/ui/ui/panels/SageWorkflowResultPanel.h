@@ -11,9 +11,9 @@ class SageWorkflowResultPanel : public QWidget
 public:
     explicit SageWorkflowResultPanel(QWidget* parent = nullptr);
 
-    SageResultTablePanel& resultTable();
+    SageResultTablePanel& resultTablePanel();
     void setFilterVisible(bool visible);
 
 private:
-    SageResultTablePanel* m_resultTable = nullptr;
+    SageResultTablePanel* m_resultTablePanel = nullptr;
 };

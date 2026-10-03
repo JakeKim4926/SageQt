@@ -42,6 +42,11 @@ void SageHeaderPanel::onLogoutButtonClicked()
     m_authSession.logout();
 }
 
+void SageHeaderPanel::onAuthSessionStateChanged()
+{
+    updateAuthState();
+}
+
 void SageHeaderPanel::updateAuthState()
 {
     const bool isLoggedIn = m_authSession.isLoggedIn();
@@ -116,5 +121,5 @@ void SageHeaderPanel::connectSignals()
 {
     connect(m_loginButton, &SageButton::clicked, this, &SageHeaderPanel::loginRequested);
     connect(m_logoutButton, &SageButton::clicked, this, &SageHeaderPanel::onLogoutButtonClicked);
-    connect(&m_authSession, &SageAuthSession::authStateChanged, this, &SageHeaderPanel::updateAuthState);
+    connect(&m_authSession, &SageAuthSession::authStateChanged, this, &SageHeaderPanel::onAuthSessionStateChanged);
 }

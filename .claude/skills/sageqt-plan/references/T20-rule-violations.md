@@ -61,7 +61,7 @@
 ## 작업
 PR마다 develop 반영 전 규칙 점검(`git-workflow` *develop 반영 절차* 1)을 하고 PR_LOG에 적는다. CI 검사는 `tools/rule-check/check_rules.py` 하나에 모으고 `build.yml` static-analysis job에서 돌린다.
 - [x] PR1 플랫폼 · 소유권 — 경로 · 레이아웃 · `QStandardItem` · 테스트 `unique_ptr`, `.pyc` 정리. CI: `\\` 경로, 부모 없는 `new`
-- [ ] PR2 이름 · slot — `bool` 멤버, slot 이름 · 구역, 위젯 멤버 접미사, `add*`. CI: `bool` 멤버 이름
+- [x] PR2 이름 · slot — `bool` 멤버, slot 이름 · 구역, 위젯 멤버 접미사, `add*`. CI: `bool` 멤버 이름
 - [ ] PR3 선언 — null 계약, enum 위치, 생성자 형태, include, 중복 전방 선언, core 테스트
 - [ ] PR4 UI — 최소 폭, 체크 상자 한 벌, 상태 카드 파생 상수. CI: 최소값 상수의 `setFixedWidth`
 - [ ] PR5 문자열 · enum — 결과 상태 enum, 구분자 이름, 문구 속 숫자, 테스트 색 · 열 번호
@@ -79,6 +79,7 @@ PR마다 develop 반영 전 규칙 점검(`git-workflow` *develop 반영 절차*
 - `resources/GmarketSansTTFLight.ttf` · `GmarketSansTTFMedium.ttf`(qrc 미등록) — 원래부터 쓰이지 않던 파일이라 보고만 한다 (CLAUDE.md 3)
 
 ## 확인한 사실
-- PR1 (2026-10-03): `check_rules.py`를 고치기 전 코드에 돌리면 정확히 8건(`\` 3 · 부모 없는 `new` 5), 고친 뒤 0건. 공간 사이 `QSpacerItem` 4곳은 결정 기록대로 만든 다음 줄에서 넘기므로 걸리지 않는다
+- PR1 (2026-10-03): `check_rules.py`를 고치기 전 코드에 돌리면 정확히 8건(`\` 3 · 부모 없는 `new` 5), 고친 뒤 0건. 간격용 `QSpacerItem` 4곳은 결정 기록대로 만든 다음 줄에서 넘기므로 걸리지 않는다
 - PR1: 상태 카드 경로 말줄임은 `QFileInfo::path()`로 나눈다. 드라이브 바로 아래 경로(`C:/out`)가 칸보다 길 때만 나누는 위치가 `C:` + `\out`에서 `C:\` + `out`으로 바뀐다 — 표시 문자열 전체는 같다
 - PR1: 사이드바 항목은 `add*`가 만들어 바로 넣은 뒤 설정한다. 설정 중 `dataChanged`가 나지만 모델 생성 중이라 연결된 view가 없다
+- PR2 (2026-10-03): slot 이름 결정(발신원 생략 금지)으로 대상이 점검 보고의 5개에서 private slot 25개로 늘었다. slot이면서 직접 부르던 `updateAuthState` · `syncSelectionBar` · `updateTotalBarCells`는 private 함수로 두고 slot 4개(`onAuthSessionStateChanged` · `onModelReset` · `onHeaderSectionResized` · `onHorizontalScrollBarValueChanged`)가 부른다. bool 검사는 고치기 전 코드에서 10건, 고친 뒤 0건

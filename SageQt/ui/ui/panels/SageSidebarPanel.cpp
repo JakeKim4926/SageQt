@@ -33,7 +33,7 @@ std::optional<SageWorkflowType> SageSidebarPanel::selectedWorkflow() const
     return m_selectedWorkflow;
 }
 
-void SageSidebarPanel::onSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
+void SageSidebarPanel::onWorkflowTreeSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
 {
     Q_UNUSED(deselected)
     if (selected.indexes().isEmpty()) {
@@ -116,7 +116,7 @@ void SageSidebarPanel::createLayout()
 void SageSidebarPanel::connectSignals()
 {
     connect(m_workflowTree->selectionModel(), &QItemSelectionModel::selectionChanged, this,
-            &SageSidebarPanel::onSelectionChanged);
+            &SageSidebarPanel::onWorkflowTreeSelectionChanged);
 }
 
 void SageSidebarPanel::selectFirstWorkflow()

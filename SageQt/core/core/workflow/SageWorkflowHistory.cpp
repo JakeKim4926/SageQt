@@ -26,7 +26,7 @@ SageHistoryEntry SageWorkflowHistory::buildRunEntry(const QString& inputPath, co
     SageHistoryEntry entry;
     entry.m_time = time;
     entry.m_inputPath = inputPath;
-    entry.m_success = success;
+    entry.m_isSuccessful = success;
     if (success) {
         const QJsonObject payload = response.value(SAGE_JSON_KEY_PAYLOAD).toObject();
         entry.m_outputPath = payload.value(SAGE_JSON_KEY_FILE_PATH).toString();
@@ -50,8 +50,9 @@ SageHistoryEntry SageWorkflowHistory::buildFileEntry(const QString& inputPath, c
     entry.m_time = time;
     entry.m_inputPath = inputPath;
     const QString status = file.value(SAGE_JSON_KEY_STATUS).toString();
-    entry.m_success = status.isEmpty() ? runSuccess : status.compare(SAGE_JSON_VALUE_SUCCESS, Qt::CaseInsensitive) == 0;
-    if (entry.m_success) {
+    entry.m_isSuccessful =
+        status.isEmpty() ? runSuccess : status.compare(SAGE_JSON_VALUE_SUCCESS, Qt::CaseInsensitive) == 0;
+    if (entry.m_isSuccessful) {
         entry.m_outputPath = file.value(SAGE_JSON_KEY_FILE_PATH).toString();
         return entry;
     }

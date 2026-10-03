@@ -24,7 +24,7 @@ SageHistoryFilter SageHistoryFilterProxyModel::filter() const
 bool SageHistoryFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
 {
     Q_UNUSED(sourceParent)
-    const bool success = m_historyModel.entry(sourceRow).m_success;
+    const bool success = m_historyModel.entry(sourceRow).m_isSuccessful;
     switch (m_filter) {
     case SageHistoryFilter::Success:
         return success;

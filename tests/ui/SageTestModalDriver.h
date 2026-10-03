@@ -22,7 +22,7 @@ public:
         , m_handler(std::move(handler))
     {
         m_timer.setInterval(SAGE_TEST_MODAL_POLL_MS);
-        connect(&m_timer, &QTimer::timeout, this, &SageTestModalDriver::handleActiveModal);
+        connect(&m_timer, &QTimer::timeout, this, &SageTestModalDriver::onTimerTimeout);
         m_timer.start();
     }
 
@@ -32,7 +32,7 @@ public:
     }
 
 private slots:
-    void handleActiveModal()
+    void onTimerTimeout()
     {
         QDialog* dialog = qobject_cast<QDialog*>(QApplication::activeModalWidget());
         if (dialog == nullptr || dialog == m_lastDialog) {

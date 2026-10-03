@@ -21,8 +21,8 @@ public:
                    SageAuthSession& authSession, QWidget* parent = nullptr);
 
 private slots:
-    void openLoginDialog();
-    void openPasswordChangeDialog();
+    void onHeaderPanelLoginRequested();
+    void onSidebarPanelPasswordChangeRequested();
 
 private:
     void createWidgets(const SageWorkflowRegistry& registry, SageAuthSession& authSession);

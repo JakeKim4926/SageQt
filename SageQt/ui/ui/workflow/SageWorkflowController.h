@@ -33,6 +33,6 @@ private slots:
 private:
     const SageWorkflowRegistry& m_registry;
     QFutureWatcher<SageWorkflowRunResult>* m_watcher = nullptr;
-    bool m_running = false;
+    bool m_isRunning = false;
     SageWorkflowResultState m_resultState;
 };

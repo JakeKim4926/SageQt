@@ -27,7 +27,7 @@ int SageHistoryModel::successCount() const
 {
     int count = 0;
     for (const SageHistoryEntry& historyEntry : m_entries) {
-        if (historyEntry.m_success) {
+        if (historyEntry.m_isSuccessful) {
             ++count;
         }
     }
@@ -57,14 +57,15 @@ QVariant SageHistoryModel::data(const QModelIndex& index, int role) const
     case Qt::TextAlignmentRole:
         return QVariant::fromValue(Qt::AlignCenter);
     case static_cast<int>(SageTableRole::Muted):
-        return column == SageHistoryColumn::Output && historyEntry.m_success && historyEntry.m_outputPath.isEmpty();
+        return column == SageHistoryColumn::Output && historyEntry.m_isSuccessful &&
+               historyEntry.m_outputPath.isEmpty();
     case static_cast<int>(SageTableRole::RowTone):
-        return QVariant::fromValue(historyEntry.m_success ? SageTableTone::None : SageTableTone::Failed);
+        return QVariant::fromValue(historyEntry.m_isSuccessful ? SageTableTone::None : SageTableTone::Failed);
     case static_cast<int>(SageTableRole::BadgeTone):
         if (column != SageHistoryColumn::Result) {
             return QVariant::fromValue(SageTableTone::None);
         }
-        return QVariant::fromValue(historyEntry.m_success ? SageTableTone::Success : SageTableTone::Failed);
+        return QVariant::fromValue(historyEntry.m_isSuccessful ? SageTableTone::Success : SageTableTone::Failed);
     default:
         return {};
     }
@@ -98,16 +99,16 @@ QString SageHistoryModel::displayText(const SageHistoryEntry& entry, SageHistory
     case SageHistoryColumn::Time:
         return entry.m_time.toString(SAGE_UI_HISTORY_TIME_FORMAT);
     case SageHistoryColumn::Result:
-        return entry.m_success ? SAGE_UI_HISTORY_SUCCESS : SAGE_UI_HISTORY_FAILED;
+        return entry.m_isSuccessful ? SAGE_UI_HISTORY_SUCCESS : SAGE_UI_HISTORY_FAILED;
     case SageHistoryColumn::Input:
         return entry.m_inputPath.isEmpty() ? SAGE_UI_AMOUNT_EMPTY_MARK : entry.m_inputPath;
     case SageHistoryColumn::Output:
-        if (!entry.m_success) {
+        if (!entry.m_isSuccessful) {
             return SAGE_UI_AMOUNT_EMPTY_MARK;
         }
         return entry.m_outputPath.isEmpty() ? SAGE_UI_HISTORY_NO_OUTPUT : entry.m_outputPath;
     case SageHistoryColumn::Reason:
-        return entry.m_success || entry.m_reason.isEmpty() ? SAGE_UI_AMOUNT_EMPTY_MARK : entry.m_reason;
+        return entry.m_isSuccessful || entry.m_reason.isEmpty() ? SAGE_UI_AMOUNT_EMPTY_MARK : entry.m_reason;
     case SageHistoryColumn::Count:
         break;
     }

@@ -11,7 +11,7 @@ struct SageHistoryEntry
     QString m_inputPath;
     QString m_outputPath;
     QString m_reason;
-    bool m_success = false;
+    bool m_isSuccessful = false;
 };
 
 class SageWorkflowHistory

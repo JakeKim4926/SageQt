@@ -23,16 +23,18 @@ public:
     void appendEntries(const QList<SageHistoryEntry>& entries);
     int visibleRowCount() const;
 
+private slots:
+    void onFilterPillBarSelectedIndexChanged(int index);
+
 private:
     void createWidgets();
     void createLayout();
     void connectSignals();
-    void onFilterSelected(int index);
     void updateFilterLabels();
     void updateEmptyState();
 
 private:
-    SageFilterPillBar* m_filterPills = nullptr;
+    SageFilterPillBar* m_filterPillBar = nullptr;
     QSpacerItem* m_filterGap = nullptr;
     QVBoxLayout* m_layout = nullptr;
     SageTableView* m_tableView = nullptr;

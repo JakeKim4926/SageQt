@@ -31,7 +31,7 @@ signals:
     void passwordChangeRequested();
 
 private slots:
-    void onSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+    void onWorkflowTreeSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
 private:
     void createWidgets(const SageWorkflowRegistry& registry);

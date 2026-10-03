@@ -57,16 +57,21 @@ signals:
     void filterChanged();
     void selectionChanged(int selectedCount);
 
+private slots:
+    void onSearchBoxSearchRequested();
+    void onResetButtonClicked();
+    void onSearchBoxCriteriaChanged(int criteria);
+    void onSelectionBarSelectAllClicked();
+    void onSelectionBarClearClicked();
+    void onModelDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QList<int>& roles);
+    void onModelReset();
+    void onHeaderSectionResized();
+    void onHorizontalScrollBarValueChanged();
+
 private:
     void createWidgets(const QString& title);
     void createLayout();
     void connectSignals();
-    void onSearchRequested();
-    void onFilterReset();
-    void onCriteriaChanged(int criteria);
-    void onSelectAllClicked();
-    void onClearClicked();
-    void onCheckStateChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QList<int>& roles);
     void applyFilter(const QString& keyword, int criteria);
     void populateCriteria();
     void setAllRowsChecked(bool checked);
@@ -96,7 +101,7 @@ private:
     SageResultFilterProxyModel* m_proxy = nullptr;
     QList<SageResultTotalCell> m_totalCells;
     bool m_hasTitle = false;
-    bool m_selectAllVisible = false;
-    bool m_filterVisible = false;
-    bool m_updatingChecks = false;
+    bool m_isSelectAllVisible = false;
+    bool m_isFilterVisible = false;
+    bool m_isUpdatingChecks = false;
 };

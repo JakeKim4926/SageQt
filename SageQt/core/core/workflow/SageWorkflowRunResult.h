@@ -18,7 +18,7 @@ struct SageWorkflowResultState
 {
     std::optional<SageWorkflowType> m_workflowType;
     std::optional<SageTaskType> m_taskType;
-    bool m_success = false;
+    bool m_isSuccessful = false;
     QJsonObject m_response;
     QString m_inputPath;
 };

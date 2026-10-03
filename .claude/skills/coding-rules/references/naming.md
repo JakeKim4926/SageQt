@@ -29,12 +29,15 @@
 | enum 타입 | `Sage` + PascalCase, `enum class` | `SageButtonVariant` |
 | enum 값 | PascalCase | `SageButtonVariant::Primary` |
 | signal | 과거형 또는 상태 변화 | `workflowCompleted`, `loginSucceeded` |
-| slot | `on` + 발신원 + 사건 | `onRunButtonClicked()` |
+| slot (private, 사건에 반응) | `on` + 발신원 + 사건 — **발신원을 생략하지 않는다** | `onRunButtonClicked()`, `onInputPanelRunRequested()`, `onProgressTimerTimeout()` |
+| slot (public, 밖에서 부르는 동작) | 동사 + 목적어 (일반 함수와 같다) | `showWorkflow()`, `applyDroppedPaths()` |
 | 테스트 클래스 | `Sage` + 대상 + `Test` | `SageUserServiceTest` |
 | 테스트 함수 | camelCase, 기대 동작 서술 | `loginFailsWithWrongPassword()` |
 | 파일 | 클래스명과 동일 | `SageUserService.h` / `.cpp` |
 
 `get` 접두사는 쓰지 않는다 (Qt 관례). null 계약은 `api-shape.md`의 *null 계약*에 따라 반환 타입과 `find*`가 표현한다.
+
+slot 이름은 사용자 결정(2026-10-03)을 따른다. 발신원은 멤버 이름에서 위젯 종류까지 쓴다 (`m_inputPanel` → `onInputPanel…`, `m_searchBox` → `onSearchBox…`). 같은 slot이 같은 종류의 여러 발신원에서 오면 공통 이름을 쓴다 (`onTablePanelFilterChanged`). slot이 하는 일을 다른 곳에서도 불러야 하면 일을 private 함수로 두고 slot이 그 함수를 부른다 (`onModelReset()` → `syncSelectionBar()`).
 
 enum 값에 타입명을 반복하지 않는다 — `SageButtonVariant::Primary`이지 `SageButtonVariant::ButtonPrimary`가 아니다.
 

@@ -51,19 +51,19 @@ void SageWorkflowInputPanel::applyHandler(const ISageWorkflowHandler& handler)
     m_inputLabel->setText(handler.inputSectionLabel());
     m_inputDialogTitle = handler.inputDialogTitle();
     m_inputFileFilter = handler.inputFileFilter();
-    m_autoLoadOnInput = handler.hasInputTable();
+    m_isAutoLoadOnInput = handler.hasInputTable();
     m_runButton->setText(handler.actionButtonLabel());
 }
 
 void SageWorkflowInputPanel::setRunningState(bool running)
 {
-    m_running = running;
+    m_isRunning = running;
     m_selectInputButton->setEnabled(!running);
     m_selectOutputButton->setEnabled(!running);
     m_runButton->setEnabled(!running);
     m_inputResetButton->setEnabled(!running);
-    m_inputTable->setSelectionControlsEnabled(!running);
-    m_emptyHintArea->setVisible(!m_inputTableVisible && !running);
+    m_inputTablePanel->setSelectionControlsEnabled(!running);
+    m_emptyHintArea->setVisible(!m_isInputTableVisible && !running);
     if (running) {
         m_statusCard->setRunning(SAGE_UI_STATUS_CARD_RUNNING);
         m_progressPercent = 0;
@@ -96,30 +96,30 @@ void SageWorkflowInputPanel::setInputResetVisible(bool visible)
 
 void SageWorkflowInputPanel::setInputTableVisible(bool tableVisible, bool filterVisible)
 {
-    m_inputTableVisible = tableVisible;
-    m_inputTable->showSelectAll(tableVisible);
-    m_inputTable->showFilter(tableVisible && filterVisible);
-    m_inputTable->setVisible(tableVisible);
-    m_emptyHintArea->setVisible(!tableVisible && !m_running);
+    m_isInputTableVisible = tableVisible;
+    m_inputTablePanel->showSelectAll(tableVisible);
+    m_inputTablePanel->showFilter(tableVisible && filterVisible);
+    m_inputTablePanel->setVisible(tableVisible);
+    m_emptyHintArea->setVisible(!tableVisible && !m_isRunning);
 }
 
-SageResultTablePanel& SageWorkflowInputPanel::inputTable()
+SageResultTablePanel& SageWorkflowInputPanel::inputTablePanel()
 {
-    return *m_inputTable;
+    return *m_inputTablePanel;
 }
 
-void SageWorkflowInputPanel::onSelectInputClicked()
+void SageWorkflowInputPanel::onSelectInputButtonClicked()
 {
     const QString selectedPath = QFileDialog::getOpenFileName(this, m_inputDialogTitle, QString(), m_inputFileFilter);
     if (!selectedPath.isEmpty()) {
         setInputPath(selectedPath);
-        if (m_autoLoadOnInput) {
+        if (m_isAutoLoadOnInput) {
             emit runRequested(SageTaskType::Load);
         }
     }
 }
 
-void SageWorkflowInputPanel::onSelectOutputClicked()
+void SageWorkflowInputPanel::onSelectOutputButtonClicked()
 {
     const QString selectedFolder = QFileDialog::getExistingDirectory(this, SAGE_UI_SELECT_OUTPUT_TITLE);
     if (!selectedFolder.isEmpty()) {
@@ -127,14 +127,14 @@ void SageWorkflowInputPanel::onSelectOutputClicked()
     }
 }
 
-void SageWorkflowInputPanel::onRunClicked()
+void SageWorkflowInputPanel::onRunButtonClicked()
 {
     emit runRequested(SageTaskType::Generate);
 }
 
-void SageWorkflowInputPanel::onProgressTimer()
+void SageWorkflowInputPanel::onProgressTimerTimeout()
 {
-    if (!m_running || m_progressPercent >= SAGE_PROGRESS_RUNNING_MAX) {
+    if (!m_isRunning || m_progressPercent >= SAGE_PROGRESS_RUNNING_MAX) {
         return;
     }
     m_progressPercent = qMin(m_progressPercent + SAGE_PROGRESS_STEP, SAGE_PROGRESS_RUNNING_MAX);
@@ -162,8 +162,8 @@ void SageWorkflowInputPanel::createWidgets()
     m_inputLabel->setMinimumWidth(SAGE_FORM_LABEL_WIDTH);
     m_outputLabel = new SageLabel(SageLabel::SageLabelVariant::FormLabel, SAGE_UI_SECTION_OUTPUT, m_formArea);
     m_outputLabel->setMinimumWidth(SAGE_FORM_LABEL_WIDTH);
-    m_inputPathEdit = createPathEdit();
-    m_outputFolderEdit = createPathEdit();
+    m_inputPathEdit = addPathEdit();
+    m_outputFolderEdit = addPathEdit();
     m_selectInputButton = new SageButton(SAGE_UI_INPUT_BUTTON, m_formArea);
     m_selectInputButton->setMinimumWidth(SAGE_BUTTON_WIDTH);
     m_selectOutputButton = new SageButton(SAGE_UI_OUTPUT_BUTTON, m_formArea);
@@ -179,8 +179,8 @@ void SageWorkflowInputPanel::createWidgets()
     m_inputResetButton->setFixedHeight(SAGE_CARD_ACTION_BUTTON_HEIGHT);
     m_inputResetButton->hide();
 
-    m_inputTable = new SageResultTablePanel(this);
-    m_inputTable->hide();
+    m_inputTablePanel = new SageResultTablePanel(this);
+    m_inputTablePanel->hide();
     m_emptyHintArea = new QWidget(this);
     m_emptyHintLabel = new SageLabel(SageLabel::SageLabelVariant::Hint, SAGE_UI_EMPTY_STATE_HINT, m_emptyHintArea);
     m_emptyHintLabel->setAlignment(Qt::AlignCenter);
@@ -201,7 +201,7 @@ void SageWorkflowInputPanel::createLayout()
     layout->addSpacing(SAGE_CARD_GAP);
     layout->addWidget(m_statusCard);
     layout->addSpacing(SAGE_CARD_GAP - SAGE_RESULT_FILTER_TOP_LIFT - SAGE_RESULT_FILTER_BOX_PAD);
-    layout->addWidget(m_inputTable, 1);
+    layout->addWidget(m_inputTablePanel, 1);
     layout->addWidget(m_emptyHintArea, 1);
 
     QVBoxLayout* hintLayout = new QVBoxLayout(m_emptyHintArea);
@@ -237,16 +237,16 @@ void SageWorkflowInputPanel::createLayout()
 
 void SageWorkflowInputPanel::connectSignals()
 {
-    connect(m_selectInputButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onSelectInputClicked);
-    connect(m_selectOutputButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onSelectOutputClicked);
-    connect(m_runButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onRunClicked);
-    connect(m_progressTimer, &QTimer::timeout, this, &SageWorkflowInputPanel::onProgressTimer);
+    connect(m_selectInputButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onSelectInputButtonClicked);
+    connect(m_selectOutputButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onSelectOutputButtonClicked);
+    connect(m_runButton, &SageButton::clicked, this, &SageWorkflowInputPanel::onRunButtonClicked);
+    connect(m_progressTimer, &QTimer::timeout, this, &SageWorkflowInputPanel::onProgressTimerTimeout);
     connect(m_inputResetButton, &SageButton::clicked, this, &SageWorkflowInputPanel::inputResetRequested);
     connect(m_statusCard, &SageStatusCard::openFolderRequested, this,
             &SageWorkflowInputPanel::openOutputFolderRequested);
 }
 
-SageLineEdit* SageWorkflowInputPanel::createPathEdit()
+SageLineEdit* SageWorkflowInputPanel::addPathEdit()
 {
     SageLineEdit* edit = new SageLineEdit(m_formArea);
     edit->setReadOnly(true);

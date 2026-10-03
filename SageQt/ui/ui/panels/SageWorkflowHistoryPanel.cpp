@@ -36,7 +36,7 @@ int SageWorkflowHistoryPanel::visibleRowCount() const
 
 void SageWorkflowHistoryPanel::createWidgets()
 {
-    m_filterPills = new SageFilterPillBar(this);
+    m_filterPillBar = new SageFilterPillBar(this);
     m_model = new SageHistoryModel(this);
     m_proxy = new SageHistoryFilterProxyModel(*m_model, this);
     m_tableView = new SageTableView(this);
@@ -55,7 +55,7 @@ void SageWorkflowHistoryPanel::createLayout()
     m_layout = new QVBoxLayout(this);
     m_layout->setContentsMargins(0, 0, 0, 0);
     m_layout->setSpacing(0);
-    m_layout->addWidget(m_filterPills);
+    m_layout->addWidget(m_filterPillBar);
     m_filterGap = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Fixed);
     m_layout->addItem(m_filterGap);
     m_layout->addWidget(m_tableView, 1);
@@ -64,10 +64,11 @@ void SageWorkflowHistoryPanel::createLayout()
 
 void SageWorkflowHistoryPanel::connectSignals()
 {
-    connect(m_filterPills, &SageFilterPillBar::selectedIndexChanged, this, &SageWorkflowHistoryPanel::onFilterSelected);
+    connect(m_filterPillBar, &SageFilterPillBar::selectedIndexChanged, this,
+            &SageWorkflowHistoryPanel::onFilterPillBarSelectedIndexChanged);
 }
 
-void SageWorkflowHistoryPanel::onFilterSelected(int index)
+void SageWorkflowHistoryPanel::onFilterPillBarSelectedIndexChanged(int index)
 {
     m_proxy->setFilter(static_cast<SageHistoryFilter>(index));
     updateEmptyState();
@@ -77,16 +78,16 @@ void SageWorkflowHistoryPanel::updateFilterLabels()
 {
     const int totalCount = m_model->rowCount();
     const int successCount = m_model->successCount();
-    m_filterPills->setLabels({SAGE_UI_HISTORY_FILTER_ALL.arg(totalCount),
-                              SAGE_UI_HISTORY_FILTER_SUCCESS.arg(successCount),
-                              SAGE_UI_HISTORY_FILTER_FAILED.arg(totalCount - successCount)});
+    m_filterPillBar->setLabels({SAGE_UI_HISTORY_FILTER_ALL.arg(totalCount),
+                                SAGE_UI_HISTORY_FILTER_SUCCESS.arg(successCount),
+                                SAGE_UI_HISTORY_FILTER_FAILED.arg(totalCount - successCount)});
 }
 
 void SageWorkflowHistoryPanel::updateEmptyState()
 {
     const bool hasHistory = m_model->rowCount() > 0;
     const bool hasVisibleRows = m_proxy->rowCount() > 0;
-    m_filterPills->setVisible(hasHistory);
+    m_filterPillBar->setVisible(hasHistory);
     m_filterGap->changeSize(0, hasHistory ? SAGE_CARD_ROW_GAP : 0, QSizePolicy::Minimum, QSizePolicy::Fixed);
     m_layout->invalidate();
     m_tableView->setVisible(hasVisibleRows);

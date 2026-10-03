@@ -8,18 +8,18 @@
 SageWorkflowResultPanel::SageWorkflowResultPanel(QWidget* parent)
     : QWidget(parent)
 {
-    m_resultTable = new SageResultTablePanel(SAGE_UI_SECTION_RESULT, this);
+    m_resultTablePanel = new SageResultTablePanel(SAGE_UI_SECTION_RESULT, this);
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(m_resultTable);
+    layout->addWidget(m_resultTablePanel);
 }
 
-SageResultTablePanel& SageWorkflowResultPanel::resultTable()
+SageResultTablePanel& SageWorkflowResultPanel::resultTablePanel()
 {
-    return *m_resultTable;
+    return *m_resultTablePanel;
 }
 
 void SageWorkflowResultPanel::setFilterVisible(bool visible)
 {
-    m_resultTable->showFilter(visible);
+    m_resultTablePanel->showFilter(visible);
 }

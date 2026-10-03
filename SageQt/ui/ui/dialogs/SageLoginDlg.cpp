@@ -54,7 +54,7 @@ void SageLoginDlg::onLoginButtonClicked()
     }));
 }
 
-void SageLoginDlg::onLoginFinished()
+void SageLoginDlg::onLoginWatcherFinished()
 {
     m_loginButton->setEnabled(true);
     const SageLoginAttempt attempt = m_loginWatcher->result();
@@ -128,7 +128,7 @@ void SageLoginDlg::connectSignals()
 {
     connect(m_loginButton, &SageButton::clicked, this, &SageLoginDlg::onLoginButtonClicked);
     connect(m_cancelButton, &SageButton::clicked, this, &SageLoginDlg::reject);
-    connect(m_loginWatcher, &QFutureWatcher<SageLoginAttempt>::finished, this, &SageLoginDlg::onLoginFinished);
+    connect(m_loginWatcher, &QFutureWatcher<SageLoginAttempt>::finished, this, &SageLoginDlg::onLoginWatcherFinished);
 }
 
 void SageLoginDlg::showInputError(SageLineEdit* edit, const QString& message)

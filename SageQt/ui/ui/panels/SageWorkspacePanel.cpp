@@ -88,11 +88,11 @@ void SageWorkspacePanel::applyDroppedPaths(const QStringList& paths)
     selectTabKind(SageWorkflowTabKind::Input);
     emit statusChanged(SAGE_UI_DROP_RECEIVED);
     if (handler->hasInputTable()) {
-        onRunRequested(SageTaskType::Load);
+        onInputPanelRunRequested(SageTaskType::Load);
     }
 }
 
-void SageWorkspacePanel::onTabChanged(int visualIndex)
+void SageWorkspacePanel::onTaskTabsCurrentChanged(int visualIndex)
 {
     if (visualIndex < 0 || visualIndex >= m_tabs.size()) {
         return;
@@ -102,7 +102,7 @@ void SageWorkspacePanel::onTabChanged(int visualIndex)
     refreshVisibility();
 }
 
-void SageWorkspacePanel::onRunRequested(SageTaskType taskType)
+void SageWorkspacePanel::onInputPanelRunRequested(SageTaskType taskType)
 {
     if (m_controller->isRunning() || !m_currentWorkflow.has_value()) {
         return;
@@ -137,7 +137,7 @@ void SageWorkspacePanel::onRunRequested(SageTaskType taskType)
     setRunningState(true);
 }
 
-void SageWorkspacePanel::onRunFinished(const SageWorkflowRunResult& result)
+void SageWorkspacePanel::onControllerRunFinished(const SageWorkflowRunResult& result)
 {
     const ISageWorkflowHandler* handler = m_registry.findHandler(result.m_workflowType);
     const bool keepInputTable =
@@ -165,13 +165,13 @@ void SageWorkspacePanel::onRunFinished(const SageWorkflowRunResult& result)
         }
     }
     const int resultCount =
-        keepInputTable ? m_inputPanel->inputTable().checkedRowCount() : static_cast<int>(rows.size());
+        keepInputTable ? m_inputPanel->inputTablePanel().checkedRowCount() : static_cast<int>(rows.size());
     applyStatusCardResult(handler, result.m_taskType, result.m_response, success, resultCount);
     emit statusChanged(success ? SAGE_UI_COMPLETED : SAGE_UI_FAILED);
     setRunningState(false);
 }
 
-void SageWorkspacePanel::onOpenOutputFolder()
+void SageWorkspacePanel::onInputPanelOpenOutputFolderRequested()
 {
     if (m_lastOutputPath.isEmpty()) {
         return;
@@ -236,17 +236,19 @@ void SageWorkspacePanel::createLayout()
 
 void SageWorkspacePanel::connectSignals()
 {
-    connect(m_taskTabs, &QTabBar::currentChanged, this, &SageWorkspacePanel::onTabChanged);
-    connect(m_inputPanel, &SageWorkflowInputPanel::runRequested, this, &SageWorkspacePanel::onRunRequested);
-    connect(m_controller, &SageWorkflowController::runFinished, this, &SageWorkspacePanel::onRunFinished);
+    connect(m_taskTabs, &QTabBar::currentChanged, this, &SageWorkspacePanel::onTaskTabsCurrentChanged);
+    connect(m_inputPanel, &SageWorkflowInputPanel::runRequested, this, &SageWorkspacePanel::onInputPanelRunRequested);
+    connect(m_controller, &SageWorkflowController::runFinished, this, &SageWorkspacePanel::onControllerRunFinished);
     connect(m_inputPanel, &SageWorkflowInputPanel::openOutputFolderRequested, this,
-            &SageWorkspacePanel::onOpenOutputFolder);
+            &SageWorkspacePanel::onInputPanelOpenOutputFolderRequested);
     connect(m_inputPanel, &SageWorkflowInputPanel::inputResetRequested, this,
-            &SageWorkspacePanel::onInputResetRequested);
-    for (SageResultTablePanel* resultTable : {&m_inputPanel->inputTable(), &m_resultPanel->resultTable()}) {
-        connect(resultTable, &SageResultTablePanel::filterChanged, this, &SageWorkspacePanel::onResultTableChanged);
-        connect(resultTable, &SageResultTablePanel::selectionChanged, this,
-                &SageWorkspacePanel::onResultSelectionChanged);
+            &SageWorkspacePanel::onInputPanelInputResetRequested);
+    for (SageResultTablePanel* resultTablePanel :
+         {&m_inputPanel->inputTablePanel(), &m_resultPanel->resultTablePanel()}) {
+        connect(resultTablePanel, &SageResultTablePanel::filterChanged, this,
+                &SageWorkspacePanel::onTablePanelFilterChanged);
+        connect(resultTablePanel, &SageResultTablePanel::selectionChanged, this,
+                &SageWorkspacePanel::onTablePanelSelectionChanged);
     }
 }
 
@@ -265,11 +267,11 @@ void SageWorkspacePanel::saveCurrentState()
     if (handler == nullptr) {
         return;
     }
-    const SageResultTablePanel& resultTable = resultTableFor(*handler);
-    state.m_filterKeyword = resultTable.filterKeyword();
-    state.m_filterCriteria = resultTable.filterCriteria();
+    const SageResultTablePanel& resultTablePanel = resultTableFor(*handler);
+    state.m_filterKeyword = resultTablePanel.filterKeyword();
+    state.m_filterCriteria = resultTablePanel.filterCriteria();
     if (isInputTableVisible(*handler)) {
-        state.m_checkedRowNums = resultTable.checkedRowNums();
+        state.m_checkedRowNums = resultTablePanel.checkedRowNums();
     }
 }
 
@@ -381,7 +383,7 @@ void SageWorkspacePanel::applyStatusCardResult(const ISageWorkflowHandler* handl
     m_inputPanel->setStatusResult(true, message, outputPath);
 }
 
-void SageWorkspacePanel::onResultTableChanged()
+void SageWorkspacePanel::onTablePanelFilterChanged()
 {
     const ISageWorkflowHandler* handler = findCurrentHandler();
     if (handler == nullptr) {
@@ -391,22 +393,22 @@ void SageWorkspacePanel::onResultTableChanged()
     updateActionButtonState();
 }
 
-void SageWorkspacePanel::onResultSelectionChanged(int selectedCount)
+void SageWorkspacePanel::onTablePanelSelectionChanged(int selectedCount)
 {
     applyActionButtonState(selectedCount);
 }
 
-void SageWorkspacePanel::onInputResetRequested()
+void SageWorkspacePanel::onInputPanelInputResetRequested()
 {
     const ISageWorkflowHandler* handler = findCurrentHandler();
     if (handler == nullptr || !handler->hasInputTable()) {
         return;
     }
-    SageResultTablePanel& inputTable = m_inputPanel->inputTable();
+    SageResultTablePanel& inputTablePanel = m_inputPanel->inputTablePanel();
     m_inputPanel->setInputPath(QString());
     m_inputPanel->resetStatusCard();
-    inputTable.restoreFilter(QString(), inputTable.filterCriteria());
-    inputTable.clearRows();
+    inputTablePanel.restoreFilter(QString(), inputTablePanel.filterCriteria());
+    inputTablePanel.clearRows();
     m_controller->clearResult();
     applyResultTableSchema(*handler, SageTaskType::Generate);
     refreshVisibility();
@@ -423,7 +425,7 @@ const ISageWorkflowHandler* SageWorkspacePanel::findCurrentHandler() const
 
 SageResultTablePanel& SageWorkspacePanel::resultTableFor(const ISageWorkflowHandler& handler) const
 {
-    return handler.hasInputTable() ? m_inputPanel->inputTable() : m_resultPanel->resultTable();
+    return handler.hasInputTable() ? m_inputPanel->inputTablePanel() : m_resultPanel->resultTablePanel();
 }
 
 bool SageWorkspacePanel::isLastResultOf(const ISageWorkflowHandler& handler) const
@@ -471,9 +473,9 @@ void SageWorkspacePanel::rebuildResultTable(const ISageWorkflowHandler& handler,
 
 void SageWorkspacePanel::applyResultTableSchema(const ISageWorkflowHandler& handler, SageTaskType taskType)
 {
-    SageResultTablePanel& resultTable = resultTableFor(handler);
-    resultTable.setColumns(handler.resultColumns(taskType), handler.resultStyle(taskType));
-    resultTable.setFilterCriteria(handler.filterCriteria());
+    SageResultTablePanel& resultTablePanel = resultTableFor(handler);
+    resultTablePanel.setColumns(handler.resultColumns(taskType), handler.resultStyle(taskType));
+    resultTablePanel.setFilterCriteria(handler.filterCriteria());
 }
 
 void SageWorkspacePanel::setResultTableRows(const ISageWorkflowHandler& handler, const QList<SageResultRow>& rows)
@@ -485,22 +487,22 @@ void SageWorkspacePanel::setResultTableRows(const ISageWorkflowHandler& handler,
 
 void SageWorkspacePanel::updateResultSummary(const ISageWorkflowHandler& handler)
 {
-    SageResultTablePanel& resultTable = resultTableFor(handler);
+    SageResultTablePanel& resultTablePanel = resultTableFor(handler);
     const SageWorkflowResultState& resultState = m_controller->resultState();
     QList<SageResultSummaryItem> items;
-    if (!isLastResultOf(handler) || !handler.buildResultSummary(*resultState.m_taskType, resultTable.visibleRows(),
+    if (!isLastResultOf(handler) || !handler.buildResultSummary(*resultState.m_taskType, resultTablePanel.visibleRows(),
                                                                 resultState.m_response, items)) {
-        resultTable.clearSummary();
-        resultTable.clearTotals();
+        resultTablePanel.clearSummary();
+        resultTablePanel.clearTotals();
         return;
     }
-    resultTable.setSummaryItems(items);
+    resultTablePanel.setSummaryItems(items);
     QList<SageResultTotalCell> cells;
-    if (!handler.buildResultTotals(*resultState.m_taskType, resultTable.visibleRows(), cells)) {
-        resultTable.clearTotals();
+    if (!handler.buildResultTotals(*resultState.m_taskType, resultTablePanel.visibleRows(), cells)) {
+        resultTablePanel.clearTotals();
         return;
     }
-    resultTable.setTotalCells(cells);
+    resultTablePanel.setTotalCells(cells);
 }
 
 void SageWorkspacePanel::updateActionButtonState()
@@ -509,7 +511,7 @@ void SageWorkspacePanel::updateActionButtonState()
     if (handler == nullptr) {
         return;
     }
-    applyActionButtonState(handler->hasInputTable() ? m_inputPanel->inputTable().checkedRowCount() : 0);
+    applyActionButtonState(handler->hasInputTable() ? m_inputPanel->inputTablePanel().checkedRowCount() : 0);
 }
 
 void SageWorkspacePanel::applyActionButtonState(int selectedCount)
@@ -532,10 +534,10 @@ bool SageWorkspacePanel::buildSelectedRowNums(const ISageWorkflowHandler& handle
     if (!handler.hasInputTable() || taskType != SageTaskType::Generate) {
         return true;
     }
-    const SageResultTablePanel& inputTable = m_inputPanel->inputTable();
-    outRowNums = inputTable.checkedRowNums();
+    const SageResultTablePanel& inputTablePanel = m_inputPanel->inputTablePanel();
+    outRowNums = inputTablePanel.checkedRowNums();
     QString selectionError;
-    if (handler.validateSelectedRows(inputTable.checkedRowCount(), !outRowNums.isEmpty(), selectionError)) {
+    if (handler.validateSelectedRows(inputTablePanel.checkedRowCount(), !outRowNums.isEmpty(), selectionError)) {
         return true;
     }
     SageMessageBoxDlg errorDialog(SageMessageIcon::Warning, selectionError, this);

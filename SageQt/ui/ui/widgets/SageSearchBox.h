@@ -38,8 +38,10 @@ protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
 
+private slots:
+    void onCriteriaComboActivated(int index);
+
 private:
-    void onCriteriaActivated(int index);
     QRect criteriaCellRect() const;
     QRect iconCellRect() const;
 

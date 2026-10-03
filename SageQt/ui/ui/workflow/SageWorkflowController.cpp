@@ -16,17 +16,17 @@ SageWorkflowController::SageWorkflowController(const SageWorkflowRegistry& regis
 
 bool SageWorkflowController::isRunning() const
 {
-    return m_running;
+    return m_isRunning;
 }
 
 bool SageWorkflowController::start(const SageWorkflowRunRequest& request, QString& outError)
 {
-    if (m_running) {
+    if (m_isRunning) {
         outError = SAGE_UI_WORKFLOW_ALREADY_RUNNING;
         return false;
     }
     m_resultState.m_inputPath = request.m_inputPath;
-    m_running = true;
+    m_isRunning = true;
     m_watcher->setFuture(
         QtConcurrent::run([&registry = m_registry, request]() { return SageWorkflowRunner::run(registry, request); }));
     return true;
@@ -34,9 +34,9 @@ bool SageWorkflowController::start(const SageWorkflowRunRequest& request, QStrin
 
 void SageWorkflowController::finish(const SageWorkflowRunResult& result, bool success, bool keepResult)
 {
-    m_running = false;
+    m_isRunning = false;
     m_resultState.m_workflowType = result.m_workflowType;
-    m_resultState.m_success = success;
+    m_resultState.m_isSuccessful = success;
     if (keepResult) {
         return;
     }

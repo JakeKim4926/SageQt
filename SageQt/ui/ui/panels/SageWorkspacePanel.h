@@ -55,13 +55,13 @@ public slots:
     void applyDroppedPaths(const QStringList& paths);
 
 private slots:
-    void onTabChanged(int visualIndex);
-    void onRunRequested(SageTaskType taskType);
-    void onRunFinished(const SageWorkflowRunResult& result);
-    void onOpenOutputFolder();
-    void onResultTableChanged();
-    void onResultSelectionChanged(int selectedCount);
-    void onInputResetRequested();
+    void onTaskTabsCurrentChanged(int visualIndex);
+    void onInputPanelRunRequested(SageTaskType taskType);
+    void onControllerRunFinished(const SageWorkflowRunResult& result);
+    void onInputPanelOpenOutputFolderRequested();
+    void onTablePanelFilterChanged();
+    void onTablePanelSelectionChanged(int selectedCount);
+    void onInputPanelInputResetRequested();
 
 private:
     void createWidgets();

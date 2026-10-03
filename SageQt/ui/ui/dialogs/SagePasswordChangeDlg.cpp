@@ -81,7 +81,7 @@ void SagePasswordChangeDlg::onChangeButtonClicked()
     }));
 }
 
-void SagePasswordChangeDlg::onChangeFinished()
+void SagePasswordChangeDlg::onChangeWatcherFinished()
 {
     m_changeButton->setEnabled(true);
     const SagePasswordChangeAttempt attempt = m_changeWatcher->result();
@@ -113,14 +113,14 @@ void SagePasswordChangeDlg::onChangeFinished()
 
 void SagePasswordChangeDlg::createWidgets()
 {
-    m_currentLabel = createFormLabel(SAGE_UI_CHANGE_PW_CURRENT);
-    m_newLabel = createFormLabel(SAGE_UI_CHANGE_PW_NEW);
-    m_confirmLabel = createFormLabel(SAGE_UI_CHANGE_PW_CONFIRM);
+    m_currentLabel = addFormLabel(SAGE_UI_CHANGE_PW_CURRENT);
+    m_newLabel = addFormLabel(SAGE_UI_CHANGE_PW_NEW);
+    m_confirmLabel = addFormLabel(SAGE_UI_CHANGE_PW_CONFIRM);
 
-    m_currentEdit = createPasswordEdit();
-    m_newEdit = createPasswordEdit();
+    m_currentEdit = addPasswordEdit();
+    m_newEdit = addPasswordEdit();
     m_newEdit->setMaxLength(SAGE_USER_PW_MAX_LEN);
-    m_confirmEdit = createPasswordEdit();
+    m_confirmEdit = addPasswordEdit();
     m_confirmEdit->setMaxLength(SAGE_USER_PW_MAX_LEN);
 
     m_errorMessage = new SageInlineMessage(SageInlineMessage::SageInlineMessageVariant::Error, contentWidget());
@@ -171,7 +171,7 @@ void SagePasswordChangeDlg::connectSignals()
     connect(m_changeButton, &SageButton::clicked, this, &SagePasswordChangeDlg::onChangeButtonClicked);
     connect(m_cancelButton, &SageButton::clicked, this, &SagePasswordChangeDlg::reject);
     connect(m_changeWatcher, &QFutureWatcher<SagePasswordChangeAttempt>::finished, this,
-            &SagePasswordChangeDlg::onChangeFinished);
+            &SagePasswordChangeDlg::onChangeWatcherFinished);
 }
 
 void SagePasswordChangeDlg::showInputError(SageLineEdit* edit, const QString& message)
@@ -181,14 +181,14 @@ void SagePasswordChangeDlg::showInputError(SageLineEdit* edit, const QString& me
     edit->setFocus();
 }
 
-SageLabel* SagePasswordChangeDlg::createFormLabel(const QString& text)
+SageLabel* SagePasswordChangeDlg::addFormLabel(const QString& text)
 {
     SageLabel* label = new SageLabel(SageLabel::SageLabelVariant::FormLabel, text, contentWidget());
     label->setMinimumWidth(SAGE_PASSWORD_DLG_LABEL_WIDTH);
     return label;
 }
 
-SageLineEdit* SagePasswordChangeDlg::createPasswordEdit()
+SageLineEdit* SagePasswordChangeDlg::addPasswordEdit()
 {
     SageLineEdit* edit = new SageLineEdit(contentWidget());
     edit->setEchoMode(QLineEdit::Password);

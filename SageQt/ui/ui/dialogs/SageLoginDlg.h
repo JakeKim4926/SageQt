@@ -32,7 +32,7 @@ public:
 
 private slots:
     void onLoginButtonClicked();
-    void onLoginFinished();
+    void onLoginWatcherFinished();
 
 private:
     void createWidgets();

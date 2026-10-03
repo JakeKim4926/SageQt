@@ -36,15 +36,15 @@ public:
 
 private slots:
     void onChangeButtonClicked();
-    void onChangeFinished();
+    void onChangeWatcherFinished();
 
 private:
     void createWidgets();
     void createLayout();
     void connectSignals();
     void showInputError(SageLineEdit* edit, const QString& message);
-    SageLabel* createFormLabel(const QString& text);
-    SageLineEdit* createPasswordEdit();
+    SageLabel* addFormLabel(const QString& text);
+    SageLineEdit* addPasswordEdit();
 
 private:
     const SageUserService& m_userService;

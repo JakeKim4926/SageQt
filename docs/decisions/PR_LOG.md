@@ -13,6 +13,13 @@ PR을 생성하거나 머지할 때마다 아래 형식으로 기록한다. 형�
 
 ---
 
+## [2026-10-03] refactor/t20-naming-slots
+- **목적**: 규칙 위반 정리 (sageqt-plan T20, 두 번째 PR) — 이름 · slot
+- **변경 내용**: bool 멤버 10개 `m_is`/`m_has`, private slot 25개를 on + 발신원 + 사건으로 · slots 구역으로, slot 겸 함수 3개 분리, 위젯 멤버 · 접근자 `…Panel`/`…Bar`, `create*` 3개 → `add*`. 규칙 검사에 bool 멤버. slot 이름 결정 기록(발신원 생략 금지, public slot 동사)
+- **PR 링크**: 없음
+- **규칙 점검**: Blocker 0 · Major 0 · Minor 1(사이드바 slot 발신원 — 고침)
+- **결과**: merged (develop, 2026-10-03)
+
 ## [2026-10-03] refactor/t20-platform-ownership
 - **목적**: 규칙 위반 정리 (sageqt-plan T20, 첫 번째 PR) — 플랫폼 · 소유권
 - **변경 내용**: T20 주제 추가. 상태 카드 경로를 `QFileInfo`로 나누고 표시 직전에만 OS 구분자(작업 영역은 내부 경로 전달). 레이아웃 · 사이드바 항목을 만든 다음 줄에서 넘김(`add*`). 테스트 세션을 값 멤버로. `tools/rule-check/check_rules.py` + CI 단계(`\` 경로 · 부모 없는 `new`). `.pyc` 제거 · `.gitignore`

@@ -442,7 +442,7 @@ void SageWorkspacePanelTest::showingWorkflowSetsResultColumns()
     SageWorkspacePanel panel(*m_registry);
     panel.showWorkflow(SAGE_GATED_WORKFLOW);
 
-    const QTableView* table = panel.findChild<SageWorkflowResultPanel*>()->resultTable().findChild<QTableView*>();
+    const QTableView* table = panel.findChild<SageWorkflowResultPanel*>()->resultTablePanel().findChild<QTableView*>();
     QCOMPARE(table->model()->columnCount(), 4);
     QCOMPARE(table->model()->rowCount(), 0);
 }
@@ -491,7 +491,7 @@ void SageWorkspacePanelTest::completedRunShowsResultAndOpensFolder()
     QCOMPARE(card->variant(), SageStatusCard::SageStatusCardVariant::Completed);
     QVERIFY(card->message().startsWith(SAGE_UI_SAMPLE_ACTION_BUTTON + QStringLiteral("이 완료되었습니다 · ")));
     QCOMPARE(card->detail(), outputDirectory.path());
-    QVERIFY(panel.findChild<SageWorkflowResultPanel*>()->resultTable().rowCount() > 0);
+    QVERIFY(panel.findChild<SageWorkflowResultPanel*>()->resultTablePanel().rowCount() > 0);
     QCOMPARE(panel.findChild<SageWorkflowHistoryPanel*>()->visibleRowCount(), 1);
 
     openFolderButton(panel)->click();
@@ -569,19 +569,19 @@ void SageWorkspacePanelTest::inputTableAppearsAfterLoad()
     panel.show();
     QVERIFY(QTest::qWaitForWindowExposed(&panel));
     SageWorkflowInputPanel* inputPanel = panel.findChild<SageWorkflowInputPanel*>();
-    SageResultTablePanel& inputTable = inputPanel->inputTable();
+    SageResultTablePanel& inputTablePanel = inputPanel->inputTablePanel();
     panel.showWorkflow(SAGE_INPUT_TABLE_WORKFLOW);
-    QVERIFY(!inputTable.isVisible());
+    QVERIFY(!inputTablePanel.isVisible());
     QVERIFY(emptyHint(panel)->isVisible());
 
     loadInputTable(panel);
 
     QCOMPARE(m_lastTaskType, SageTaskType::Load);
-    QVERIFY(inputTable.isVisible());
+    QVERIFY(inputTablePanel.isVisible());
     QVERIFY(!emptyHint(panel)->isVisible());
-    QCOMPARE(inputTable.rowCount(), 3);
-    QVERIFY(inputTable.findChild<SageSelectionBar*>()->isVisible());
-    QVERIFY(inputTable.findChild<SageSearchBox*>()->isVisible());
+    QCOMPARE(inputTablePanel.rowCount(), 3);
+    QVERIFY(inputTablePanel.findChild<SageSelectionBar*>()->isVisible());
+    QVERIFY(inputTablePanel.findChild<SageSearchBox*>()->isVisible());
     QVERIFY(inputResetButton(panel)->isVisible());
     QVERIFY(!runButton(panel)->isEnabled());
     QCOMPARE(panel.selectedTabKind(), SageWorkflowTabKind::Input);
@@ -595,8 +595,8 @@ void SageWorkspacePanelTest::generateSendsCheckedRowNums()
     const SageTestModalDriver driver(collectMessages(messages));
     loadInputTable(panel);
     SageWorkflowInputPanel* inputPanel = panel.findChild<SageWorkflowInputPanel*>();
-    SageResultTablePanel& inputTable = inputPanel->inputTable();
-    const QTableView* table = inputTable.findChild<QTableView*>();
+    SageResultTablePanel& inputTablePanel = inputPanel->inputTablePanel();
+    const QTableView* table = inputTablePanel.findChild<QTableView*>();
     table->model()->setData(table->model()->index(0, 0), Qt::Checked, Qt::CheckStateRole);
     table->model()->setData(table->model()->index(2, 0), Qt::Checked, Qt::CheckStateRole);
     QVERIFY(runButton(panel)->isEnabled());
@@ -607,8 +607,8 @@ void SageWorkspacePanelTest::generateSendsCheckedRowNums()
 
     QCOMPARE(m_lastTaskType, SageTaskType::Generate);
     QCOMPARE(m_lastPayload.value(SAGE_JSON_KEY_ROW_NUMS).toString(), QStringLiteral("3,7"));
-    QCOMPARE(inputTable.rowCount(), 3);
-    QCOMPARE(inputTable.checkedRowCount(), 2);
+    QCOMPARE(inputTablePanel.rowCount(), 3);
+    QCOMPARE(inputTablePanel.checkedRowCount(), 2);
     QCOMPARE(panel.findChild<SageStatusCard*>()->message(),
              SAGE_UI_STATUS_CARD_COMPLETED_FORMAT.arg(SAGE_UI_SAMPLE_ACTION_BUTTON).arg(2));
 }
@@ -636,21 +636,21 @@ void SageWorkspacePanelTest::filterAndChecksAreRestoredPerWorkflow()
     registerInputTableHandler();
     SageWorkspacePanel panel(*m_registry);
     loadInputTable(panel);
-    SageResultTablePanel& inputTable = panel.findChild<SageWorkflowInputPanel*>()->inputTable();
-    inputTable.restoreFilter(QStringLiteral("success"), 2);
-    QCOMPARE(inputTable.rowCount(), 2);
-    const QTableView* table = inputTable.findChild<QTableView*>();
+    SageResultTablePanel& inputTablePanel = panel.findChild<SageWorkflowInputPanel*>()->inputTablePanel();
+    inputTablePanel.restoreFilter(QStringLiteral("success"), 2);
+    QCOMPARE(inputTablePanel.rowCount(), 2);
+    const QTableView* table = inputTablePanel.findChild<QTableView*>();
     table->model()->setData(table->model()->index(1, 0), Qt::Checked, Qt::CheckStateRole);
-    QCOMPARE(inputTable.checkedRowNums(), QStringLiteral("7"));
+    QCOMPARE(inputTablePanel.checkedRowNums(), QStringLiteral("7"));
 
     panel.showWorkflow(SAGE_TEST_WORKFLOW);
-    QVERIFY(!inputTable.isVisible());
+    QVERIFY(!inputTablePanel.isVisible());
     panel.showWorkflow(SAGE_INPUT_TABLE_WORKFLOW);
 
-    QCOMPARE(inputTable.filterKeyword(), QStringLiteral("success"));
-    QCOMPARE(inputTable.filterCriteria(), 2);
-    QCOMPARE(inputTable.rowCount(), 2);
-    QCOMPARE(inputTable.checkedRowNums(), QStringLiteral("7"));
+    QCOMPARE(inputTablePanel.filterKeyword(), QStringLiteral("success"));
+    QCOMPARE(inputTablePanel.filterCriteria(), 2);
+    QCOMPARE(inputTablePanel.rowCount(), 2);
+    QCOMPARE(inputTablePanel.checkedRowNums(), QStringLiteral("7"));
     QVERIFY(runButton(panel)->isEnabled());
 }
 
@@ -659,17 +659,17 @@ void SageWorkspacePanelTest::filterRefreshesSummary()
     registerInputTableHandler();
     SageWorkspacePanel panel(*m_registry);
     loadInputTable(panel);
-    SageResultTablePanel& inputTable = panel.findChild<SageWorkflowInputPanel*>()->inputTable();
-    inputTable.showSelectAll(false);
-    SageSummaryBar* summaryBar = inputTable.findChild<SageSummaryBar*>();
+    SageResultTablePanel& inputTablePanel = panel.findChild<SageWorkflowInputPanel*>()->inputTablePanel();
+    inputTablePanel.showSelectAll(false);
+    SageSummaryBar* summaryBar = inputTablePanel.findChild<SageSummaryBar*>();
     QVERIFY(summaryBar->hasItems());
 
-    QLineEdit* edit = inputTable.findChild<SageSearchBox*>()->findChild<QLineEdit*>();
+    QLineEdit* edit = inputTablePanel.findChild<SageSearchBox*>()->findChild<QLineEdit*>();
     edit->setText(QStringLiteral("gamma"));
     QTest::keyClick(edit, Qt::Key_Return);
 
-    QCOMPARE(inputTable.rowCount(), 1);
-    QCOMPARE(inputTable.visibleRows().size(), 1);
+    QCOMPARE(inputTablePanel.rowCount(), 1);
+    QCOMPARE(inputTablePanel.visibleRows().size(), 1);
     QVERIFY(summaryBar->hasItems());
 }
 
@@ -686,10 +686,10 @@ void SageWorkspacePanelTest::inputResetClearsTable()
     inputResetButton(panel)->click();
 
     QVERIFY(inputPanel->inputPath().isEmpty());
-    QVERIFY(!inputPanel->inputTable().isVisible());
+    QVERIFY(!inputPanel->inputTablePanel().isVisible());
     QVERIFY(emptyHint(panel)->isVisible());
     QVERIFY(!inputResetButton(panel)->isVisible());
-    QCOMPARE(inputPanel->inputTable().rowCount(), 0);
+    QCOMPARE(inputPanel->inputTablePanel().rowCount(), 0);
     QCOMPARE(panel.findChild<SageStatusCard*>()->variant(), SageStatusCard::SageStatusCardVariant::Idle);
 }
 

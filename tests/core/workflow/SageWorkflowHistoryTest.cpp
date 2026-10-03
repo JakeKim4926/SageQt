@@ -55,7 +55,7 @@ void SageWorkflowHistoryTest::successUsesFilePathThenOutputFolder()
     QCOMPARE(entries.at(0).m_time, sampleTime());
     QCOMPARE(entries.at(0).m_inputPath, QStringLiteral("C:/in.xlsx"));
     QCOMPARE(entries.at(0).m_outputPath, QStringLiteral("C:/out/a.xlsx"));
-    QVERIFY(entries.at(0).m_success);
+    QVERIFY(entries.at(0).m_isSuccessful);
     QVERIFY(entries.at(0).m_reason.isEmpty());
 
     entries = SageWorkflowHistory::buildEntries(
@@ -75,7 +75,7 @@ void SageWorkflowHistoryTest::failureUsesMessageThenCode()
     QList<SageHistoryEntry> entries = SageWorkflowHistory::buildEntries(
         QStringLiteral("C:/in.xlsx"), failureResponse(QStringLiteral("E1"), QStringLiteral("사유")), false,
         sampleTime());
-    QVERIFY(!entries.at(0).m_success);
+    QVERIFY(!entries.at(0).m_isSuccessful);
     QCOMPARE(entries.at(0).m_reason, QStringLiteral("사유"));
     QVERIFY(entries.at(0).m_outputPath.isEmpty());
 
@@ -96,9 +96,9 @@ void SageWorkflowHistoryTest::filesBecomeOneEntryEach()
     const QList<SageHistoryEntry> entries = SageWorkflowHistory::buildEntries(
         QStringLiteral("C:/in.xlsx"), successResponse({{SAGE_JSON_KEY_FILES, files}}), true, sampleTime());
     QCOMPARE(entries.size(), 3);
-    QVERIFY(entries.at(0).m_success);
+    QVERIFY(entries.at(0).m_isSuccessful);
     QCOMPARE(entries.at(0).m_outputPath, QStringLiteral("a"));
-    QVERIFY(!entries.at(1).m_success);
+    QVERIFY(!entries.at(1).m_isSuccessful);
     QCOMPARE(entries.at(1).m_reason, QStringLiteral("깨짐"));
     QVERIFY(entries.at(2).m_reason.isEmpty());
 }
@@ -108,10 +108,10 @@ void SageWorkflowHistoryTest::fileStatusFallsBackToRunResult()
     const QJsonArray files{QJsonObject{{SAGE_JSON_KEY_FILE_PATH, QStringLiteral("a")}}};
     QList<SageHistoryEntry> entries = SageWorkflowHistory::buildEntries(
         QString(), successResponse({{SAGE_JSON_KEY_FILES, files}}), true, sampleTime());
-    QVERIFY(entries.at(0).m_success);
+    QVERIFY(entries.at(0).m_isSuccessful);
     entries = SageWorkflowHistory::buildEntries(QString(), successResponse({{SAGE_JSON_KEY_FILES, files}}), false,
                                                 sampleTime());
-    QVERIFY(!entries.at(0).m_success);
+    QVERIFY(!entries.at(0).m_isSuccessful);
 }
 
 QTEST_GUILESS_MAIN(SageWorkflowHistoryTest)

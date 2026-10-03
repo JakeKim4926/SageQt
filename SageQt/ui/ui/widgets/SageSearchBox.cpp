@@ -34,7 +34,7 @@ SageSearchBox::SageSearchBox(QWidget* parent)
     layout->addSpacing(SAGE_EDIT_TEXT_LEFT_PAD + SAGE_SEARCH_ICON_CELL_WIDTH - SAGE_EDIT_BORDER_WIDTH);
 
     connect(m_keywordEdit, &QLineEdit::returnPressed, this, &SageSearchBox::searchRequested);
-    connect(m_criteriaCombo, &QComboBox::activated, this, &SageSearchBox::onCriteriaActivated);
+    connect(m_criteriaCombo, &QComboBox::activated, this, &SageSearchBox::onCriteriaComboActivated);
 }
 
 void SageSearchBox::setCriteria(const QList<SageWorkflowFilterCriteria>& criteria, int selectedCriteria)
@@ -113,7 +113,7 @@ void SageSearchBox::mousePressEvent(QMouseEvent* event)
     m_keywordEdit->setFocus();
 }
 
-void SageSearchBox::onCriteriaActivated(int index)
+void SageSearchBox::onCriteriaComboActivated(int index)
 {
     emit criteriaChanged(m_criteriaCombo->itemData(index).toInt());
 }

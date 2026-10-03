@@ -26,7 +26,7 @@ SageResultTableDelegate::SageResultTableDelegate(QObject* parent)
 
 void SageResultTableDelegate::setRowSeparator(bool enabled)
 {
-    m_rowSeparator = enabled;
+    m_hasRowSeparator = enabled;
 }
 
 void SageResultTableDelegate::setHoveredRow(int row)
@@ -68,7 +68,7 @@ void SageResultTableDelegate::paint(QPainter* painter, const QStyleOptionViewIte
                           QFontMetrics(font).elidedText(index.data().toString(), Qt::ElideRight, textArea.width()));
     }
 
-    if (m_rowSeparator) {
+    if (m_hasRowSeparator) {
         painter->fillRect(QRect(cellRect.left(), cellRect.bottom() + 1 - SAGE_LIST_GRID_THICKNESS, cellRect.width(),
                                 SAGE_LIST_GRID_THICKNESS),
                           SAGE_COLOR_LIST_GRID);

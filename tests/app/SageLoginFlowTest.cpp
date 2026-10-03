@@ -54,7 +54,7 @@ public:
         : QObject(parent)
     {
         m_timer.setInterval(SAGE_FLOW_POLL_MS);
-        connect(&m_timer, &QTimer::timeout, this, &SageFlowRunner::tick);
+        connect(&m_timer, &QTimer::timeout, this, &SageFlowRunner::onTimerTimeout);
     }
 
     void start(const QList<SageFlowStep>& steps)
@@ -75,7 +75,7 @@ public:
     }
 
 private slots:
-    void tick()
+    void onTimerTimeout()
     {
         if (m_next >= m_steps.size()) {
             m_timer.stop();

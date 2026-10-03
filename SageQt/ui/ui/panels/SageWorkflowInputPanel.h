@@ -33,7 +33,7 @@ public:
     void setGenerateEnabled(bool enabled);
     void setInputResetVisible(bool visible);
     void setInputTableVisible(bool tableVisible, bool filterVisible);
-    SageResultTablePanel& inputTable();
+    SageResultTablePanel& inputTablePanel();
 
 signals:
     void runRequested(SageTaskType taskType);
@@ -41,16 +41,16 @@ signals:
     void inputResetRequested();
 
 private slots:
-    void onSelectInputClicked();
-    void onSelectOutputClicked();
-    void onRunClicked();
-    void onProgressTimer();
+    void onSelectInputButtonClicked();
+    void onSelectOutputButtonClicked();
+    void onRunButtonClicked();
+    void onProgressTimerTimeout();
 
 private:
     void createWidgets();
     void createLayout();
     void connectSignals();
-    SageLineEdit* createPathEdit();
+    SageLineEdit* addPathEdit();
 
 private:
     QFrame* m_inputCard = nullptr;
@@ -66,14 +66,14 @@ private:
     SageButton* m_runButton = nullptr;
     SageButton* m_inputResetButton = nullptr;
     SageStatusCard* m_statusCard = nullptr;
-    SageResultTablePanel* m_inputTable = nullptr;
+    SageResultTablePanel* m_inputTablePanel = nullptr;
     QWidget* m_emptyHintArea = nullptr;
     SageLabel* m_emptyHintLabel = nullptr;
-    bool m_inputTableVisible = false;
+    bool m_isInputTableVisible = false;
     QTimer* m_progressTimer = nullptr;
     int m_progressPercent = 0;
-    bool m_running = false;
+    bool m_isRunning = false;
     QString m_inputDialogTitle;
     QString m_inputFileFilter;
-    bool m_autoLoadOnInput = false;
+    bool m_isAutoLoadOnInput = false;
 };

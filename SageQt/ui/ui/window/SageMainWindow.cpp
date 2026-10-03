@@ -32,13 +32,13 @@ SageMainWindow::SageMainWindow(const SageWorkflowRegistry& registry, const SageU
     connectSignals();
 }
 
-void SageMainWindow::openLoginDialog()
+void SageMainWindow::onHeaderPanelLoginRequested()
 {
     SageLoginDlg loginDialog(m_userService, m_authSession, this);
     loginDialog.exec();
 }
 
-void SageMainWindow::openPasswordChangeDialog()
+void SageMainWindow::onSidebarPanelPasswordChangeRequested()
 {
     SagePasswordChangeDlg passwordDialog(m_userService, m_authSession, this);
     passwordDialog.exec();
@@ -87,9 +87,9 @@ void SageMainWindow::connectSignals()
     connect(m_sidebarPanel, &SageSidebarPanel::workflowSelected, m_workspacePanel, &SageWorkspacePanel::showWorkflow);
     connect(m_fileDropFilter, &SageFileDropFilter::filesDropped, m_workspacePanel,
             &SageWorkspacePanel::applyDroppedPaths);
-    connect(m_headerPanel, &SageHeaderPanel::loginRequested, this, &SageMainWindow::openLoginDialog);
+    connect(m_headerPanel, &SageHeaderPanel::loginRequested, this, &SageMainWindow::onHeaderPanelLoginRequested);
     connect(m_sidebarPanel, &SageSidebarPanel::passwordChangeRequested, this,
-            &SageMainWindow::openPasswordChangeDialog);
+            &SageMainWindow::onSidebarPanelPasswordChangeRequested);
     connect(m_workspacePanel, &SageWorkspacePanel::statusChanged, m_statusLabel, &SageLabel::setText);
     const std::optional<SageWorkflowType> selectedWorkflow = m_sidebarPanel->selectedWorkflow();
     if (selectedWorkflow.has_value()) {

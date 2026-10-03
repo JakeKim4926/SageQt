@@ -38,6 +38,6 @@ private:
     static void drawBadge(QPainter* painter, const QRect& contentRect, const QString& text, SageTableTone tone);
 
 private:
-    bool m_rowSeparator = false;
+    bool m_hasRowSeparator = false;
     int m_hoveredRow = -1;
 };

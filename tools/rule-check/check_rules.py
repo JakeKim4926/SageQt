@@ -11,6 +11,7 @@ HANDOFF_NEW = re.compile(
     r"(\w+)\s*=\s*new (QHBoxLayout|QVBoxLayout|QGridLayout|QFormLayout)\(\)|(\w+)\s*=\s*new (QSpacerItem|QStandardItem)\("
 )
 HANDOFF_CALL = r"(addLayout|addItem|appendRow|insertRow|setItem)\(\s*{name}\b"
+BOOL_MEMBER = re.compile(r"\bbool m_(?!(is|has|can)[A-Z])\w+")
 
 
 def source_files():
@@ -43,7 +44,15 @@ def check_parentless_new(path, lines):
     return findings
 
 
-CHECKS = (check_backslash_path, check_parentless_new)
+def check_bool_member_name(path, lines):
+    return [
+        (number, "bool 멤버는 m_is / m_has / m_can + 상태 (naming.md)")
+        for number, line in enumerate(lines, start=1)
+        if BOOL_MEMBER.search(line)
+    ]
+
+
+CHECKS = (check_backslash_path, check_parentless_new, check_bool_member_name)
 
 
 def main():

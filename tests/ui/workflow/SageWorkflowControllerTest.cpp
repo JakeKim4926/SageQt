@@ -109,7 +109,7 @@ void SageWorkflowControllerTest::finishKeepsPreviousResultWhenAsked()
     const SageWorkflowResultState& state = controller.resultState();
     QCOMPARE(state.m_workflowType, SageWorkflowType::Sample);
     QCOMPARE(state.m_taskType, SageTaskType::Load);
-    QVERIFY(!state.m_success);
+    QVERIFY(!state.m_isSuccessful);
     QCOMPARE(state.m_response.value(SAGE_JSON_KEY_REQUEST_ID).toString(), QStringLiteral("load"));
 
     controller.finish(runResult(SageTaskType::Generate, QStringLiteral("generate")), true, false);
@@ -124,7 +124,7 @@ void SageWorkflowControllerTest::restoreAndClearResult()
     SageWorkflowResultState saved;
     saved.m_workflowType = SageWorkflowType::Sample;
     saved.m_taskType = SageTaskType::Generate;
-    saved.m_success = true;
+    saved.m_isSuccessful = true;
     saved.m_inputPath = QStringLiteral("C:/work/in.xlsx");
 
     controller.restoreResult(saved);
@@ -134,7 +134,7 @@ void SageWorkflowControllerTest::restoreAndClearResult()
     controller.clearResult();
     QVERIFY(!controller.resultState().m_workflowType.has_value());
     QVERIFY(!controller.resultState().m_taskType.has_value());
-    QVERIFY(!controller.resultState().m_success);
+    QVERIFY(!controller.resultState().m_isSuccessful);
     QVERIFY(controller.resultState().m_inputPath.isEmpty());
 }
 
